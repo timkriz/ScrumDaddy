@@ -1,2 +1,2 @@
 # ScrumDaddy
-Name speaks for itself
+Self-descriptive
