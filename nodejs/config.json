@@ -1,0 +1,6 @@
+{
+    "SERVER_SPEED": 1000, 
+    "TROOP_SPEED": 50,
+    "STORAGE_MODIFIER": 50,
+    "MERCHANT_SPEED": 50
+}

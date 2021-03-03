@@ -1,0 +1,20 @@
+{
+    "apps":[
+        {
+            "name": "scrumDaddy",
+            "script": "./app.js",
+            "watch": "./",
+            "watch_delay": 1000,
+            "ignore_watch": ["node_modules"],           
+            "watch_options": {
+                "usePolling": true,
+                "depth": 99,
+                "cwd": ".",
+                "awaitWriteFinish": {
+                    "stabilityThreshold": 1000,
+                    "pollInterval": 100
+                }
+            }
+        }
+    ]
+}
