@@ -10,7 +10,7 @@ const auth = require('../auth/auth');
 require('dotenv').config();
 
 const userController = require('../controllers/userController');
-const reportsController = require('../controllers/reportsController');
+const projectsUsersController = require('../controllers/projectsUsersController');
 
 
 router.get('/', function (req, res) {
@@ -97,18 +97,18 @@ router.route('/users/:id')
     .patch(userController.update);
 
 
-router.route('/reports')
-    .post(reportsController.new);
-router.route('/reports/:idVillage')
-    .get((req,res,next)     => authenticate(req,res,next), authTools.checkIdVillage, reportsController.view)
-router.route('/reports/:idReport')
-    .put((req,res,next)     => authenticate(req,res,next), authTools.checkIdVillage, reportsController.update)
-    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkIdVillage, reportsController.update)
-    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkIdVillage, reportsController.delete);
+router.route('/projectsUsers')
+    .post(projectsUsersController.new);
+router.route('/projectsUsers/:id')
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectsUsersController.view)
+    .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectsUsersController.update)
+    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, projectsUsersController.update)
+    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, projectsUsersController.delete);
 
 module.exports = router;
 
 function authenticate(req, res, next){
+    return next(); //TODO
     passport.authenticate('jwt', {session: false}, function (err, user, info){
         if(user){
             req.user = user;
