@@ -3,6 +3,19 @@ var tools = require('./tools');
 require('dotenv').config();
 
 module.exports = {
+    checkId: async function(req, res, next, param) {
+        return next(); //TODO
+        let user = await(await(await tools.doApiRequest("users/" + req.params.id, "GET", "", false)).json()).data;
+        if (req.user._id == user._id || req.user.email == "admin@test.com"){
+            return next();
+        } else{
+            res.json({
+                message: 'Authentication failed',
+                data: ""
+            });
+            return;
+        }
+    },
     checkIdVillage: async function(req, res, next, param) {
         let village = await(await(await tools.doApiRequest("villages/" + req.params.idVillage, "GET", "", false)).json()).data; 
         if (req.user._id == village.owner || req.user.email == "admin@test.com"){

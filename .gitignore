@@ -1,6 +1,8 @@
 Nodejs/node_modules
 nginx/www/opentravian/node_modules
 
+.idea
+
 # Logs
 logs
 *.log
