@@ -33,7 +33,7 @@ exports.new = function (req, res) {
 };
 
 exports.update = function (req, res) {
-    projectsUsersModel.findOne({_id: req.params.idprojectsUsers}, function (err, projectsUsers) {
+    projectsUsersModel.findOne({_id: req.params.id}, function (err, projectsUsers) {
         if (err)
             res.send(err);
         

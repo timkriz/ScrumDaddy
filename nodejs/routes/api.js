@@ -11,7 +11,10 @@ require('dotenv').config();
 
 const userController = require('../controllers/userController');
 const projectsUsersController = require('../controllers/projectsUsersController');
-
+const projectController = require('../controllers/projectController');
+const taskController = require('../controllers/taskController');
+const storyController = require('../controllers/storyController');
+const sprintController = require('../controllers/sprintController');
 
 router.get('/', function (req, res) {
     res.json({
@@ -96,7 +99,6 @@ router.route('/users/:id')
     .get(userController.find)
     .patch(userController.update);
 
-
 router.route('/projectsUsers')
     .post(projectsUsersController.new);
 router.route('/projectsUsers/:id')
@@ -104,6 +106,38 @@ router.route('/projectsUsers/:id')
     .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectsUsersController.update)
     .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, projectsUsersController.update)
     .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, projectsUsersController.delete);
+
+router.route('/project')
+    .post(projectController.new);
+router.route('/project/:id')
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectController.view)
+    .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectController.update)
+    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, projectController.update)
+    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, projectController.delete);
+
+router.route('/task')
+    .post(taskController.new);
+router.route('/task/:id')
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, taskController.view)
+    .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, taskController.update)
+    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, taskController.update)
+    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, taskController.delete);
+
+router.route('/story')
+    .post(storyController.new);
+router.route('/story/:id')
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, storyController.view)
+    .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, storyController.update)
+    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, storyController.update)
+    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, storyController.delete);
+
+router.route('/sprint')
+    .post(sprintController.new);
+router.route('/sprint/:id')
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, sprintController.view)
+    .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, sprintController.update)
+    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, sprintController.update)
+    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, sprintController.delete);
 
 module.exports = router;
 
