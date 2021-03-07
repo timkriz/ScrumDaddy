@@ -1,0 +1,366 @@
+{
+	"info": {
+		"_postman_id": "1f0b40f5-3392-473e-a096-8921ada2a522",
+		"name": "SMRPO",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "homeCheck",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AllUsers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"username\",\r\n    \"password\": \"password\",\r\n    \"role\": \"admin\",\r\n    \"name\": \"name\",\r\n    \"surname\": \"surname\",\r\n    \"email\": \"test@test.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/register",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProjectsUsers GET",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"projectId\": \"asd\",\r\n    \"userId\": \"asd\",\r\n    \"userRole\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projectsUsers/6042b65cb444f84a7caada81",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projectsUsers",
+						"6042b65cb444f84a7caada81"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProjectsUsers POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"projectId\": \"asd\",\r\n    \"userId\": \"asd\",\r\n    \"userRole\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projectsUsers",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projectsUsers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Project GET",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/project/60437c44c13208406cb573d4",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"project",
+						"60437c44c13208406cb573d4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Project POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"projectName\": \"default\",\r\n    \"projectDescription\": \"default\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/project",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"project"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task GET",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/task/604384496900de355ced1891",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"task",
+						"604384496900de355ced1891"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"taskName\": \"default\",\r\n    \"taskDescription\": \"default\",\r\n    \"taskTimeEstimate\": \"420\",\r\n    \"taskSuggestedUser\": \"UserID\",\r\n    \"taskAssignedUser\": \"UserID\",\r\n    \"taskStoryId\": \"StoryID\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/task",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"task"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Story GET",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/story/60438992d2c0f12f20b1b4ea",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"story",
+						"60438992d2c0f12f20b1b4ea"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Story POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"storyName\": \"default\",\r\n    \"storyTimeEstimate\": \"420\",\r\n    \"storyBusinessValue\": \"420\",\r\n    \"storyComment\": \"DefaultComment\",\r\n    \"storyPriority\": \"420\",\r\n    \"storyTests\": \"DefaultTests\",\r\n    \"storyStatus\": \"DefaultStatus\",\r\n    \"storyProjectId\": \"ProjectID\",\r\n    \"storySprintId\": \"SprintID\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/story",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"story"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sprint GET",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/sprint/60438967d2c0f12f20b1b4e8",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"sprint",
+						"60438967d2c0f12f20b1b4e8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sprint POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sprintName\": \"default\",\r\n    \"sprintDescription\": \"default\",\r\n    \"sprintStartTime\": \"420\",\r\n    \"sprintEndTime\": \"420\",\r\n    \"sprintVelocity\": \"420\",\r\n    \"sprintProjectId\": \"DefaultTests\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/sprint",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"sprint"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

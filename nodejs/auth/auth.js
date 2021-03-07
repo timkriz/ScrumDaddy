@@ -104,8 +104,6 @@ async function createNewUser(username, password, role, name, surname, email) {
         "email": email,
     }
 
-    console.log(userData)
-
     let userDataResponse = await (await (await tools.doApiRequest("users", "POST", userData, true)).json()).data
 
     return userDataResponse;
