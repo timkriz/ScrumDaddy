@@ -10,6 +10,7 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
+import Dialog from "@material-ui/core/Dialog";
 
 const users: IUser[] = [
   {
@@ -40,10 +41,11 @@ const roles: IRole[] = [
 ];
 
 interface IProps {
+  open: boolean;
   handleClose: () => void;
 }
 
-export default ({ handleClose }: IProps) => {
+export default ({ open, handleClose }: IProps) => {
   const [ projectTitle, setProjectTitle ] = useState<string>("");
   const [ allUsers, setAllUsers ] = useState<IUser[]>(users);
   const [ allRoles, setRoles ] = useState<IRole[]>(roles);
@@ -74,7 +76,7 @@ export default ({ handleClose }: IProps) => {
   };
 
   return (
-    <>
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Add Project</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -131,6 +133,6 @@ export default ({ handleClose }: IProps) => {
           Add
         </Button>
       </DialogActions>
-    </>
+    </Dialog>
   )
 }

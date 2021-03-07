@@ -2,19 +2,26 @@ import React, {useState} from "react";
 import "./projects.css";
 import {Button} from "@material-ui/core";
 import {IProject} from "./IProjects";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogActions from "@material-ui/core/DialogActions";
-import TextField from "@material-ui/core/TextField";
 import AddProjectDialogContent from "./AddProjectDialogContent";
+import {ArrowForward, ArrowForwardRounded, DeleteRounded, EditRounded, Face} from "@material-ui/icons";
+import IconButton from "@material-ui/core/IconButton";
+
+const allProjects: IProject[] = [
+  {
+    id: 0,
+    title: "Super Mario Brothers"
+  },
+  {
+    id: 1,
+    title: "Mario Kart"
+  }
+];
 
 export default () => {
-  const [ projects, setProjects ] = useState<IProject[]>([]);
+  const [ projects, setProjects ] = useState<IProject[]>(allProjects);
   const [ open, setOpen ] = useState<boolean>(false);
 
-  const onAddProjectsClick = () => {
+  const handleOpen = () => {
     setOpen(true);
   }
 
@@ -24,17 +31,28 @@ export default () => {
 
   return (
     <div className="projects_container">
-      <Button variant="contained" color="primary" onClick={onAddProjectsClick}>ADD PROJECT</Button>
+      <Button variant="contained" color="primary" onClick={handleOpen}>ADD PROJECT</Button>
 
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <AddProjectDialogContent handleClose={handleClose} />
-      </Dialog>
+      <AddProjectDialogContent open={open} handleClose={handleClose} />
 
       <hr style={{ margin: "30px 0" }}/>
 
       {
-        projects.map((project) => (
-          <div/>
+        projects.map((project, i) => (
+          <div key={i} className="project_row">
+            <div className="project_row_title">{project.title}</div>
+            <div className="project_row_icons">
+              <IconButton color="primary">
+                <DeleteRounded />
+              </IconButton>
+              <IconButton color="primary">
+                <EditRounded />
+              </IconButton>
+              <IconButton color="primary">
+                <ArrowForwardRounded />
+              </IconButton>
+            </div>
+          </div>
         ))
       }
     </div>

@@ -6,6 +6,7 @@ import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import {ThemeProvider} from '@material-ui/styles';
 import teal from "@material-ui/core/colors/teal";
 import {BrowserRouter} from "react-router-dom";
+import deepPurple from "@material-ui/core/colors/deepPurple";
 
 const theme = createMuiTheme({
   palette: {
@@ -13,7 +14,7 @@ const theme = createMuiTheme({
       main: teal[400],
     },
     secondary: {
-      main: '#11cb5f',
+      main: deepPurple[500],
     },
   },
 });

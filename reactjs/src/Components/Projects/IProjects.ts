@@ -1,5 +1,6 @@
 export interface IProject {
-
+  id: number;
+  title: string;
 }
 
 export interface IUser {
