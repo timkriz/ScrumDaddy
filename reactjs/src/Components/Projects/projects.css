@@ -1,0 +1,5 @@
+.projects_container {
+    flex-direction: column;
+    padding: 30px 60px;
+    width: 100%;
+}
