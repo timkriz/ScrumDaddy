@@ -1,20 +1,18 @@
 export interface IProject {
-  id: number;
-  title: string;
+  _id: string;
+  projectName: string;
+  projectDescription?: string;
 }
 
 export interface IUser {
-  id: number;
+  _id: string;
   name: string;
   surname: string;
-}
-
-export interface IRole {
-  id: number;
-  title: string;
+  email: string;
+  role: string;
 }
 
 export interface IProjectDialogAssign {
-  userId: number;
-  roleId: number;
+  userId: string;
+  roleId: string;
 }

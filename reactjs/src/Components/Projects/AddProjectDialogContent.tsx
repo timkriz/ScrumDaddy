@@ -1,60 +1,46 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import {Button} from "@material-ui/core";
-import {IProjectDialogAssign, IRole, IUser} from "./IProjects";
+import {IProject, IProjectDialogAssign, IUser} from "./IProjects";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import Dialog from "@material-ui/core/Dialog";
-
-const users: IUser[] = [
-  {
-    id: 0,
-    name: "Arne",
-    surname: "Simonič"
-  },
-  {
-    id: 1,
-    name: "Luka",
-    surname: "Železnik"
-  },
-];
-
-const roles: IRole[] = [
-  {
-    id: 0,
-    title: "Product Leader",
-  },
-  {
-    id: 1,
-    title: "Methodology Keeper",
-  },
-  {
-    id: 2,
-    title: "Development Team Member",
-  },
-];
+import {projectRoles} from "../../data/Roles";
+import {postProject, postProjectUser} from "../../api/ProjectService";
+import {getUsers} from "../../api/UserService";
+import {Color} from "@material-ui/lab";
 
 interface IProps {
   open: boolean;
   handleClose: () => void;
+  openSnack: (message: string, severity: Color) => void;
 }
 
-export default ({ open, handleClose }: IProps) => {
+export default ({ open, handleClose, openSnack }: IProps) => {
   const [ projectTitle, setProjectTitle ] = useState<string>("");
-  const [ allUsers, setAllUsers ] = useState<IUser[]>(users);
-  const [ allRoles, setRoles ] = useState<IRole[]>(roles);
+  const [ projectDescription, setProjectDescription ] = useState<string>("");
+  const [ allUsers, setAllUsers ] = useState<IUser[]>([]);
   const [ assignedUsers, setAssignedUsers ] = useState<IProjectDialogAssign[]>([]);
 
+  // Fetch all users
+  useEffect(() => {
+    const fetch = async () => {
+      const users = (await getUsers()).data.data as IUser[];
+      setAllUsers(users);
+    }
+    fetch();
+  }, []);
+
   const addAssignRow = () => {
-    if(allUsers.length > 0 && allRoles.length > 0) {
+    if(allUsers.length > 0 && projectRoles.length > 0) {
       let assignedUsersCopy: IProjectDialogAssign[] = JSON.parse(JSON.stringify(assignedUsers));
-      setAssignedUsers([ ...assignedUsersCopy, { userId: allUsers[0].id, roleId: allRoles[0].id } ]);
+      setAssignedUsers([ ...assignedUsersCopy, { userId: allUsers[0]._id, roleId: projectRoles[0].id } ]);
     }
   };
 
@@ -70,9 +56,20 @@ export default ({ open, handleClose }: IProps) => {
     setAssignedUsers(assignedUsersCopy);
   };
 
-  const addProject = () => {
-    console.log(assignedUsers);
-    handleClose();
+  const addProject = async () => {
+
+    try {
+      const newProject = (await postProject(projectTitle, projectDescription)).data.data as IProject;
+
+      for(let i = 0; i < assignedUsers.length; i++) {
+        await postProjectUser(newProject._id, assignedUsers[i].userId, assignedUsers[i].roleId);
+      }
+
+      openSnack("Project created successfully!", "success");
+      handleClose();
+    } catch (e) {
+      openSnack("Project creation failed!", "error");
+    }
   };
 
   return (
@@ -88,6 +85,14 @@ export default ({ open, handleClose }: IProps) => {
           value={projectTitle}
           onChange={(e) => {setProjectTitle(e.target.value)}}
         />
+        <TextField
+          style={{ marginTop: 20 }}
+          label="Project Description"
+          fullWidth
+          multiline
+          value={projectDescription}
+          onChange={(e) => {setProjectDescription(e.target.value)}}
+        />
 
         <Button variant="contained" color="primary" onClick={addAssignRow} style={{ margin: "20px 0" }}>ADD USER</Button>
 
@@ -102,7 +107,7 @@ export default ({ open, handleClose }: IProps) => {
                 >
                   {
                     allUsers.map((user, j) => (
-                      <MenuItem key={j} value={user.id}>{user.name} {user.surname}</MenuItem>
+                      <MenuItem key={j} value={user._id}>{user.name} {user.surname}</MenuItem>
                     ))
                   }
                 </Select>
@@ -115,7 +120,7 @@ export default ({ open, handleClose }: IProps) => {
                   onChange={(e) => { handleRoleSelect(e, i) }}
                 >
                   {
-                    allRoles.map((role, k) => (
+                    projectRoles.map((role, k) => (
                       <MenuItem key={k} value={role.id}>{role.title}</MenuItem>
                     ))
                   }

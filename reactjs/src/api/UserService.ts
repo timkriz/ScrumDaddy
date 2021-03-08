@@ -1,5 +1,9 @@
 import axiosAuth from './axios';
-import {postUserUrl} from "./Endpoints";
+import {getUsersUrl, postUserUrl} from "./Endpoints";
+
+export const getUsers = (): Promise<any> => {
+  return axiosAuth.get(getUsersUrl);
+};
 
 export const postUser = (username: string, password: string, role: string, name: string, surname: string, email: string): Promise<any> => {
   return axiosAuth.post(postUserUrl, {
