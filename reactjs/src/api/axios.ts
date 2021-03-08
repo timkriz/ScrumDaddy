@@ -17,7 +17,8 @@ instance.interceptors.response.use(
   error => {
     console.log(error.message);
     console.log(JSON.stringify(error));
-    removeToken();
+    // removeToken();
+
     if (error.response && error.response.status === 401) {
       // window.location.href = '/'
       // OR refresh token https://github.com/axios/axios/issues/266
