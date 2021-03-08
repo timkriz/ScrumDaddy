@@ -15,6 +15,8 @@ import {AccountBalanceWallet, Face} from "@material-ui/icons";
 import {isAuthenticated, removeToken} from "../../api/TokenService";
 import Projects from "../Projects/Projects";
 import Button from "@material-ui/core/Button";
+import {drawerItems} from "../../data/DrawerItems";
+import ManageUsers from "../ManageUsers/ManageUsers";
 
 function App() {
   const [ open, setOpen ] = useState<boolean>();
@@ -25,15 +27,15 @@ function App() {
     if(!isAuthenticated()) {
       history.push("/login");
     }
-
-    else {
-      history.push("/projects");
-    }
   }, []);
 
   const toggleDrawer = () => {
     if(isAuthenticated()) {
       setOpen(!open);
+    }
+
+    else {
+      history.push("/login");
     }
   };
 
@@ -61,17 +63,23 @@ function App() {
         anchor="left"
         open={open}
       >
-        <Toolbar />
-        <div>
-          <List>
-            {['Projects'].map((text, index) => (
-              <ListItem button key={text} onClick={() => { history.push("/projects") }}>
-                <ListItemIcon><AccountBalanceWallet /></ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-          <div style={{ display: "flex", justifyContent: "center" }}>
+        <Toolbar style={{ width: 250 }} />
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
+          <div>
+            <List>
+              {
+                drawerItems.map((item, i, index) => (
+                  <ListItem button key={i} onClick={() => { history.push(item.path); toggleDrawer(); }}>
+                    <ListItemIcon>
+                      <AccountBalanceWallet />
+                    </ListItemIcon>
+                    <ListItemText primary={item.title} />
+                  </ListItem>
+                ))
+              }
+            </List>
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
             <Button variant="contained" color="primary" onClick={logout}>LOGOUT</Button>
           </div>
         </div>
@@ -84,6 +92,9 @@ function App() {
           </Route>
           <Route path="/projects">
             <Projects />
+          </Route>
+          <Route path="/manage_users">
+            <ManageUsers />
           </Route>
         </Switch>
       </div>
