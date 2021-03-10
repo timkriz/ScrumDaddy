@@ -3,8 +3,10 @@ const projectModel = require('../models/projectModel');
 
 exports.viewAll = function (req, res) {
     projectModel.find(function (err, projects) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             message: 'Loading projects data..',
             data: projects
@@ -14,8 +16,11 @@ exports.viewAll = function (req, res) {
 
 exports.view = function (req, res) {
     projectModel.findOne({_id: req.params.projectid}, function (err, project) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        
         res.json({
             message: 'Loading projects data..',
             data: project
@@ -44,8 +49,10 @@ exports.new = function (req, res) {
 
 exports.update = function (req, res) {
     projectModel.findOne({_id: req.params.projectid}, function (err, project) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         
         project.projectName = req.body.projectName;
         project.projectDescription = req.body.projectDescription;
@@ -63,8 +70,10 @@ exports.update = function (req, res) {
 
 exports.delete = function (req, res) {
     projectModel.remove({_id: req.params.projectid}, function (err, project) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             status: "success",
             message: 'project deleted'

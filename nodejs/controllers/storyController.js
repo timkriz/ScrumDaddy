@@ -3,8 +3,10 @@ const storyModel = require('../models/storyModel');
 
 exports.viewAll = function (req, res) {
     storyModel.find(function (err, stories) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             message: 'Loading stories data..',
             data: stories
@@ -14,8 +16,10 @@ exports.viewAll = function (req, res) {
 
 exports.view = function (req, res) {
     storyModel.findOne({_id: req.params.storyid}, function (err, story) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             message: 'Loading story data..',
             data: story
@@ -51,8 +55,10 @@ exports.new = function (req, res) {
 
 exports.update = function (req, res) {
     storyModel.findOne({_id: req.params.storyid}, function (err, story) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         
         story.storyName = req.body.storyName;
         story.storyTimeEstimate = req.body.storyTimeEstimate;
@@ -77,8 +83,10 @@ exports.update = function (req, res) {
 
 exports.delete = function (req, res) {
     taskModel.remove({_id: req.params.storyid}, function (err, story) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             status: "success",
             message: 'story deleted'

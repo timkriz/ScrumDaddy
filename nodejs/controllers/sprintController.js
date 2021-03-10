@@ -3,8 +3,10 @@ const sprintModel = require('../models/sprintModel');
 
 exports.viewAll = function (req, res) {
     sprintModel.find(function (err, sprints) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             message: 'Loading sprints data..',
             data: sprints
@@ -14,8 +16,10 @@ exports.viewAll = function (req, res) {
 
 exports.view = function (req, res) {
     sprintModel.findOne({_id: req.params.sprintid}, function (err, sprint) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             message: 'Loading sprint data..',
             data: sprint
@@ -48,8 +52,10 @@ exports.new = function (req, res) {
 
 exports.update = function (req, res) {
     sprintModel.findOne({_id: req.params.sprintid}, function (err, sprint) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         
         sprint.sprintName = req.body.sprintName;
         sprint.sprintDescription = req.body.sprintDescription;
@@ -71,8 +77,10 @@ exports.update = function (req, res) {
 
 exports.delete = function (req, res) {
     sprintModel.remove({_id: req.params.sprintid}, function (err, sprint) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             status: "success",
             message: 'sprint deleted'

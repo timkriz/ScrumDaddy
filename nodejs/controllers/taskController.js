@@ -3,8 +3,10 @@ const taskModel = require('../models/taskModel');
 
 exports.viewAll = function (req, res) {
     taskModel.find(function (err, tasks) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             message: 'Loading tasks data..',
             data: tasks
@@ -14,8 +16,10 @@ exports.viewAll = function (req, res) {
 
 exports.view = function (req, res) {
     taskModel.findOne({_id: req.params.taskid}, function (err, task) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             message: 'Loading task data..',
             data: task
@@ -48,8 +52,10 @@ exports.new = function (req, res) {
 
 exports.update = function (req, res) {
     taskModel.findOne({_id: req.params.taskid}, function (err, task) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         
         task.taskName = req.body.taskName;
         task.taskDescription = req.body.taskDescription;
@@ -71,8 +77,10 @@ exports.update = function (req, res) {
 
 exports.delete = function (req, res) {
     taskModel.remove({_id: req.params.taskid}, function (err, task) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             status: "success",
             message: 'task deleted'

@@ -3,8 +3,10 @@ const projectsUsersModel = require('../models/projectsUsersModel');
 
 exports.view = function (req, res) {
     projectsUsersModel.findOne({_id: req.params.id}, function (err, projectsUsers) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             message: 'Loading projectsUserss data..',
             data: projectsUsers
@@ -34,8 +36,10 @@ exports.new = function (req, res) {
 
 exports.update = function (req, res) {
     projectsUsersModel.findOne({_id: req.params.id}, function (err, projectsUsers) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         
         projectsUsers.projectId = req.body.projectId;
         projectsUsers.userId = req.body.userId;
@@ -54,8 +58,10 @@ exports.update = function (req, res) {
 
 exports.delete = function (req, res) {
     projectsUsersModel.remove({_id: req.params.id}, function (err, projectsUsers) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             status: "success",
             message: 'projectsUsers deleted'
