@@ -99,13 +99,6 @@ router.route('/users/:id')
     .get(userController.find)
     .patch(userController.update);
 
-router.route('/projectsUsers')
-    .post(projectsUsersController.new);
-router.route('/projectsUsers/:id')
-    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectsUsersController.view)
-    .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectsUsersController.update)
-    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, projectsUsersController.update)
-    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, projectsUsersController.delete);
 
 router.route('/projects')
     .post(projectController.new)
@@ -115,6 +108,16 @@ router.route('/projects/:projectid')
     .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectController.update)
     .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, projectController.update)
     .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, projectController.delete);
+
+router.route('/projects/:projectid/users')
+    .post(projectsUsersController.new)
+    .get(projectsUsersController.viewAll)
+    .delete(projectsUsersController.deleteMany);
+router.route('/projects/:projectid/users/:userid')
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectsUsersController.view)
+    .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectsUsersController.update)
+    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, projectsUsersController.update)
+    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, projectsUsersController.delete);
 
 router.route('/projects/:projectid/sprints')
     .post(sprintController.new)
