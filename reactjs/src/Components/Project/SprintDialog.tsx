@@ -16,7 +16,7 @@ interface IProps {
   projectId: string;
   open: boolean;
   handleClose: () => void;
-  openSnack: (message: string, severity: Color) => void;
+  openSnack: (message: string, severity: Color, refresh?: boolean) => void;
   editId?: string;
 }
 
@@ -51,8 +51,8 @@ export default ({ projectId, open, handleClose, openSnack, editId }: IProps) => 
 
       setSprintTitle(gottenSprint.sprintName);
       setSprintDescription(gottenSprint.sprintDescription);
-      setStartDate(moment(gottenSprint.sprintStartTime));
-      setEndDate(moment(gottenSprint.sprintEndTime));
+      setStartDate(moment.unix(gottenSprint.sprintStartTime));
+      setEndDate(moment.unix(gottenSprint.sprintEndTime));
       setSprintVelocity(gottenSprint.sprintVelocity);
     }
   }
@@ -63,7 +63,7 @@ export default ({ projectId, open, handleClose, openSnack, editId }: IProps) => 
       try {
         await putSprint(projectId, editId, sprintTitle, sprintDescription, startDate.unix(), endDate.unix(), sprintVelocity);
 
-        openSnack("Sprint updated successfully!", "success");
+        openSnack("Sprint updated successfully!", "success", true);
         handleClose();
       } catch (e) {
         openSnack("Sprint update failed!", "error");
@@ -75,7 +75,7 @@ export default ({ projectId, open, handleClose, openSnack, editId }: IProps) => 
       try {
         await postSprint(projectId, sprintTitle, sprintDescription, startDate.unix(), endDate.unix(), sprintVelocity);
 
-        openSnack("Sprint created successfully!", "success");
+        openSnack("Sprint created successfully!", "success", true);
         handleClose();
       } catch (e) {
         openSnack("Sprint creation failed!", "error");
@@ -110,6 +110,7 @@ export default ({ projectId, open, handleClose, openSnack, editId }: IProps) => 
             style={{ marginRight: 10 }}
             variant="inline"
             label="Start Date"
+            autoOk
             value={startDate}
             onChange={value => setStartDate(value as Moment)}
           />
@@ -118,6 +119,7 @@ export default ({ projectId, open, handleClose, openSnack, editId }: IProps) => 
             style={{ marginRight: 10 }}
             variant="inline"
             label="End Date"
+            autoOk
             value={endDate}
             onChange={value => setEndDate(value as Moment)}
           />

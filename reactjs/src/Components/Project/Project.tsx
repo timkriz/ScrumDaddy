@@ -116,12 +116,12 @@ export default () => {
                     <div style={{ display: "flex", marginTop: 10 }}>
                       <div style={{ marginRight: 20 }}>
                         <div className="sprint_label">Start Date:</div>
-                        <div className="sprint_value">{moment(sprint.sprintStartTime).format("DD.MM.YYYY")}</div>
+                        <div className="sprint_value">{moment.unix(sprint.sprintStartTime).format("DD.MM.YYYY")}</div>
                       </div>
 
                       <div style={{ marginRight: 20 }}>
                         <div className="sprint_label">End Date:</div>
-                        <div className="sprint_value">{moment(sprint.sprintEndTime).format("DD.MM.YYYY")}</div>
+                        <div className="sprint_value">{moment.unix(sprint.sprintEndTime).format("DD.MM.YYYY")}</div>
                       </div>
 
                       <div>
@@ -131,10 +131,10 @@ export default () => {
                     </div>
                   </div>
                   <div className="sprint_row_icons">
-                    <IconButton color="primary" onClick={() => deleteClickedSprint(project._id)}>
+                    <IconButton color="primary" onClick={() => deleteClickedSprint(sprint._id)}>
                       <DeleteRounded />
                     </IconButton>
-                    <IconButton color="primary">
+                    <IconButton color="primary" onClick={() => openSprintDialog(sprint._id)}>
                       <EditRounded />
                     </IconButton>
                     <IconButton color="primary" onClick={() => sprintDetailsClick(sprint._id)}>
