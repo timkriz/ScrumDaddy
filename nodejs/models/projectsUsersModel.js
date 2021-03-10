@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const projectsUsersSchema = new Schema ({
     projectId: { type: String, required: true},
     userId: { type: String, required: true},
-    userRole: { type: Number, required: true},
+    userRole: { type: String, required: true},
 });
 
 var projectsUsers = module.exports = mongoose.model('projectsUsers', projectsUsersSchema, 'projectsUsers');
