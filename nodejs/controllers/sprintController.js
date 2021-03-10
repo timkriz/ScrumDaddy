@@ -2,7 +2,7 @@ const path = require('path');
 const sprintModel = require('../models/sprintModel');
 
 exports.viewAll = function (req, res) {
-    sprintModel.find(function (err, sprints) {
+    sprintModel.find({sprintProjectId: req.params.projectid}, function (err, sprints) {
         if (err) {
             res.status(400).send(err);
             return;

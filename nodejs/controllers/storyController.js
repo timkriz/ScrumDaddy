@@ -2,7 +2,7 @@ const path = require('path');
 const storyModel = require('../models/storyModel');
 
 exports.viewAll = function (req, res) {
-    storyModel.find(function (err, stories) {
+    storyModel.find({storySprintId: req.params.sprintid}, function (err, stories) {
         if (err) {
             res.status(400).send(err);
             return;

@@ -2,7 +2,7 @@ const path = require('path');
 const taskModel = require('../models/taskModel');
 
 exports.viewAll = function (req, res) {
-    taskModel.find(function (err, tasks) {
+    taskModel.find({taskStoryId: req.params.storyid}, function (err, tasks) {
         if (err) {
             res.status(400).send(err);
             return;
