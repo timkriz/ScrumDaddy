@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 const sprintSchema = new Schema ({
     sprintName: { type: String, required: true},
     sprintDescription: { type: String, required: true},
-    sprintStartTime: { type: String, required: true},
-    sprintEndTime: { type: String, required: true},
+    sprintStartTime: { type: Number, required: true},
+    sprintEndTime: { type: Number, required: true},
     sprintVelocity: { type: Number, required: true},
     sprintProjectId: { type: String, required: true},
 });

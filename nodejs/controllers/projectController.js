@@ -1,12 +1,23 @@
 const path = require('path');
 const projectModel = require('../models/projectModel');
 
-exports.view = function (req, res) {
-    projectModel.findOne({_id: req.params.id}, function (err, project) {
+exports.viewAll = function (req, res) {
+    projectModel.find(function (err, projects) {
         if (err)
             res.send(err);
         res.json({
-            message: 'Loading projectss data..',
+            message: 'Loading projects data..',
+            data: projects
+        });
+    });
+};
+
+exports.view = function (req, res) {
+    projectModel.findOne({_id: req.params.projectid}, function (err, project) {
+        if (err)
+            res.send(err);
+        res.json({
+            message: 'Loading projects data..',
             data: project
         });
     });
@@ -32,7 +43,7 @@ exports.new = function (req, res) {
 };
 
 exports.update = function (req, res) {
-    projectModel.findOne({_id: req.params.id}, function (err, project) {
+    projectModel.findOne({_id: req.params.projectid}, function (err, project) {
         if (err)
             res.send(err);
         
@@ -51,7 +62,7 @@ exports.update = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-    projectModel.remove({_id: req.params.id}, function (err, project) {
+    projectModel.remove({_id: req.params.projectid}, function (err, project) {
         if (err)
             res.send(err);
         res.json({
