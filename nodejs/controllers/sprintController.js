@@ -40,14 +40,14 @@ exports.update = function (req, res) {
         if (err)
             res.send(err);
         
-            sprint.sprintName = req.body.sprintName;
-            sprint.sprintDescription = req.body.sprintDescription;
-            sprint.sprintStartTime = req.body.sprintStartTime;
-            sprint.sprintEndTime = req.body.sprintEndTime;
-            sprint.sprintVelocity = req.body.sprintVelocity;
-            sprint.sprintProjectId = req.body.sprintProjectId;
+        sprint.sprintName = req.body.sprintName;
+        sprint.sprintDescription = req.body.sprintDescription;
+        sprint.sprintStartTime = req.body.sprintStartTime;
+        sprint.sprintEndTime = req.body.sprintEndTime;
+        sprint.sprintVelocity = req.body.sprintVelocity;
+        sprint.sprintProjectId = req.body.sprintProjectId;
 
-            sprint.save(function (err) {
+        sprint.save(function (err) {
             if (err)
                 res.json(err);
             res.json({
