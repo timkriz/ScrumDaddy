@@ -108,15 +108,17 @@ router.route('/projectsUsers/:id')
     .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, projectsUsersController.delete);
 
 router.route('/projects')
-    .post(projectController.new);
-router.route('/projects/:id')
+    .post(projectController.new)
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectController.viewAll);
+router.route('/projects/:projectid')
     .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectController.view)
     .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectController.update)
     .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, projectController.update)
     .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, projectController.delete);
 
 router.route('/projects/:projectid/sprints')
-    .post(sprintController.new);
+    .post(sprintController.new)
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, sprintController.viewAll);
 router.route('/projects/:projectid/sprints/:sprintid')
     .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, sprintController.view)
     .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, sprintController.update)
@@ -124,16 +126,18 @@ router.route('/projects/:projectid/sprints/:sprintid')
     .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, sprintController.delete);
 
 router.route('/projects/:projectid/sprints/:sprintid/stories')
-    .post(storyController.new);
-router.route('/projects/:projectid/sprints/:sprintid/stories/task:storyid')
+    .post(storyController.new)
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, storyController.viewAll);
+router.route('/projects/:projectid/sprints/:sprintid/stories/:storyid')
     .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, storyController.view)
     .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, storyController.update)
     .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, storyController.update)
     .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, storyController.delete);
 
-router.route('/projects/:projectid/sprints/:sprintid/story/:storyid/tasks')
-    .post(taskController.new);
-router.route('/projects/:projectid/sprints/:sprintid/story/:storyid/tasks/task:id')
+router.route('/projects/:projectid/sprints/:sprintid/stories/:storyid/tasks')
+    .post(taskController.new)
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, taskController.viewAll);
+router.route('/projects/:projectid/sprints/:sprintid/stories/:storyid/tasks/:taskid')
     .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, taskController.view)
     .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, taskController.update)
     .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, taskController.update)
