@@ -5,7 +5,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import {Button} from "@material-ui/core";
-import {IProject, IProjectDialogAssign, IUser} from "./IProjectList";
+import {IProject, IProjectDialogAssign, IProjectUser, IUser} from "./IProjectList";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -72,10 +72,10 @@ export default ({ open, handleClose, openSnack, editId }: IProps) => {
       setProjectDescription(gottenProject.projectDescription);
 
       // Project Users
-      const gottenUsers = (await getProjectUsers(editId)).data.data as IUser[];
+      const gottenProjectUsers = (await getProjectUsers(editId)).data.data as IProjectUser[];
       let newAssignedUsers: IProjectDialogAssign[] = [];
-      gottenUsers.forEach(user => {
-        const newAssign: IProjectDialogAssign = { userId: user._id, roleId: user.role };
+      gottenProjectUsers.forEach(user => {
+        const newAssign: IProjectDialogAssign = { userId: user.userId, roleId: user.userRole };
         newAssignedUsers.push(newAssign);
       });
       setAssignedUsers(newAssignedUsers);
@@ -83,7 +83,7 @@ export default ({ open, handleClose, openSnack, editId }: IProps) => {
   };
 
   const addAssignRow = () => {
-    if(allUsers.length > 0 && projectRoles.length > 0) {
+    if(allUsers.length > 0) {
       let assignedUsersCopy: IProjectDialogAssign[] = JSON.parse(JSON.stringify(assignedUsers));
       setAssignedUsers([ ...assignedUsersCopy, { userId: allUsers[0]._id, roleId: projectRoles[0].id } ]);
     }
@@ -145,7 +145,7 @@ export default ({ open, handleClose, openSnack, editId }: IProps) => {
       }
     }
   };
-
+  
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{ editId !== undefined ? "Edit" : "Add" } Project</DialogTitle>

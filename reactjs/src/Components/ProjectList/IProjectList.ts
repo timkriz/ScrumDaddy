@@ -12,6 +12,12 @@ export interface IUser {
   role: string;
 }
 
+export interface IProjectUser {
+  projectId: string;
+  userId: string;
+  userRole: string;
+}
+
 export interface IProjectDialogAssign {
   userId: string;
   roleId: string;

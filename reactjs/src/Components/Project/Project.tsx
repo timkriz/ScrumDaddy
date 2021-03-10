@@ -7,11 +7,11 @@ import Snackbar from "@material-ui/core/Snackbar";
 import {Alert} from "@material-ui/lab";
 import {Button} from "@material-ui/core";
 import {Color} from "@material-ui/lab/Alert";
-import SpriteDialog from "./SprintDialog";
 import {getProject} from "../../api/ProjectService";
 import {deleteSprint, getSprints} from "../../api/SprintService";
 import "./project.css";
 import moment from "moment";
+import SprintDialog from "./SprintDialog";
 
 interface IProjectParams {
   projectId: string;
@@ -104,7 +104,7 @@ export default () => {
 
             <Button variant="contained" color="primary" onClick={() => openSprintDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD SPRINT</Button>
 
-            <SpriteDialog projectId={projectId} open={spriteDialogOpen} handleClose={closeSprintDialog} openSnack={openSnack} editId={editId} />
+            <SprintDialog projectId={projectId} open={spriteDialogOpen} handleClose={closeSprintDialog} openSnack={openSnack} editId={editId} />
 
             <hr style={{ margin: "30px 0" }}/>
 

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import "./project_list.css";
 import {Button} from "@material-ui/core";
 import {IProject} from "./IProjectList";
-import ProjectDialog from "./ProjectDialog";
 import {ArrowForwardRounded, DeleteRounded, EditRounded} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -10,6 +9,7 @@ import {Alert} from "@material-ui/lab";
 import {Color} from "@material-ui/lab/Alert";
 import { useHistory } from "react-router-dom";
 import {deleteProject, getProjects} from "../../api/ProjectService";
+import ProjectDialog from "./ProjectDialog";
 
 export default () => {
   const [ projects, setProjects ] = useState<IProject[]>([]);
@@ -87,7 +87,7 @@ export default () => {
               <IconButton color="primary" onClick={() => deleteClickedProject(project._id)}>
                 <DeleteRounded />
               </IconButton>
-              <IconButton color="primary">
+              <IconButton color="primary" onClick={() => openDialog(project._id)}>
                 <EditRounded />
               </IconButton>
               <IconButton color="primary" onClick={() => projectDetailsClick(project._id)}>
