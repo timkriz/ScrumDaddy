@@ -1,7 +1,7 @@
 export interface IProject {
   _id: string;
   projectName: string;
-  projectDescription?: string;
+  projectDescription: string;
 }
 
 export interface IUser {

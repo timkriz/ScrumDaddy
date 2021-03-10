@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
 import {Alert} from "@material-ui/lab";
 import {Button} from "@material-ui/core";
-import AddProjectDialogContent from "../ProjectList/AddProjectDialog";
+import AddProjectDialogContent from "../ProjectList/ProjectDialog";
 import {Color} from "@material-ui/lab/Alert";
 import AddSpriteDialog from "./AddSpriteDialog";
 

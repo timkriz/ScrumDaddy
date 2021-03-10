@@ -1,29 +1,20 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./project_list.css";
 import {Button} from "@material-ui/core";
 import {IProject} from "./IProjectList";
-import AddProjectDialogContent from "./AddProjectDialog";
+import AddProjectDialog from "./ProjectDialog";
 import {ArrowForwardRounded, DeleteRounded, EditRounded} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
 import {Alert} from "@material-ui/lab";
 import {Color} from "@material-ui/lab/Alert";
 import { useHistory } from "react-router-dom";
-
-const allProjects: IProject[] = [
-  {
-    _id: "12a34",
-    projectName: "Super Mario Brothers"
-  },
-  {
-    _id: "67b3c",
-    projectName: "Mario Kart"
-  }
-];
+import {deleteProject, getProjects} from "../../api/ProjectService";
 
 export default () => {
-  const [ projects, setProjects ] = useState<IProject[]>(allProjects);
-  const [ open, setOpen ] = useState<boolean>(false);
+  const [ projects, setProjects ] = useState<IProject[]>([]);
+  const [ dialogOpen, setDialogOpen ] = useState<boolean>(false);
+  const [ editId, setEditId ] = useState<string>();
 
   const [snackOpen, setSnackOpen] = useState<boolean>(false);
   const [snackMessage, setSnackMessage] = useState<string>("");
@@ -31,22 +22,43 @@ export default () => {
 
   const history = useHistory();
 
-  const handleOpen = () => {
-    setOpen(true);
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    const allProjects = (await getProjects()).data.data as IProject[];
+    setProjects(allProjects);
   }
 
-  const handleClose = () => {
-    setOpen(false);
+  const deleteClickedProject = async (id: string) => {
+    await deleteProject(id);
+    fetchProjects();
   }
 
-  const handleSnackClose = () => {
+  const openDialog = (id?: string) => {
+    id !== undefined && setEditId(id);
+
+    setDialogOpen(true);
+  }
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setEditId(undefined);
+  }
+
+  const closeSnack = () => {
     setSnackOpen(false);
   }
 
-  const openSnack = (message: string, severity: Color) => {
+  const openSnack = (message: string, severity: Color, refresh?: boolean) => {
     setSnackMessage(message);
     setSnackSeverity(severity);
     setSnackOpen(true);
+
+    if(refresh) {
+      fetchProjects();
+    }
   }
 
   const projectDetailsClick = (id: string) => {
@@ -55,15 +67,15 @@ export default () => {
 
   return (
     <>
-      <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={snackOpen} autoHideDuration={6000} onClose={handleSnackClose}>
-        <Alert onClose={handleSnackClose} severity={snackSeverity}>{snackMessage}</Alert>
+      <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={snackOpen} autoHideDuration={6000} onClose={closeSnack}>
+        <Alert onClose={closeSnack} severity={snackSeverity}>{snackMessage}</Alert>
       </Snackbar>
 
       <div className="page_title">Project List</div>
 
-      <Button variant="contained" color="primary" onClick={handleOpen} style={{ alignSelf: "flex-start" }}>ADD PROJECT</Button>
+      <Button variant="contained" color="primary" onClick={() => openDialog()} style={{ alignSelf: "flex-start" }}>ADD PROJECT</Button>
 
-      <AddProjectDialogContent open={open} handleClose={handleClose} openSnack={openSnack} />
+      <AddProjectDialog open={dialogOpen} handleClose={closeDialog} openSnack={openSnack} editId={editId} />
 
       <hr style={{ margin: "30px 0" }}/>
 
@@ -72,7 +84,7 @@ export default () => {
           <div key={i} className="project_row">
             <div className="project_row_title">{project.projectName}</div>
             <div className="project_row_icons">
-              <IconButton color="primary">
+              <IconButton color="primary" onClick={() => deleteClickedProject(project._id)}>
                 <DeleteRounded />
               </IconButton>
               <IconButton color="primary">

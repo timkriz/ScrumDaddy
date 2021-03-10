@@ -30,11 +30,13 @@ const allStories: IStories[] = [
 const allProjects: IProject[] = [
     {
       _id: "0",
-      projectName: "Super Mario Brothers"
+      projectName: "Super Mario Brothers",
+      projectDescription: ""
     },
     {
       _id: "1",
-      projectName: "Mario Kart"
+      projectName: "Mario Kart",
+      projectDescription: ""
     }
   ];
 export default () => {
