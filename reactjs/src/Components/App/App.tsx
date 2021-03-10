@@ -17,6 +17,7 @@ import Projects from "../Projects/Projects";
 import Button from "@material-ui/core/Button";
 import {drawerItems} from "../../data/DrawerItems";
 import ManageUsers from "../ManageUsers/ManageUsers";
+import ProductBacklog from "../ProductBacklog/ProductBacklog";
 
 function App() {
   const [ open, setOpen ] = useState<boolean>();
@@ -95,6 +96,9 @@ function App() {
           </Route>
           <Route path="/manage_users">
             <ManageUsers />
+          </Route>
+          <Route path="/product_backlog">
+            <ProductBacklog />
           </Route>
         </Switch>
       </div>
