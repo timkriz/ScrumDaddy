@@ -37,8 +37,8 @@ exports.new = function (req, res) {
     story.storyPriority = req.body.storyPriority;
     story.storyTests = req.body.storyTests;
     story.storyStatus = req.body.storyStatus;
-    story.storyProjectId = req.body.storyProjectId;
-    story.storySprintId = req.body.storySprintId;
+    story.storyProjectId = req.params.projectid;
+    story.storySprintId = req.params.sprintid;
 
     story.save(function (err) {
         if (err){
@@ -67,8 +67,8 @@ exports.update = function (req, res) {
         story.storyPriority = req.body.storyPriority;
         story.storyTests = req.body.storyTests;
         story.storyStatus = req.body.storyStatus;
-        story.storyProjectId = req.body.storyProjectId;
-        story.storySprintId = req.body.storySprintId;
+        story.storyProjectId = req.params.projectid;
+        story.storySprintId = req.params.sprintid;
 
         story.save(function (err) {
             if (err)

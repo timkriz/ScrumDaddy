@@ -1,8 +1,21 @@
 const path = require('path');
 const projectsUsersModel = require('../models/projectsUsersModel');
 
+exports.viewAll = function (req, res) {
+    projectsUsersModel.find({projectId: req.params.projectid}, function (err, projectsUsers) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.json({
+            message: 'Loading projectsUserss data..',
+            data: projectsUsers
+        });
+    });
+};
+
 exports.view = function (req, res) {
-    projectsUsersModel.findOne({_id: req.params.id}, function (err, projectsUsers) {
+    projectsUsersModel.findOne({$and:[{userId: req.params.userid}, {projectId:req.params.projectid}]}, function (err, projectsUsers) {
         if (err) {
             res.status(400).send(err);
             return;
@@ -17,7 +30,7 @@ exports.view = function (req, res) {
 // Handle create projectsUsers actions
 exports.new = function (req, res) {
     var projectsUsers = new projectsUsersModel();
-    projectsUsers.projectId = req.body.projectId;
+    projectsUsers.projectId = req.params.projectid;
     projectsUsers.userId = req.body.userId;
     projectsUsers.userRole = req.body.userRole;
 
@@ -35,14 +48,14 @@ exports.new = function (req, res) {
 };
 
 exports.update = function (req, res) {
-    projectsUsersModel.findOne({_id: req.params.id}, function (err, projectsUsers) {
+    projectsUsersModel.findOne({$and:[{userId: req.params.userid}, {projectId:req.params.projectid}]}, function (err, projectsUsers) {
         if (err) {
             res.status(400).send(err);
             return;
         }
         
-        projectsUsers.projectId = req.body.projectId;
-        projectsUsers.userId = req.body.userId;
+        projectsUsers.projectId = req.body.projectid;
+        projectsUsers.userId = req.params.userid;
         projectsUsers.userRole = req.body.userRole;
 
         projectsUsers.save(function (err) {
@@ -57,7 +70,20 @@ exports.update = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-    projectsUsersModel.remove({_id: req.params.id}, function (err, projectsUsers) {
+    projectsUsersModel.remove({$and:[{userId: req.params.userid}, {projectId:req.params.projectid}]}, function (err, projectsUsers) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.json({
+            status: "success",
+            message: 'projectsUsers deleted'
+        });
+    });
+};
+
+exports.deleteMany = function (req, res) {
+    projectsUsersModel.deleteMany({projectId: req.params.projectid}, function (err, projectsUsers) {
         if (err) {
             res.status(400).send(err);
             return;
