@@ -95,7 +95,7 @@ function App() {
           <Route exact path="/projects">
             <ProjectList />
           </Route>
-          <Route path="/projects/:id">
+          <Route path="/projects/:projectId">
             <Project />
           </Route>
           <Route path="/manage_users">

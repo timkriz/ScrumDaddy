@@ -20,11 +20,15 @@ export const postSprint = (projectId: string, sprintName: string, sprintDescript
 };
 
 export const putSprint = (projectId: string, sprintId: string, sprintName: string, sprintDescription: string, sprintStartTime: number, sprintEndTime: number, sprintVelocity: number): Promise<any> => {
-  return axiosAuth.post(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}`, {
+  return axiosAuth.put(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}`, {
     sprintName,
     sprintDescription,
     sprintStartTime,
     sprintEndTime,
     sprintVelocity
   });
+};
+
+export const deleteSprint = (projectId: string, sprintId: string): Promise<any> => {
+  return axiosAuth.delete(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}`);
 };
