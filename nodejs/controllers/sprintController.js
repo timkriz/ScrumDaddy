@@ -35,7 +35,7 @@ exports.new = function (req, res) {
     sprint.sprintStartTime = req.body.sprintStartTime;
     sprint.sprintEndTime = req.body.sprintEndTime;
     sprint.sprintVelocity = req.body.sprintVelocity;
-    sprint.sprintProjectId = req.body.sprintProjectId;
+    sprint.sprintProjectId = req.params.projectid;
 
     sprint.save(function (err) {
         if (err){
@@ -62,7 +62,7 @@ exports.update = function (req, res) {
         sprint.sprintStartTime = req.body.sprintStartTime;
         sprint.sprintEndTime = req.body.sprintEndTime;
         sprint.sprintVelocity = req.body.sprintVelocity;
-        sprint.sprintProjectId = req.body.sprintProjectId;
+        sprint.sprintProjectId = req.params.projectid;
 
         sprint.save(function (err) {
             if (err)
