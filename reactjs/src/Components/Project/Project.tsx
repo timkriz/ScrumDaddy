@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from "react";
 import {useParams, useHistory} from "react-router-dom";
-import {IProject} from "../ProjectList/IProjectList";
+import {IProject, ISprint} from "../ProjectList/IProjectList";
 import {ArrowBackRounded} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
 import {Alert} from "@material-ui/lab";
 import {Button} from "@material-ui/core";
-import AddProjectDialogContent from "../ProjectList/ProjectDialog";
 import {Color} from "@material-ui/lab/Alert";
-import AddSpriteDialog from "./AddSpriteDialog";
+import SpriteDialog from "./SprintDialog";
+import {getProject} from "../../api/ProjectService";
+import {getSprints} from "../../api/SprintService";
+import AddProjectDialog from "../ProjectList/ProjectDialog";
 
 interface IProjectParams {
   id: string;
@@ -16,7 +18,9 @@ interface IProjectParams {
 
 export default () => {
   const [ project, setProject ] = useState<IProject>();
-  const [ spriteAddDialogOpen, setSpriteAddDialogOpen ] = useState<boolean>(false);
+  const [ spriteDialogOpen, setSpriteDialogOpen ] = useState<boolean>(false);
+  const [ editId, setEditId ] = useState<string>();
+  const [ sprints, setSprints ] = useState<ISprint[]>([]);
 
   const [snackOpen, setSnackOpen] = useState<boolean>(false);
   const [snackMessage, setSnackMessage] = useState<string>("");
@@ -26,34 +30,47 @@ export default () => {
   const history = useHistory();
 
   useEffect(() => {
-    const fetch = async () => {
-      // const gottenProject = (await getProject(id)).data.data as IProject;
-      const gottenProject: IProject = { _id: "12a34", projectName: "Super Mario Kart", projectDescription: "" };
-      setProject(gottenProject);
-    }
-    fetch();
+    fetchProject();
+    fetchSprints();
   }, [ id ]);
+
+  const fetchProject = async () => {
+    const gottenProject = (await getProject(id)).data.data as IProject;
+    setProject(gottenProject);
+  }
+
+  const fetchSprints = async () => {
+    const gottenSprints = (await getSprints(id)).data.data as ISprint[];
+    setSprints(gottenSprints);
+  }
 
   const back = () => {
     history.push("/projects");
   }
 
-  const handleSnackClose = () => {
+  const closeSnack = () => {
     setSnackOpen(false);
   }
 
-  const openSnack = (message: string, severity: Color) => {
+  const openSnack = (message: string, severity: Color, refresh?: boolean) => {
     setSnackMessage(message);
     setSnackSeverity(severity);
     setSnackOpen(true);
+
+    if(refresh) {
+      fetchSprints();
+    }
   }
 
-  const openSpriteAddDialog = () => {
-    setSpriteAddDialogOpen(true);
+  const openSprintDialog = (sprintId?: string) => {
+    sprintId !== undefined && setEditId(sprintId);
+
+    setSpriteDialogOpen(true);
   }
 
-  const closeSpriteAddDialog = () => {
-    setSpriteAddDialogOpen(false);
+  const closeSprintDialog = () => {
+    setSpriteDialogOpen(false);
+    setEditId(undefined);
   }
 
   return (
@@ -61,8 +78,8 @@ export default () => {
       {
         project !== undefined &&
         <>
-            <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={snackOpen} autoHideDuration={6000} onClose={handleSnackClose}>
-                <Alert onClose={handleSnackClose} severity={snackSeverity}>{snackMessage}</Alert>
+            <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={snackOpen} autoHideDuration={6000} onClose={closeSnack}>
+                <Alert onClose={closeSnack} severity={snackSeverity}>{snackMessage}</Alert>
             </Snackbar>
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -75,9 +92,9 @@ export default () => {
                 </IconButton>
             </div>
 
-            <Button variant="contained" color="primary" onClick={openSpriteAddDialog} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD SPRINT</Button>
+            <Button variant="contained" color="primary" onClick={() => openSprintDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD SPRINT</Button>
 
-            <AddSpriteDialog projectId={id} open={spriteAddDialogOpen} handleClose={closeSpriteAddDialog} openSnack={openSnack} />
+            <SpriteDialog projectId={id} open={spriteDialogOpen} handleClose={closeSprintDialog} openSnack={openSnack} editId={editId} />
 
             <hr style={{ margin: "30px 0" }}/>
         </>

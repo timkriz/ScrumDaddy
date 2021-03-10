@@ -110,15 +110,22 @@ export default ({ open, handleClose, openSnack, editId }: IProps) => {
   const confirmAction = async () => {
     // Edit project
     if(editId !== undefined) {
-      // PUT the project
-      await putProject(editId, projectTitle, projectDescription);
+      try {
+        // PUT the project
+        await putProject(editId, projectTitle, projectDescription);
 
-      // DELETE the assigned users
-      await deleteProjectUsers(editId);
+        // DELETE the assigned users
+        await deleteProjectUsers(editId);
 
-      // POST new assigned users
-      for(let i = 0; i < assignedUsers.length; i++) {
-        await postProjectUser(editId, assignedUsers[i].userId, assignedUsers[i].roleId);
+        // POST new assigned users
+        for (let i = 0; i < assignedUsers.length; i++) {
+          await postProjectUser(editId, assignedUsers[i].userId, assignedUsers[i].roleId);
+        }
+
+        openSnack("Project updated successfully!", "success", true);
+        handleClose();
+      } catch (e) {
+        openSnack("Project update failed!", "error");
       }
     }
 

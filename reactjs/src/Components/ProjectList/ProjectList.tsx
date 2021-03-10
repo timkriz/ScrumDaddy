@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./project_list.css";
 import {Button} from "@material-ui/core";
 import {IProject} from "./IProjectList";
-import AddProjectDialog from "./ProjectDialog";
+import ProjectDialog from "./ProjectDialog";
 import {ArrowForwardRounded, DeleteRounded, EditRounded} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -75,7 +75,7 @@ export default () => {
 
       <Button variant="contained" color="primary" onClick={() => openDialog()} style={{ alignSelf: "flex-start" }}>ADD PROJECT</Button>
 
-      <AddProjectDialog open={dialogOpen} handleClose={closeDialog} openSnack={openSnack} editId={editId} />
+      <ProjectDialog open={dialogOpen} handleClose={closeDialog} openSnack={openSnack} editId={editId} />
 
       <hr style={{ margin: "30px 0" }}/>
 
