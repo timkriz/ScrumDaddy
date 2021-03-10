@@ -5,7 +5,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import {Button} from "@material-ui/core";
-import {IProject, IProjectDialogAssign, IUser} from "./IProjects";
+import {IProject, IProjectDialogAssign, IUser} from "./IProjectList";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";

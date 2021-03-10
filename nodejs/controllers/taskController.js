@@ -1,10 +1,25 @@
 const path = require('path');
 const taskModel = require('../models/taskModel');
 
+exports.viewAll = function (req, res) {
+    taskModel.find({taskStoryId: req.params.storyid}, function (err, tasks) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.json({
+            message: 'Loading tasks data..',
+            data: tasks
+        });
+    });
+};
+
 exports.view = function (req, res) {
-    taskModel.findOne({_id: req.params.id}, function (err, task) {
-        if (err)
-            res.send(err);
+    taskModel.findOne({_id: req.params.taskid}, function (err, task) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             message: 'Loading task data..',
             data: task
@@ -28,7 +43,7 @@ exports.new = function (req, res) {
         }
         else{
             res.json({
-                message: 'projects success',
+                message: 'Task success',
                 data: task
             });
         }
@@ -36,18 +51,20 @@ exports.new = function (req, res) {
 };
 
 exports.update = function (req, res) {
-    taskModel.findOne({_id: req.params.id}, function (err, task) {
-        if (err)
-            res.send(err);
+    taskModel.findOne({_id: req.params.taskid}, function (err, task) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         
-            task.taskName = req.body.taskName;
-            task.taskDescription = req.body.taskDescription;
-            task.taskTimeEstimate = req.body.taskTimeEstimate;
-            task.taskSuggestedUser = req.body.taskSuggestedUser;
-            task.taskAssignedUser = req.body.taskAssignedUser;
-            task.taskStoryId = req.body.taskStoryId;
+        task.taskName = req.body.taskName;
+        task.taskDescription = req.body.taskDescription;
+        task.taskTimeEstimate = req.body.taskTimeEstimate;
+        task.taskSuggestedUser = req.body.taskSuggestedUser;
+        task.taskAssignedUser = req.body.taskAssignedUser;
+        task.taskStoryId = req.body.taskStoryId;
 
-            task.save(function (err) {
+        task.save(function (err) {
             if (err)
                 res.json(err);
             res.json({
@@ -59,9 +76,11 @@ exports.update = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-    taskModel.remove({_id: req.params.id}, function (err, task) {
-        if (err)
-            res.send(err);
+    taskModel.remove({_id: req.params.taskid}, function (err, task) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             status: "success",
             message: 'task deleted'

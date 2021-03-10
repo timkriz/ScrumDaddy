@@ -3,8 +3,10 @@ const userModel = require('../models/userModel');
 
 exports.find = function (req, res) {
     userModel.findOne({_id: req.params.id}, function (err, user) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             message: 'Finding user..',
             data: user
@@ -48,8 +50,10 @@ exports.new = function (req, res) {
 
 exports.update = function (req, res) {
     userModel.findById(req.params.id, function (err, user) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         
         user.username = req.body.username;
         user.password = req.body.password;
@@ -71,8 +75,10 @@ exports.update = function (req, res) {
 
 exports.delete = function (req, res) {
     userModel.findById(req.params.id, function (err, user) {
-        if (err)
-            res.send(err);
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             message: 'User deleted',
             data: user,

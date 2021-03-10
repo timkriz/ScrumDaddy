@@ -99,6 +99,34 @@
 			"response": []
 		},
 		{
+			"name": "ProjectsUsers POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"projectId\": \"asd\",\r\n    \"userId\": \"asd\",\r\n    \"userRole\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projectsUsers",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projectsUsers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "ProjectsUsers GET",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -131,13 +159,13 @@
 			"response": []
 		},
 		{
-			"name": "ProjectsUsers POST",
+			"name": "Project POST",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"projectId\": \"asd\",\r\n    \"userId\": \"asd\",\r\n    \"userRole\": 1\r\n}",
+					"raw": "{\r\n    \"projectName\": \"default\",\r\n    \"projectDescription\": \"default\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -145,14 +173,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/projectsUsers",
+					"raw": "localhost:8080/api/projects",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"api",
-						"projectsUsers"
+						"projects"
 					]
 				}
 			},
@@ -176,28 +204,31 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/project/60437c44c13208406cb573d4",
+					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"api",
-						"project",
-						"60437c44c13208406cb573d4"
+						"projects",
+						"6048b6881f05c2465c276227"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Project POST",
+			"name": "Project GET ALL",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
-				"method": "POST",
+				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"projectName\": \"default\",\r\n    \"projectDescription\": \"default\"\r\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -205,130 +236,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/project",
+					"raw": "localhost:8080/api/projects",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"api",
-						"project"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Task GET",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/api/task/604384496900de355ced1891",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"task",
-						"604384496900de355ced1891"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Task POST",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"taskName\": \"default\",\r\n    \"taskDescription\": \"default\",\r\n    \"taskTimeEstimate\": \"420\",\r\n    \"taskSuggestedUser\": \"UserID\",\r\n    \"taskAssignedUser\": \"UserID\",\r\n    \"taskStoryId\": \"StoryID\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/api/task",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"task"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Story GET",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/api/story/60438992d2c0f12f20b1b4ea",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"story",
-						"60438992d2c0f12f20b1b4ea"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Story POST",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"storyName\": \"default\",\r\n    \"storyTimeEstimate\": \"420\",\r\n    \"storyBusinessValue\": \"420\",\r\n    \"storyComment\": \"DefaultComment\",\r\n    \"storyPriority\": \"420\",\r\n    \"storyTests\": \"DefaultTests\",\r\n    \"storyStatus\": \"DefaultStatus\",\r\n    \"storyProjectId\": \"ProjectID\",\r\n    \"storySprintId\": \"SprintID\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/api/story",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"story"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Sprint GET",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/api/sprint/60438967d2c0f12f20b1b4e8",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"sprint",
-						"60438967d2c0f12f20b1b4e8"
+						"projects"
 					]
 				}
 			},
@@ -341,7 +256,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"sprintName\": \"default\",\r\n    \"sprintDescription\": \"default\",\r\n    \"sprintStartTime\": \"420\",\r\n    \"sprintEndTime\": \"420\",\r\n    \"sprintVelocity\": \"420\",\r\n    \"sprintProjectId\": \"DefaultTests\"\r\n}",
+					"raw": "{\r\n    \"sprintName\": \"default\",\r\n    \"sprintDescription\": \"default\",\r\n    \"sprintStartTime\": \"420\",\r\n    \"sprintEndTime\": \"420\",\r\n    \"sprintVelocity\": \"420\",\r\n    \"sprintProjectId\": \"6048b6881f05c2465c276227\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -349,14 +264,259 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/sprint",
+					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"api",
-						"sprint"
+						"projects",
+						"6048b6881f05c2465c276227",
+						"sprints"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sprint GET",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"6048b6881f05c2465c276227",
+						"sprints",
+						"6048b6fa1f05c2465c276228"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sprint GET ALL",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"6048b6881f05c2465c276227",
+						"sprints"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Story POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"storyName\": \"default\",\r\n    \"storyTimeEstimate\": \"420\",\r\n    \"storyBusinessValue\": \"420\",\r\n    \"storyComment\": \"DefaultComment\",\r\n    \"storyPriority\": \"420\",\r\n    \"storyTests\": \"DefaultTests\",\r\n    \"storyStatus\": \"DefaultStatus\",\r\n    \"storyProjectId\": \"6048b6881f05c2465c276227\",\r\n    \"storySprintId\": \"6048b6fa1f05c2465c276228\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228/stories",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"6048b6881f05c2465c276227",
+						"sprints",
+						"6048b6fa1f05c2465c276228",
+						"stories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Story GET",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228/stories/6048b75d8fccf507ecb0353c",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"6048b6881f05c2465c276227",
+						"sprints",
+						"6048b6fa1f05c2465c276228",
+						"stories",
+						"6048b75d8fccf507ecb0353c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Story GET ALL",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228/stories",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"6048b6881f05c2465c276227",
+						"sprints",
+						"6048b6fa1f05c2465c276228",
+						"stories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"taskName\": \"default\",\r\n    \"taskDescription\": \"default\",\r\n    \"taskTimeEstimate\": \"420\",\r\n    \"taskSuggestedUser\": \"UserID\",\r\n    \"taskAssignedUser\": \"UserID\",\r\n    \"taskStoryId\": \"6048be82c4a7991da49c1c65\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228/stories/6048b75d8fccf507ecb0353c/tasks",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"6048b6881f05c2465c276227",
+						"sprints",
+						"6048b6fa1f05c2465c276228",
+						"stories",
+						"6048b75d8fccf507ecb0353c",
+						"tasks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task GET",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228/stories/6048b75d8fccf507ecb0353c/tasks/6048b7ac87e6686198a925fe",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"6048b6881f05c2465c276227",
+						"sprints",
+						"6048b6fa1f05c2465c276228",
+						"stories",
+						"6048b75d8fccf507ecb0353c",
+						"tasks",
+						"6048b7ac87e6686198a925fe"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task GET ALL",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228/stories/6048be82c4a7991da49c1c65/tasks",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"6048b6881f05c2465c276227",
+						"sprints",
+						"6048b6fa1f05c2465c276228",
+						"stories",
+						"6048be82c4a7991da49c1c65",
+						"tasks"
 					]
 				}
 			},

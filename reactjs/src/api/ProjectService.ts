@@ -1,5 +1,9 @@
 import axiosAuth from './axios';
-import {postProjectUrl, postProjectUserUrl} from "./Endpoints";
+import {getProjectUrl, postProjectUrl, postProjectUserUrl} from "./Endpoints";
+
+export const getProject = (id: string): Promise<any> => {
+  return axiosAuth.get(`getProjectUrl/${id}`);
+};
 
 export const postProject = (projectName: string, projectDescription: string): Promise<any> => {
   return axiosAuth.post(postProjectUrl, {

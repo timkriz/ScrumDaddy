@@ -1,10 +1,25 @@
 const path = require('path');
 const sprintModel = require('../models/sprintModel');
 
+exports.viewAll = function (req, res) {
+    sprintModel.find({sprintProjectId: req.params.projectid}, function (err, sprints) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.json({
+            message: 'Loading sprints data..',
+            data: sprints
+        });
+    });
+};
+
 exports.view = function (req, res) {
-    sprintModel.findOne({_id: req.params.id}, function (err, sprint) {
-        if (err)
-            res.send(err);
+    sprintModel.findOne({_id: req.params.sprintid}, function (err, sprint) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             message: 'Loading sprint data..',
             data: sprint
@@ -36,18 +51,20 @@ exports.new = function (req, res) {
 };
 
 exports.update = function (req, res) {
-    sprintModel.findOne({_id: req.params.id}, function (err, sprint) {
-        if (err)
-            res.send(err);
+    sprintModel.findOne({_id: req.params.sprintid}, function (err, sprint) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         
-            sprint.sprintName = req.body.sprintName;
-            sprint.sprintDescription = req.body.sprintDescription;
-            sprint.sprintStartTime = req.body.sprintStartTime;
-            sprint.sprintEndTime = req.body.sprintEndTime;
-            sprint.sprintVelocity = req.body.sprintVelocity;
-            sprint.sprintProjectId = req.body.sprintProjectId;
+        sprint.sprintName = req.body.sprintName;
+        sprint.sprintDescription = req.body.sprintDescription;
+        sprint.sprintStartTime = req.body.sprintStartTime;
+        sprint.sprintEndTime = req.body.sprintEndTime;
+        sprint.sprintVelocity = req.body.sprintVelocity;
+        sprint.sprintProjectId = req.body.sprintProjectId;
 
-            sprint.save(function (err) {
+        sprint.save(function (err) {
             if (err)
                 res.json(err);
             res.json({
@@ -59,9 +76,11 @@ exports.update = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-    sprintModel.remove({_id: req.params.id}, function (err, sprint) {
-        if (err)
-            res.send(err);
+    sprintModel.remove({_id: req.params.sprintid}, function (err, sprint) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.json({
             status: "success",
             message: 'sprint deleted'

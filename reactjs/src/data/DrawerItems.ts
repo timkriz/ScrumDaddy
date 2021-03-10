@@ -6,7 +6,7 @@ export interface IDrawerItem {
 
 export const drawerItems = [
   {
-    title: "Projects",
+    title: "Project List",
     path: "/projects",
     roles: [ 0, 1 ]
   },
