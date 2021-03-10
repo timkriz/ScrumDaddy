@@ -6,7 +6,9 @@ import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import {ThemeProvider} from '@material-ui/styles';
 import teal from "@material-ui/core/colors/teal";
 import {BrowserRouter} from "react-router-dom";
-import deepPurple from "@material-ui/core/colors/deepPurple";
+import cyan from "@material-ui/core/colors/cyan";
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 
 const theme = createMuiTheme({
   palette: {
@@ -14,18 +16,20 @@ const theme = createMuiTheme({
       main: teal[400],
     },
     secondary: {
-      main: deepPurple[500],
+      main: cyan[700],
     },
   },
 });
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ThemeProvider>
+    <MuiPickersUtilsProvider utils={MomentUtils}>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ThemeProvider>
+    </MuiPickersUtilsProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

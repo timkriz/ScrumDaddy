@@ -5,7 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 import Login from "../Login/Login";
-import {BrowserRouter, Route, Switch, useHistory} from "react-router-dom";
+import {Route, Switch, useHistory} from "react-router-dom";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -13,10 +13,11 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import {AccountBalanceWallet, Face} from "@material-ui/icons";
 import {isAuthenticated, removeToken} from "../../api/TokenService";
-import Projects from "../Projects/Projects";
+import ProjectList from "../ProjectList/ProjectList";
 import Button from "@material-ui/core/Button";
 import {drawerItems} from "../../data/DrawerItems";
 import ManageUsers from "../ManageUsers/ManageUsers";
+import Project from "../Project/Project";
 
 function App() {
   const [ open, setOpen ] = useState<boolean>();
@@ -90,8 +91,11 @@ function App() {
           <Route path="/login">
             <Login />
           </Route>
-          <Route path="/projects">
-            <Projects />
+          <Route exact path="/projects">
+            <ProjectList />
+          </Route>
+          <Route path="/projects/:id">
+            <Project />
           </Route>
           <Route path="/manage_users">
             <ManageUsers />

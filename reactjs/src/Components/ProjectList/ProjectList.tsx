@@ -1,21 +1,22 @@
 import React, {useState} from "react";
-import "./projects.css";
+import "./project_list.css";
 import {Button} from "@material-ui/core";
-import {IProject} from "./IProjects";
-import AddProjectDialogContent from "./AddProjectDialogContent";
-import {ArrowForward, ArrowForwardRounded, DeleteRounded, EditRounded, Face} from "@material-ui/icons";
+import {IProject} from "./IProjectList";
+import AddProjectDialogContent from "./AddProjectDialog";
+import {ArrowForwardRounded, DeleteRounded, EditRounded} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
 import {Alert} from "@material-ui/lab";
 import {Color} from "@material-ui/lab/Alert";
+import { useHistory } from "react-router-dom";
 
 const allProjects: IProject[] = [
   {
-    _id: "0",
+    _id: "12a34",
     projectName: "Super Mario Brothers"
   },
   {
-    _id: "1",
+    _id: "67b3c",
     projectName: "Mario Kart"
   }
 ];
@@ -27,6 +28,8 @@ export default () => {
   const [snackOpen, setSnackOpen] = useState<boolean>(false);
   const [snackMessage, setSnackMessage] = useState<string>("");
   const [snackSeverity, setSnackSeverity] = useState<Color>("success");
+
+  const history = useHistory();
 
   const handleOpen = () => {
     setOpen(true);
@@ -46,13 +49,19 @@ export default () => {
     setSnackOpen(true);
   }
 
+  const projectDetailsClick = (id: string) => {
+    history.push(`/projects/${id}`);
+  }
+
   return (
-    <div className="projects_container">
+    <>
       <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={snackOpen} autoHideDuration={6000} onClose={handleSnackClose}>
-        <Alert onClose={handleClose} severity={snackSeverity}>{snackMessage}</Alert>
+        <Alert onClose={handleSnackClose} severity={snackSeverity}>{snackMessage}</Alert>
       </Snackbar>
 
-      <Button variant="contained" color="primary" onClick={handleOpen}>ADD PROJECT</Button>
+      <div className="page_title">Project List</div>
+
+      <Button variant="contained" color="primary" onClick={handleOpen} style={{ alignSelf: "flex-start" }}>ADD PROJECT</Button>
 
       <AddProjectDialogContent open={open} handleClose={handleClose} openSnack={openSnack} />
 
@@ -69,13 +78,13 @@ export default () => {
               <IconButton color="primary">
                 <EditRounded />
               </IconButton>
-              <IconButton color="primary">
+              <IconButton color="primary" onClick={() => projectDetailsClick(project._id)}>
                 <ArrowForwardRounded />
               </IconButton>
             </div>
           </div>
         ))
       }
-    </div>
+    </>
   )
 }
