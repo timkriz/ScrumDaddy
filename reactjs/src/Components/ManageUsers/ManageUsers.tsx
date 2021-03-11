@@ -3,8 +3,8 @@ import {getUsers} from "../../api/UserService";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert, {AlertProps, Color} from '@material-ui/lab/Alert';
 import {IUser} from "../ProjectList/IProjectList";
-import UserCard from "./UserCard";
 import {getUserId} from "../../api/TokenService";
+import UserCard from "./UserCard";
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -50,10 +50,10 @@ export default () => {
       fetchUsers();
     }
   }
-
+  
   return (
     <>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
         <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={open} autoHideDuration={6000} onClose={handleClose}>
           <Alert onClose={handleClose} severity={snackSeverity}>{snackMessage}</Alert>
         </Snackbar>
@@ -67,10 +67,10 @@ export default () => {
         user !== undefined && user.role === "ADMIN" &&
         <div style={{ display: "flex", flexDirection: "column", marginTop: 40 }}>
           <div className="page_title" style={{ alignSelf: "flex-start", fontSize: 30 }}>Manage System Users</div>
-          <div style={{ display: "flex", marginTop: 20 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", marginTop: 20 }}>
             {
-              users.map((user, i) => (
-                <UserCard key={i} user={user} title={user.name} openSnack={openSnack} enableDelete />
+              users.map((user) => (
+                <UserCard key={user._id} user={user} title={user.name} openSnack={openSnack} enableDelete />
               ))
             }
           </div>

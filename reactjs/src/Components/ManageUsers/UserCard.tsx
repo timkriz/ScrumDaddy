@@ -66,15 +66,15 @@ export default ({ user, title, openSnack, enableDelete }: IProps) => {
   const deleteClickedUser = (id: string) => {
     deleteUser(id)
       .then(() => {
-        openSnack("User created successfully!", "success", true);
+        openSnack("User deleted successfully!", "success", true);
       })
       .catch(() => {
-        openSnack("User creation failed!", "error");
+        openSnack("User deleted failed!", "error");
       })
   }
 
   return (
-    <Card style={{ marginRight: 20 }}>
+    <Card style={{ minWidth: 400, marginRight: 20, marginTop: 10 }}>
       <CardHeader title={title}/>
       <CardContent>
         <Typography style={{ color: "#0097a7", fontWeight: 500 }}>Credentials:</Typography>
