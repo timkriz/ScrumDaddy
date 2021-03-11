@@ -1,5 +1,4 @@
-import axiosAuth from './axios';
-import {BACKEND_URL} from "./Endpoints";
+import axiosAuth, {BACKEND_URL} from './axios';
 
 export const getProjects = (): Promise<any> => {
   return axiosAuth.get(`${BACKEND_URL}/projects`);

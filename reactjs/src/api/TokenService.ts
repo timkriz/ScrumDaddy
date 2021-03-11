@@ -13,3 +13,15 @@ export const removeToken = (): void => {
 export const isAuthenticated = (): boolean => {
   return getToken() !== null;
 };
+
+export const setUserId = (id: string): void => {
+  localStorage.setItem("userId", id);
+};
+
+export const getUserId = (): string | null => {
+  return localStorage.getItem("userId");
+};
+
+export const removeUserId = (): void => {
+  localStorage.removeItem("userId");
+};
