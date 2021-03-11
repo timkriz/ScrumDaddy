@@ -60,20 +60,22 @@ export default () => {
 
         { user !== undefined && <UserCard user={user} title="Update Personal Info" openSnack={openSnack} /> }
 
-        <UserCard title="Add User" openSnack={openSnack} />
-
+        { user !== undefined && user.role === "ADMIN" && <UserCard title="Add User" openSnack={openSnack} /> }
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", marginTop: 40 }}>
-        <div className="page_title" style={{ alignSelf: "flex-start", fontSize: 30 }}>Manage System Users</div>
-        <div style={{ display: "flex", marginTop: 20 }}>
-          {
-            users.map((user, i) => (
-              <UserCard key={i} user={user} title={user.name} openSnack={openSnack} enableDelete />
-            ))
-          }
+      {
+        user !== undefined && user.role === "ADMIN" &&
+        <div style={{ display: "flex", flexDirection: "column", marginTop: 40 }}>
+          <div className="page_title" style={{ alignSelf: "flex-start", fontSize: 30 }}>Manage System Users</div>
+          <div style={{ display: "flex", marginTop: 20 }}>
+            {
+              users.map((user, i) => (
+                <UserCard key={i} user={user} title={user.name} openSnack={openSnack} enableDelete />
+              ))
+            }
+          </div>
         </div>
-      </div>
+      }
     </>
   )
 }
