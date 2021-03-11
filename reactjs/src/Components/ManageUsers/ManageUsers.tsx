@@ -50,7 +50,7 @@ export default () => {
       fetchUsers();
     }
   }
-  
+
   return (
     <>
       <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -58,7 +58,7 @@ export default () => {
           <Alert onClose={handleClose} severity={snackSeverity}>{snackMessage}</Alert>
         </Snackbar>
 
-        { user !== undefined && <UserCard user={user} title="Update Personal Info" openSnack={openSnack} /> }
+        { user !== undefined && <UserCard user={user} title="Update Personal Info" openSnack={openSnack} noRole={user.role === "USER"} /> }
 
         { user !== undefined && user.role === "ADMIN" && <UserCard title="Add User" openSnack={openSnack} /> }
       </div>

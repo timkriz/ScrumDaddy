@@ -19,9 +19,10 @@ interface IProps {
   title: string;
   openSnack: (message: string, severity: Color, refresh?: boolean) => void;
   enableDelete?: boolean;
+  noRole?: boolean;
 }
 
-export default ({ user, title, openSnack, enableDelete }: IProps) => {
+export default ({ user, title, openSnack, enableDelete, noRole }: IProps) => {
   const [ username, setUsername ] = useState<string>("");
   const [ password, setPassword ] = useState<string>("");
   const [ name, setName ] = useState<string>("");
@@ -113,19 +114,24 @@ export default ({ user, title, openSnack, enableDelete }: IProps) => {
             value={email}
             onChange={(e) => {setEmail(e.target.value)}}
           />
-          <FormControl>
-            <InputLabel>Role</InputLabel>
-            <Select
-              value={role}
-              onChange={(e) => { setRole(e.target.value as string) }}
-            >
-              {
-                systemRoles.map((role, j) => (
-                  <MenuItem key={j} value={role.id}>{role.title}</MenuItem>
-                ))
-              }
-            </Select>
-          </FormControl>
+
+          {
+            !noRole &&
+            <FormControl>
+                <InputLabel>Role</InputLabel>
+                <Select
+                    value={role}
+                    onChange={(e) => { setRole(e.target.value as string) }}
+                >
+                  {
+                    systemRoles.map((role, j) => (
+                      <MenuItem key={j} value={role.id}>{role.title}</MenuItem>
+                    ))
+                  }
+                </Select>
+            </FormControl>
+          }
+
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", marginTop: 40 }}>
