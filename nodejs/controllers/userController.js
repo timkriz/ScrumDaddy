@@ -4,11 +4,11 @@ const userModel = require('../models/userModel');
 exports.find = function (req, res) {
     userModel.findOne({_id: req.params.id}, function (err, user) {
         if (err) {
-            res.status(400).send(err);
+            res.status(400).json(err);
             return;
         }
         res.json({
-            message: 'Finding user..',
+            message: "User found",
             data: user
         });
     });
@@ -16,18 +16,20 @@ exports.find = function (req, res) {
 
 exports.view = function (req, res) {
     userModel.find(function (err, users) {
-        if (err)
-            res.json(err);
+        if (err) {
+            res.status(400).json(err);
+            return;
+        }
         res.json({
-            message: 'Finding users..',
+            message: "Users found",
             data: users
         });
     });
 };
 
-// Handle create user actions
 exports.new = function (req, res) {
     var user = new userModel();
+
     user.username = req.body.username;
     user.password = req.body.password;
     user.role = req.body.role;
@@ -36,37 +38,38 @@ exports.new = function (req, res) {
     user.email = req.body.email;
 
     user.save(function (err) {
-        if (err){
-            res.json(err);
+        if (err) {
+            res.status(400).json(err);
+            return;
         }
-        else{
-            res.json({
-                message: 'User created',
-                data: user
-            });
-        }
+        res.json({
+            message: "User created",
+            data: user
+        });
     });
 };
 
 exports.update = function (req, res) {
-    userModel.findById(req.params.id, function (err, user) {
+    userModel.findOne({_id: req.params.id}, function (err, user) {
         if (err) {
-            res.status(400).send(err);
+            res.status(400).json(err);
             return;
         }
         
-        user.username = req.body.username;
-        user.password = req.body.password;
-        user.role = req.body.role;
-        user.name = req.body.name;
-        user.surname = req.body.surname;
-        user.email = req.body.email;
+        user.username = req.body.username || user.username;
+        user.password = req.body.password || user.password;
+        user.role = req.body.role || user.role;
+        user.name = req.body.name || user.name;
+        user.surname = req.body.surname || user.surname;
+        user.email = req.body.email || user.email;
 
         user.save(function (err) {
-            if (err)
-                res.json(err);
+            if (err) {
+                res.status(400).json(err);
+                return;
+            }
             res.json({
-                message: 'User info updated',
+                message: "User updated",
                 data: user
             });
         });
@@ -74,16 +77,14 @@ exports.update = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-
-
     userModel.remove({_id: req.params.id}, function (err, user) {
         if (err) {
-            res.status(400).send(err);
+            res.status(400).json(err);
             return;
         }
         res.json({
-            status: "success",
-            message: 'User deleted'
+            message: "User deleted",
+            data: user
         });
     });
 };

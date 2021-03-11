@@ -4,11 +4,11 @@ const sprintModel = require('../models/sprintModel');
 exports.viewAll = function (req, res) {
     sprintModel.find({sprintProjectId: req.params.projectid}, function (err, sprints) {
         if (err) {
-            res.status(400).send(err);
+            res.status(400).json(err);
             return;
         }
         res.json({
-            message: 'Loading sprints data..',
+            message: "Sprints found",
             data: sprints
         });
     });
@@ -17,19 +17,19 @@ exports.viewAll = function (req, res) {
 exports.view = function (req, res) {
     sprintModel.findOne({_id: req.params.sprintid}, function (err, sprint) {
         if (err) {
-            res.status(400).send(err);
+            res.status(400).json(err);
             return;
         }
         res.json({
-            message: 'Loading sprint data..',
+            message: "Sprint found",
             data: sprint
         });
     });
 };
 
-// Handle create task actions
 exports.new = function (req, res) {
     var sprint = new sprintModel();
+
     sprint.sprintName = req.body.sprintName;
     sprint.sprintDescription = req.body.sprintDescription;
     sprint.sprintStartTime = req.body.sprintStartTime;
@@ -38,37 +38,38 @@ exports.new = function (req, res) {
     sprint.sprintProjectId = req.params.projectid;
 
     sprint.save(function (err) {
-        if (err){
-            res.json(err);
+        if (err) {
+            res.status(400).json(err);
+            return;
         }
-        else{
-            res.json({
-                message: 'sprint success',
-                data: sprint
-            });
-        }
+        res.json({
+            message: "Sprint created",
+            data: sprint
+        });
     });
 };
 
 exports.update = function (req, res) {
     sprintModel.findOne({_id: req.params.sprintid}, function (err, sprint) {
         if (err) {
-            res.status(400).send(err);
+            res.status(400).json(err);
             return;
         }
         
-        sprint.sprintName = req.body.sprintName;
-        sprint.sprintDescription = req.body.sprintDescription;
-        sprint.sprintStartTime = req.body.sprintStartTime;
-        sprint.sprintEndTime = req.body.sprintEndTime;
-        sprint.sprintVelocity = req.body.sprintVelocity;
-        sprint.sprintProjectId = req.params.projectid;
+        sprint.sprintName = req.body.sprintName || sprint.sprintName;
+        sprint.sprintDescription = req.body.sprintDescription || sprint.sprintDescription;
+        sprint.sprintStartTime = req.body.sprintStartTime || sprint.sprintStartTime;
+        sprint.sprintEndTime = req.body.sprintEndTime || sprint.sprintEndTime;
+        sprint.sprintVelocity = req.body.sprintVelocity || sprint.sprintVelocity;
+        sprint.sprintProjectId = req.params.projectid || sprint.sprintProjectId;
 
         sprint.save(function (err) {
-            if (err)
-                res.json(err);
+            if (err) {
+                res.status(400).json(err);
+                return;
+            }
             res.json({
-                message: 'sprint Info updated',
+                message: "Sprint updated",
                 data: sprint
             });
         });
@@ -78,12 +79,12 @@ exports.update = function (req, res) {
 exports.delete = function (req, res) {
     sprintModel.remove({_id: req.params.sprintid}, function (err, sprint) {
         if (err) {
-            res.status(400).send(err);
+            res.status(400).json(err);
             return;
         }
         res.json({
-            status: "success",
-            message: 'sprint deleted'
+            message: "Sprint deleted",
+            data: sprint
         });
     });
 };
