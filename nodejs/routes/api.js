@@ -97,8 +97,9 @@ router.route('/users')
     .get(userController.view);
 router.route('/users/:id')
     .get(userController.find)
-    .patch(userController.update);
-
+    .put(userController.update)
+    .patch(userController.update)
+    .delete(userController.delete);
 
 router.route('/projects')
     .post(projectController.new)
