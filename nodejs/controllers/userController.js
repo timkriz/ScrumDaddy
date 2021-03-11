@@ -74,14 +74,16 @@ exports.update = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-    userModel.findById(req.params.id, function (err, user) {
+
+
+    userModel.remove({_id: req.params.id}, function (err, user) {
         if (err) {
             res.status(400).send(err);
             return;
         }
         res.json({
-            message: 'User deleted',
-            data: user,
+            status: "success",
+            message: 'User deleted'
         });
     });
 };
