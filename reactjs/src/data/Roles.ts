@@ -1,35 +1,46 @@
+export enum SystemRoles {
+  ADMIN = "ADMIN",
+  USER = "USER"
+}
+
 export interface ISystemRole {
-  id: string;
+  id: SystemRoles;
   title: string;
 }
 
 export const systemRoles: ISystemRole[] = [
   {
-    id: "ADMIN",
+    id: SystemRoles.ADMIN,
     title: "Admin"
   },
   {
-    id: "USER",
+    id: SystemRoles.USER,
     title: "User"
   }
 ];
 
+export enum ProjectRoles {
+  PROD_LEAD = "PROD_LEAD",
+  METH_KEEPER = "METH_KEEPER",
+  DEV_TEAM_MEMBER = "DEV_TEAM_MEMBER"
+}
+
 export interface IProjectRole {
-  id: string;
+  id: ProjectRoles;
   title: string;
 }
 
 export const projectRoles: IProjectRole[] = [
   {
-    id: "PROD_LEAD",
+    id: ProjectRoles.PROD_LEAD,
     title: "Product Leader"
   },
   {
-    id: "METH_KEEPER",
+    id: ProjectRoles.METH_KEEPER,
     title: "Methodology Keeper"
   },
   {
-    id: "DEV_TEAM_MEMBER",
+    id: ProjectRoles.DEV_TEAM_MEMBER,
     title: "Development Team Member"
   }
 ];

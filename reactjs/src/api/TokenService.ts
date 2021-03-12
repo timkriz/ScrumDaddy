@@ -25,3 +25,15 @@ export const getUserId = (): string | null => {
 export const removeUserId = (): void => {
   localStorage.removeItem("userId");
 };
+
+export const setUserRole = (role: string): void => {
+  localStorage.setItem("userRole", role);
+};
+
+export const getUserRole = (): string | null => {
+  return localStorage.getItem("userRole");
+};
+
+export const removeUserRole = (): void => {
+  localStorage.removeItem("userRole");
+};

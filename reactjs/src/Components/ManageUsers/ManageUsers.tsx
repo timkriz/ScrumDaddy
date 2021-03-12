@@ -55,7 +55,7 @@ export default () => {
     <>
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity={snackSeverity}>{snackMessage}</Alert>
+          <Alert variant="filled" onClose={handleClose} severity={snackSeverity}>{snackMessage}</Alert>
         </Snackbar>
 
         { user !== undefined && <UserCard user={user} title="Update Personal Info" openSnack={openSnack} noRole={user.role === "USER"} /> }

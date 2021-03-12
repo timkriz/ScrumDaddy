@@ -4,6 +4,10 @@ export const getUsers = (): Promise<any> => {
   return axiosAuth.get(`${BACKEND_URL}/users`);
 };
 
+export const getUser = (id: string): Promise<any> => {
+  return axiosAuth.get(`${BACKEND_URL}/users/${id}`);
+};
+
 export const postUser = (username: string, password: string, role: string, name: string, surname: string, email: string): Promise<any> => {
   return axiosAuth.post(`${BACKEND_URL}/users`, {
     username,

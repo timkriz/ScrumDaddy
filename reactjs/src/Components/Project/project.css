@@ -24,6 +24,7 @@
     font-size: 18px;
     font-weight: 500;
     color: #0097a7;
+    margin-bottom: 4px;
 }
 
 .sprint_value {
@@ -40,4 +41,10 @@
     cursor: pointer;
     line-height: 1.75;
     letter-spacing: 0.02857em;
+}
+
+.center_divider {
+    margin: 0 40px;
+    width: 1px;
+    background: rgba(0,0,0,0.2);
 }

@@ -1,7 +1,9 @@
+import {ProjectRoles} from "../../data/Roles";
+
 export interface IProject {
   _id: string;
-  projectName: string;
-  projectDescription: string;
+  name: string;
+  description: string;
 }
 
 export interface IUser {
@@ -14,9 +16,10 @@ export interface IUser {
 }
 
 export interface IProjectUser {
+  _id: string;
   projectId: string;
   userId: string;
-  userRole: string;
+  userRole: ProjectRoles;
 }
 
 export interface IProjectDialogAssign {
@@ -32,4 +35,20 @@ export interface ISprint {
   sprintEndTime: number,
   sprintVelocity: number,
   sprintProjectId: string,
+}
+
+export interface IPost {
+  _id: string;
+  projectId: string;
+  userId: string;
+  timestamp: number;
+  text: string;
+}
+
+export interface IComment {
+  _id: string;
+  postId: string;
+  userId: string;
+  timestamp: number;
+  text: string;
 }

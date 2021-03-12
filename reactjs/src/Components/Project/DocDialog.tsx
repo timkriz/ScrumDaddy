@@ -18,22 +18,22 @@ interface IProps {
 }
 
 export default ({ project, open, handleClose, openSnack }: IProps) => {
-  const [ text, setText ] = useState<string>(project.projectDescription);
+  const [ text, setText ] = useState<string>(project.description);
 
   const confirmAction = async () => {
     try {
-      await putProject(project._id, project.projectName, text);
+      await putProject(project._id, project.name, text);
 
-      openSnack("Sprint updated successfully!", "success", true);
+      openSnack("Documentation updated successfully!", "success", true);
       handleClose();
     } catch (e) {
-      openSnack("Sprint update failed!", "error");
+      openSnack("Documentation update failed!", "error");
     }
   };
 
   const exportDoc = () => {
     const blob = new Blob([text], {type: "text/plain;charset=utf-8"});
-    saveAs(blob, `${project.projectName}_documentation.txt`);
+    saveAs(blob, `${project.name}_documentation.txt`);
   }
 
   const importDoc = (e: any) => {
@@ -81,7 +81,7 @@ export default ({ project, open, handleClose, openSnack }: IProps) => {
           </label>
         </div>
 
-        <Button onClick={confirmAction} color="primary" variant="contained" disabled={text === project.projectDescription}>UPDATE</Button>
+        <Button onClick={confirmAction} color="primary" variant="contained" disabled={text === project.description}>UPDATE</Button>
       </DialogActions>
     </Dialog>
   )
