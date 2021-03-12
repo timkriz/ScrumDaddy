@@ -4,15 +4,6 @@ import {getUser} from "../../api/UserService";
 import moment from "moment";
 import {Typography} from "@material-ui/core";
 
-const fakeUser: IUser = {
-  _id: "c",
-  name: "Arne",
-  surname: "Simonic",
-  email: "akje",
-  role: "ADMIN",
-  username: "arne"
-};
-
 interface IProps {
   comment: IComment;
 }
@@ -25,9 +16,8 @@ export default ({ comment }: IProps) => {
   }, []);
 
   const fetchUser = async () => {
-    // const gottenUser = (await getUser(comment.userId)).data.data as IUser;
-    // setUser(gottenUser);
-    setUser(fakeUser);
+    const gottenUser = (await getUser(comment.userId)).data.data as IUser;
+    setUser(gottenUser);
   }
 
   return (

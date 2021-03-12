@@ -5,38 +5,18 @@ import moment from "moment";
 import Comment from "./Comment";
 import IconButton from "@material-ui/core/IconButton";
 import {Send} from "@material-ui/icons";
-
-const fakeComments: IComment[] = [
-  {
-    _id: "a",
-    postId: "a",
-    userId: "a",
-    text: "This is comment 1",
-    timestamp: moment().unix()
-  },
-  {
-    _id: "b",
-    postId: "b",
-    userId: "b",
-    text: "This is comment 2",
-    timestamp: moment().unix()
-  }
-];
-
-const fakeUser: IUser = {
-  _id: "c",
-  name: "Arne",
-  surname: "Simonic",
-  email: "akje",
-  role: "ADMIN",
-  username: "arne"
-};
+import {getUser} from "../../api/UserService";
+import {getComments, postComment} from "../../api/ProjectWallService";
+import {Color} from "@material-ui/lab";
+import {getUserId} from "../../api/TokenService";
 
 interface IProps {
+  projectId: string;
   post: IPost;
+  openSnack: (message: string, severity: Color) => void;
 }
 
-export default ({ post }: IProps) => {
+export default ({ projectId, post, openSnack }: IProps) => {
   const [ user, setUser ] = useState<IUser>();
   const [ comments, setComments ] = useState<IComment[]>([]);
   const [ newCommentText, setNewCommentText ] = useState<string>("");
@@ -47,19 +27,27 @@ export default ({ post }: IProps) => {
   }, []);
 
   const fetchUser = async () => {
-    // const gottenUser = (await getUser(post.userId)).data.data as IUser;
-    // setUser(gottenUser);
-    setUser(fakeUser);
+    const gottenUser = (await getUser(post.userId)).data.data as IUser;
+    setUser(gottenUser);
   }
 
   const fetchComments = async () => {
-    // const gottenComments = (await getComments(post._id)).data.data as IComment[];
-    // setComments(gottenComments);
-    setComments(fakeComments);
+    const gottenComments = (await getComments(projectId, post._id)).data.data as IComment[];
+    setComments(gottenComments);
   }
 
-  const addComment = () => {
-
+  const addComment = async () => {
+    const userId = getUserId();
+    if(userId !== null) {
+      await postComment(projectId, post._id, userId, moment().unix(), newCommentText)
+        .then(() => {
+          openSnack("Post creation successful!", "success");
+          fetchComments();
+        })
+        .catch(() => {
+          openSnack("Post creation failed!", "error");
+        });
+    }
   }
 
   return (
@@ -78,7 +66,7 @@ export default ({ post }: IProps) => {
               ))
             }
 
-              <div style={{ display: "flex", marginTop: 30 }}>
+              <div style={{ display: "flex", marginTop: 15, paddingTop: 24, borderTop: "1px solid rgba(0,0,0,0.2)" }}>
                   <TextField
                       style={{ flex: 1, marginRight: 20 }}
                       multiline
@@ -86,7 +74,7 @@ export default ({ post }: IProps) => {
                       value={newCommentText}
                       onChange={e => setNewCommentText(e.target.value)}
                   />
-                  <IconButton color="secondary" onClick={addComment}>
+                  <IconButton color="secondary" disabled={newCommentText === ""} onClick={addComment}>
                       <Send />
                   </IconButton>
               </div>

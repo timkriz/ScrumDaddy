@@ -1,23 +1,21 @@
 import React, {useEffect, useState} from "react";
-import {IComment, IPost, IUser} from "../ProjectList/IProjectList";
-import {Card, CardHeader, TextField} from "@material-ui/core";
+import {IPost} from "../ProjectList/IProjectList";
+import {Card, TextField} from "@material-ui/core";
 import CardContent from "@material-ui/core/CardContent";
 import {Send} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
-import moment from "moment";
 import Post from "./Post";
+import {getPosts, postPost} from "../../api/ProjectWallService";
+import {getUserId} from "../../api/TokenService";
+import moment from "moment";
+import {Color} from "@material-ui/lab";
 
-const fakePosts: IPost[] = [
-  {
-    _id: "a",
-    projectId: "a",
-    userId: "a",
-    text: "This is a fake post.",
-    timestamp: moment().unix()
-  }
-]
+interface IProps {
+  projectId: string;
+  openSnack: (message: string, severity: Color, refresh?: boolean) => void;
+}
 
-export default () => {
+export default ({ projectId, openSnack }: IProps) => {
   const [ posts, setPosts ] = useState<IPost[]>([]);
   const [ newPostText, setNewPostText ] = useState<string>("");
 
@@ -26,11 +24,23 @@ export default () => {
   }, []);
 
   const fetchPosts = async () => {
-    setPosts(fakePosts);
+    let gottenPosts = (await getPosts(projectId)).data.data as IPost[];
+    gottenPosts = gottenPosts.sort((a: IPost, b: IPost) => b.timestamp - a.timestamp);
+    setPosts(gottenPosts);
   }
 
-  const addPost = () => {
-
+  const addPost = async () => {
+    const userId = getUserId();
+    if(userId !== null) {
+      await postPost(projectId, userId, moment().unix(), newPostText)
+        .then(() => {
+          openSnack("Post creation successful!", "success");
+          fetchPosts();
+        })
+        .catch(() => {
+          openSnack("Post creation failed!", "error");
+        });
+    }
   }
 
   return (
@@ -47,7 +57,7 @@ export default () => {
               value={newPostText}
               onChange={e => setNewPostText(e.target.value)}
             />
-            <IconButton color="secondary" onClick={addPost}>
+            <IconButton color="secondary" disabled={newPostText === ""} onClick={addPost}>
               <Send />
             </IconButton>
           </div>
@@ -56,7 +66,7 @@ export default () => {
 
       {
         posts.map(post => (
-          <Post key={post._id} post={post} />
+          <Post key={post._id} projectId={projectId} post={post} openSnack={openSnack} />
         ))
       }
 

@@ -166,7 +166,7 @@ export default () => {
                 </div>
                 <div className="center_divider" />
                 <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-                  <ProjectWall />
+                  <ProjectWall projectId={projectId} openSnack={openSnack} />
                 </div>
             </div>
         </>
