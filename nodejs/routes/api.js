@@ -69,7 +69,8 @@ router.route('/login')
                                 //res.cookie('jwt',token,{maxAge:9000000,httpOnly:true});
                                 return res.json({
                                     token: token,
-                                    userId: user._id
+                                    userId: user._id,
+                                    userRole: user.role
                                 });
                             }
                         );
