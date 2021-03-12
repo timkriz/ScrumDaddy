@@ -30,9 +30,9 @@ exports.view = function (req, res) {
 exports.new = function (req, res) {
     var projectsUsers = new projectsUsersModel();
     
-    projectsUsers.projectId = req.params.projectid;
-    projectsUsers.userId = req.body.userId;
-    projectsUsers.userRole = req.body.userRole;
+    projectsUsers.userId        = req.body.userId;
+    projectsUsers.userRole      = req.body.userRole;
+    projectsUsers.projectId     = req.params.projectid;
 
     projectsUsers.save(function (err) {
         if (err){
@@ -53,9 +53,9 @@ exports.update = function (req, res) {
             return;
         }
         
-        projectsUsers.projectId = req.body.projecti || projectsUsers.projectId;
-        projectsUsers.userId = req.params.userid || projectsUsers.userId;
-        projectsUsers.userRole = req.body.userRole || projectsUsers.userRole;
+        projectsUsers.userRole          = req.body.userRole || projectsUsers.userRole;
+        projectsUsers.projectId         = req.body.projectId || projectsUsers.projectId;
+        projectsUsers.userId            = req.params.userid || projectsUsers.userId;
 
         projectsUsers.save(function (err) {
             if (err){

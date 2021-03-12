@@ -15,6 +15,8 @@ const projectController = require('../controllers/projectController');
 const taskController = require('../controllers/taskController');
 const storyController = require('../controllers/storyController');
 const sprintController = require('../controllers/sprintController');
+const postController = require('../controllers/postController');
+const commentController = require('../controllers/commentController');
 
 router.get('/', function (req, res) {
     res.json({
@@ -119,6 +121,28 @@ router.route('/projects/:projectid/users/:userid')
     .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectsUsersController.update)
     .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, projectsUsersController.update)
     .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, projectsUsersController.delete);
+
+router.route('/projects/:projectid/posts')
+    .post(postController.new)
+    .get(postController.viewAll)
+    .delete(postController.deleteMany);
+router.route('/projects/:projectid/posts/:postid')
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, postController.view)
+    .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, postController.update)
+    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, postController.update)
+    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, postController.delete);
+
+router.route('/projects/:projectid/posts/:postid/comments')
+    .post(commentController.new)
+    .get(commentController.viewAll)
+    .delete(commentController.deleteMany);
+    //.get((req,res,next)     => authenticate(req,res,next), authTools.checkId, commentController.viewAll)
+    //.delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, commentController.deleteMany);
+router.route('/projects/:projectid/posts/:postid/comments/:commentid')
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, commentController.view)
+    .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, commentController.update)
+    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, commentController.update)
+    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, commentController.delete);
 
 router.route('/projects/:projectid/sprints')
     .post(sprintController.new)

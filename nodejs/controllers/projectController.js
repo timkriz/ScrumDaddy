@@ -30,8 +30,8 @@ exports.view = function (req, res) {
 exports.new = function (req, res) {
     var project = new projectModel();
     
-    project.projectName = req.body.projectName;
-    project.projectDescription = req.body.projectDescription;
+    project.name            = req.body.name;
+    project.description     = req.body.description;
 
     project.save(function (err) {
         if (err){
@@ -52,8 +52,8 @@ exports.update = function (req, res) {
             return;
         }
         
-        project.projectName = req.body.projectName || project.projectName;
-        project.projectDescription = req.body.projectDescription || project.projectDescription;
+        project.name            = req.body.name || project.name;
+        project.description     = req.body.description || project.description;
 
         project.save(function (err) {
             if (err)

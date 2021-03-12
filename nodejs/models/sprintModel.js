@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const sprintSchema = new Schema ({
-    sprintName: { type: String, required: true},
-    sprintDescription: { type: String, required: true},
-    sprintStartTime: { type: Number, required: true},
-    sprintEndTime: { type: Number, required: true},
-    sprintVelocity: { type: Number, required: true},
-    sprintProjectId: { type: String, required: true},
+    name: { type: String, required: true},
+    description: { type: String, required: true},
+    startTime: { type: Number, required: true},
+    endTime: { type: Number, required: true},
+    velocity: { type: Number, required: true},
+    projectId: { type: String, required: true},
 });
 
 var sprint = module.exports = mongoose.model('sprint', sprintSchema, 'sprint');

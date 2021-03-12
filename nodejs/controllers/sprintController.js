@@ -2,7 +2,7 @@ const path = require('path');
 const sprintModel = require('../models/sprintModel');
 
 exports.viewAll = function (req, res) {
-    sprintModel.find({sprintProjectId: req.params.projectid}, function (err, sprints) {
+    sprintModel.find({projectId: req.params.projectid}, function (err, sprints) {
         if (err) {
             res.status(400).json(err);
             return;
@@ -30,12 +30,12 @@ exports.view = function (req, res) {
 exports.new = function (req, res) {
     var sprint = new sprintModel();
 
-    sprint.sprintName = req.body.sprintName;
-    sprint.sprintDescription = req.body.sprintDescription;
-    sprint.sprintStartTime = req.body.sprintStartTime;
-    sprint.sprintEndTime = req.body.sprintEndTime;
-    sprint.sprintVelocity = req.body.sprintVelocity;
-    sprint.sprintProjectId = req.params.projectid;
+    sprint.name             = req.body.name;
+    sprint.description      = req.body.description;
+    sprint.startTime        = req.body.startTime;
+    sprint.endTime          = req.body.endTime;
+    sprint.velocity         = req.body.velocity;
+    sprint.projectId        = req.params.projectid;
 
     sprint.save(function (err) {
         if (err) {
@@ -56,12 +56,12 @@ exports.update = function (req, res) {
             return;
         }
         
-        sprint.sprintName = req.body.sprintName || sprint.sprintName;
-        sprint.sprintDescription = req.body.sprintDescription || sprint.sprintDescription;
-        sprint.sprintStartTime = req.body.sprintStartTime || sprint.sprintStartTime;
-        sprint.sprintEndTime = req.body.sprintEndTime || sprint.sprintEndTime;
-        sprint.sprintVelocity = req.body.sprintVelocity || sprint.sprintVelocity;
-        sprint.sprintProjectId = req.params.projectid || sprint.sprintProjectId;
+        sprint.name             = req.body.name || sprint.name;
+        sprint.description      = req.body.description || sprint.description;
+        sprint.startTime        = req.body.startTime || sprint.startTime;
+        sprint.endTime          = req.body.endTime || sprint.endTime;
+        sprint.velocity         = req.body.velocity || sprint.velocity;
+        sprint.projectId        = req.params.projectid || sprint.projectId;
 
         sprint.save(function (err) {
             if (err) {
