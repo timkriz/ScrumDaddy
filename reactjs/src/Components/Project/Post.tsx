@@ -84,7 +84,7 @@ export default ({ projectId, post, userRole, openSnack }: IProps) => {
               comments.map(comment => (
                 <Comment key={comment._id} projectId={projectId} postId={post._id} comment={comment} userRole={userRole} openSnack={(message, severity, refresh) => {
                   if(refresh) fetchComments();
-                  openSnack(message, severity); 
+                  openSnack(message, severity);
                 }} />
               ))
             }
