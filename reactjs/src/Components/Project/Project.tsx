@@ -12,6 +12,7 @@ import {deleteSprint, getSprints} from "../../api/SprintService";
 import "./project.css";
 import moment from "moment";
 import SprintDialog from "./SprintDialog";
+import DocDialog from "./DocDialog";
 
 interface IProjectParams {
   projectId: string;
@@ -19,7 +20,8 @@ interface IProjectParams {
 
 export default () => {
   const [ project, setProject ] = useState<IProject>();
-  const [ spriteDialogOpen, setSpriteDialogOpen ] = useState<boolean>(false);
+  const [ sprintDialogOpen, setSprintDialogOpen ] = useState<boolean>(false);
+  const [ docDialogOpen, setDocDialogOpen ] = useState<boolean>(false);
   const [ editId, setEditId ] = useState<string>();
   const [ sprints, setSprints ] = useState<ISprint[]>([]);
 
@@ -66,11 +68,11 @@ export default () => {
   const openSprintDialog = (sprintId?: string) => {
     sprintId !== undefined && setEditId(sprintId);
 
-    setSpriteDialogOpen(true);
+    setSprintDialogOpen(true);
   }
 
   const closeSprintDialog = () => {
-    setSpriteDialogOpen(false);
+    setSprintDialogOpen(false);
     setEditId(undefined);
   }
 
@@ -81,6 +83,14 @@ export default () => {
   const deleteClickedSprint = async (sprintId: string) => {
     await deleteSprint(projectId, sprintId);
     fetchSprints();
+  }
+
+  const openDocDialog = () => {
+    setDocDialogOpen(true);
+  }
+
+  const closeDocDialog = () => {
+    setDocDialogOpen(false);
   }
 
   return (
@@ -102,9 +112,14 @@ export default () => {
                 </IconButton>
             </div>
 
-            <Button variant="contained" color="primary" onClick={() => openSprintDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD SPRINT</Button>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <Button variant="contained" color="primary" onClick={() => openSprintDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD SPRINT</Button>
+                <Button variant="contained" color="primary" onClick={() => openDocDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>SEE DOCUMENTATION</Button>
+            </div>
 
-            <SprintDialog projectId={projectId} open={spriteDialogOpen} handleClose={closeSprintDialog} openSnack={openSnack} editId={editId} />
+            <SprintDialog projectId={projectId} open={sprintDialogOpen} handleClose={closeSprintDialog} openSnack={openSnack} editId={editId} />
+
+            { project && <DocDialog project={project} open={docDialogOpen} handleClose={closeDocDialog} openSnack={openSnack} /> }
 
             <hr style={{ margin: "30px 0" }}/>
 

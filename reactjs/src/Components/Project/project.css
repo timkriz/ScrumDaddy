@@ -31,3 +31,13 @@
     font-weight: 500;
     color: rgba(0,0,0,0.67);
 }
+
+.import_button {
+    font-family: Roboto;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #26A69A;
+    cursor: pointer;
+    line-height: 1.75;
+    letter-spacing: 0.02857em;
+}
