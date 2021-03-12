@@ -9,13 +9,15 @@ import {getPosts, postPost} from "../../api/ProjectWallService";
 import {getUserId} from "../../api/TokenService";
 import moment from "moment";
 import {Color} from "@material-ui/lab";
+import {ProjectRoles} from "../../data/Roles";
 
 interface IProps {
   projectId: string;
+  userRole: ProjectRoles;
   openSnack: (message: string, severity: Color, refresh?: boolean) => void;
 }
 
-export default ({ projectId, openSnack }: IProps) => {
+export default ({ projectId, userRole, openSnack }: IProps) => {
   const [ posts, setPosts ] = useState<IPost[]>([]);
   const [ newPostText, setNewPostText ] = useState<string>("");
 
@@ -66,7 +68,7 @@ export default ({ projectId, openSnack }: IProps) => {
 
       {
         posts.map(post => (
-          <Post key={post._id} projectId={projectId} post={post} openSnack={(message, severity, refresh) => {
+          <Post key={post._id} projectId={projectId} post={post} userRole={userRole} openSnack={(message, severity, refresh) => {
             if(refresh) fetchPosts();
             openSnack(message, severity);
           }} />

@@ -9,14 +9,16 @@ import {getUser} from "../../api/UserService";
 import {deletePost, getComments, postComment} from "../../api/ProjectWallService";
 import {Color} from "@material-ui/lab";
 import {getUserId} from "../../api/TokenService";
+import {ProjectRoles} from "../../data/Roles";
 
 interface IProps {
   projectId: string;
   post: IPost;
+  userRole: ProjectRoles;
   openSnack: (message: string, severity: Color, refresh?: boolean) => void;
 }
 
-export default ({ projectId, post, openSnack }: IProps) => {
+export default ({ projectId, post, userRole, openSnack }: IProps) => {
   const [ user, setUser ] = useState<IUser>();
   const [ comments, setComments ] = useState<IComment[]>([]);
   const [ newCommentText, setNewCommentText ] = useState<string>("");
@@ -70,16 +72,19 @@ export default ({ projectId, post, openSnack }: IProps) => {
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
                 <Typography variant="body1">{post.text}</Typography>
-                <IconButton color="secondary" onClick={deleteClickedPost}>
-                    <ClearRounded />
-                </IconButton>
+                {
+                  userRole === ProjectRoles.METH_KEEPER &&
+                  <IconButton color="secondary" onClick={deleteClickedPost}>
+                      <ClearRounded />
+                  </IconButton>
+                }
             </div>
 
             {
               comments.map(comment => (
-                <Comment key={comment._id} projectId={projectId} postId={post._id} comment={comment} openSnack={(message, severity, refresh) => {
+                <Comment key={comment._id} projectId={projectId} postId={post._id} comment={comment} userRole={userRole} openSnack={(message, severity, refresh) => {
                   if(refresh) fetchComments();
-                  openSnack(message, severity);
+                  openSnack(message, severity); 
                 }} />
               ))
             }

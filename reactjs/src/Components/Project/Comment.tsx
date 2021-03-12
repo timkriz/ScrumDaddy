@@ -7,15 +7,17 @@ import {ClearRounded} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import {deleteComment} from "../../api/ProjectWallService";
 import {Color} from "@material-ui/lab";
+import {ProjectRoles} from "../../data/Roles";
 
 interface IProps {
   projectId: string;
   postId: string;
   comment: IComment;
+  userRole: ProjectRoles;
   openSnack: (message: string, severity: Color, refresh?: boolean) => void;
 }
 
-export default ({ projectId, postId, comment, openSnack }: IProps) => {
+export default ({ projectId, postId, comment, userRole, openSnack }: IProps) => {
   const [ user, setUser ] = useState<IUser>();
 
   useEffect(() => {
@@ -46,9 +48,12 @@ export default ({ projectId, postId, comment, openSnack }: IProps) => {
               <Typography variant="subtitle2">{user.name} {user.surname} commented at {moment.unix(comment.timestamp).format("DD.MM.YYYY HH:mm")}</Typography>
               <Typography variant="body2">{comment.text}</Typography>
           </div>
-          <IconButton color="secondary" onClick={deleteClickedComment}>
-              <ClearRounded />
-          </IconButton>
+          {
+            userRole === ProjectRoles.METH_KEEPER &&
+            <IconButton color="secondary" onClick={deleteClickedComment}>
+                <ClearRounded />
+            </IconButton>
+          }
         </div>
       }
     </>

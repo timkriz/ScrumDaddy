@@ -30,6 +30,10 @@ export const getProjectUsers = (id: string): Promise<any> => {
   return axiosAuth.get(`${BACKEND_URL}/projects/${id}/users`);
 };
 
+export const getProjectUser = (projectId: string, userId: string): Promise<any> => {
+  return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/users/${userId}`);
+};
+
 export const postProjectUser = (projectId: string, userId: string, userRole: string): Promise<any> => {
   return axiosAuth.post(`${BACKEND_URL}/projects/${projectId}/users`, {
     userId,

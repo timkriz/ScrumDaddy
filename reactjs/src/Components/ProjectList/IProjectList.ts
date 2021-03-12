@@ -1,3 +1,5 @@
+import {ProjectRoles} from "../../data/Roles";
+
 export interface IProject {
   _id: string;
   name: string;
@@ -14,9 +16,10 @@ export interface IUser {
 }
 
 export interface IProjectUser {
+  _id: string;
   projectId: string;
   userId: string;
-  userRole: string;
+  userRole: ProjectRoles;
 }
 
 export interface IProjectDialogAssign {
