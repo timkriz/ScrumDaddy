@@ -1,17 +1,12 @@
-import axiosAuth from './axios';
-/*import {postStoryUrl} from "./Endpoints";
+import axiosAuth, {BACKEND_URL} from './axios';
 
-export const postUserStory = (storyName: string, storyTimeEstimate: string, storyBusinessValue: string, storyComment: string,
-  storyPriority: string , storyTests: string, storyStatus: string, storyProjectId: string, storySprintId: string): Promise<any> => {
-  return axiosAuth.post(postStoryUrl, {
-    storyName,
-    storyTimeEstimate,
-    storyBusinessValue,
-    storyComment,
-    storyPriority,
-    storyTests,
-    storyStatus,
-    storyProjectId,
-    storySprintId
-  });
-};*/
+export const getSprints = (projectId: string): Promise<any> => {
+  return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/sprints`);
+};
+
+export const getSprint = (projectId: string, sprintId: string): Promise<any> => {
+  return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}`);
+};
+export const getStories = (projectId: string, sprintId: string): Promise<any> => {
+  return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories`);
+};

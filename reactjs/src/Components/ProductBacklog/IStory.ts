@@ -1,4 +1,4 @@
-export interface IStories {
+export interface IStory {
     _id: string;
     storyName: string;
     storyTimeEstimate: number;
