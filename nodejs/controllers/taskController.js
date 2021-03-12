@@ -2,7 +2,7 @@ const path = require('path');
 const taskModel = require('../models/taskModel');
 
 exports.viewAll = function (req, res) {
-    taskModel.find({taskStoryId: req.params.storyid}, function (err, tasks) {
+    taskModel.find({storyId: req.params.storyid}, function (err, tasks) {
         if (err) {
             res.status(400).json(err);
             return;
@@ -30,12 +30,12 @@ exports.view = function (req, res) {
 exports.new = function (req, res) {
     var task = new taskModel();
 
-    task.taskName = req.body.taskName;
-    task.taskDescription = req.body.taskDescription;
-    task.taskTimeEstimate = req.body.taskTimeEstimate;
-    task.taskSuggestedUser = req.body.taskSuggestedUser;
-    task.taskAssignedUser = req.body.taskAssignedUser;
-    task.taskStoryId = req.params.storyid;
+    task.name               = req.body.name;
+    task.description        = req.body.description;
+    task.timeEstimate       = req.body.timeEstimate;
+    task.suggestedUser      = req.body.suggestedUser;
+    task.assignedUser       = req.body.assignedUser;
+    task.storyId            = req.params.storyid;
 
     task.save(function (err) {
         if (err) {
@@ -56,12 +56,12 @@ exports.update = function (req, res) {
             return;
         }
         
-        task.taskName = req.body.taskName || task.taskName;
-        task.taskDescription = req.body.taskDescription || task.taskDescription;
-        task.taskTimeEstimate = req.body.taskTimeEstimate || task.taskTimeEstimate;
-        task.taskSuggestedUser = req.body.taskSuggestedUser || task.taskSuggestedUser;
-        task.taskAssignedUser = req.body.taskAssignedUser || task.taskAssignedUser;
-        task.taskStoryId = req.params.storyid || task.taskStoryId;
+        task.name               = req.body.name || task.name;
+        task.description        = req.body.description || task.description;
+        task.timeEstimate       = req.body.timeEstimate || task.timeEstimate;
+        task.suggestedUser      = req.body.suggestedUser || task.suggestedUser;
+        task.assignedUser       = req.body.assignedUser || task.assignedUser;
+        task.storyId            = req.params.storyid || task.storyId;
 
         task.save(function (err) {
             if (err) {

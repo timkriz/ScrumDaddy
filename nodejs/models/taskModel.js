@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const taskSchema = new Schema ({
-    taskName: { type: String, required: true},
-    taskDescription: { type: String, required: true},
-    taskTimeEstimate: { type: Number, required: true},
-    taskSuggestedUser: { type: String, required: true},
-    taskAssignedUser: { type: String, required: true},
-    taskStoryId: { type: String, required: true},
+    name: { type: String, required: true},
+    description: { type: String, required: true},
+    timeEstimate: { type: Number, required: true},
+    suggestedUser: { type: String, required: true},
+    assignedUser: { type: String, required: true},
+    storyId: { type: String, required: true},
 });
 
 var task = module.exports = mongoose.model('task', taskSchema, 'task');
