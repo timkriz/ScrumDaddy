@@ -24,10 +24,10 @@ export default ({ project, open, handleClose, openSnack }: IProps) => {
     try {
       await putProject(project._id, project.name, text);
 
-      openSnack("Sprint updated successfully!", "success", true);
+      openSnack("Documentation updated successfully!", "success", true);
       handleClose();
     } catch (e) {
-      openSnack("Sprint update failed!", "error");
+      openSnack("Documentation update failed!", "error");
     }
   };
 

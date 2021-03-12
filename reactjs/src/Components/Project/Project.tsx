@@ -113,7 +113,7 @@ export default () => {
         project !== undefined &&
         <>
             <Snackbar anchorOrigin={{ vertical: "top", horizontal: "right" }} open={snackOpen} autoHideDuration={6000} onClose={closeSnack}>
-                <Alert onClose={closeSnack} severity={snackSeverity}>{snackMessage}</Alert>
+                <Alert variant="filled" onClose={closeSnack} severity={snackSeverity}>{snackMessage}</Alert>
             </Snackbar>
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
