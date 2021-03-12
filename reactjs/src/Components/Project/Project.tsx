@@ -13,6 +13,7 @@ import "./project.css";
 import moment from "moment";
 import SprintDialog from "./SprintDialog";
 import DocDialog from "./DocDialog";
+import ProjectWall from "./ProjectWall";
 
 interface IProjectParams {
   projectId: string;
@@ -123,42 +124,51 @@ export default () => {
 
             <hr style={{ margin: "30px 0" }}/>
 
-            {
-              sprints.map((sprint, i) => (
-                <div key={i} className="sprint_row">
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div className="sprint_row_title">{sprint.sprintName}</div>
-                    <div style={{ display: "flex", marginTop: 10 }}>
-                      <div style={{ marginRight: 20 }}>
-                        <div className="sprint_label">Start Date:</div>
-                        <div className="sprint_value">{moment.unix(sprint.sprintStartTime).format("DD.MM.YYYY")}</div>
-                      </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+                  <div className="page_subtitle" style={{ marginBottom: 20 }}>Sprints</div>
+                  {
+                    sprints.map((sprint, i) => (
+                      <div key={i} className="sprint_row">
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                          <div className="sprint_row_title">{sprint.sprintName}</div>
+                          <div style={{ display: "flex", marginTop: 10 }}>
+                            <div style={{ marginRight: 20 }}>
+                              <div className="sprint_label">Start Date:</div>
+                              <div className="sprint_value">{moment.unix(sprint.sprintStartTime).format("DD.MM.YYYY")}</div>
+                            </div>
 
-                      <div style={{ marginRight: 20 }}>
-                        <div className="sprint_label">End Date:</div>
-                        <div className="sprint_value">{moment.unix(sprint.sprintEndTime).format("DD.MM.YYYY")}</div>
-                      </div>
+                            <div style={{ marginRight: 20 }}>
+                              <div className="sprint_label">End Date:</div>
+                              <div className="sprint_value">{moment.unix(sprint.sprintEndTime).format("DD.MM.YYYY")}</div>
+                            </div>
 
-                      <div>
-                        <div className="sprint_label">Sprint Velocity:</div>
-                        <div className="sprint_value">{sprint.sprintVelocity}</div>
+                            <div>
+                              <div className="sprint_label">Sprint Velocity:</div>
+                              <div className="sprint_value">{sprint.sprintVelocity}</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="sprint_row_icons">
+                          <IconButton color="primary" onClick={() => deleteClickedSprint(sprint._id)}>
+                            <DeleteRounded />
+                          </IconButton>
+                          <IconButton color="primary" onClick={() => openSprintDialog(sprint._id)}>
+                            <EditRounded />
+                          </IconButton>
+                          <IconButton color="primary" onClick={() => sprintDetailsClick(sprint._id)}>
+                            <ArrowForwardRounded />
+                          </IconButton>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="sprint_row_icons">
-                    <IconButton color="primary" onClick={() => deleteClickedSprint(sprint._id)}>
-                      <DeleteRounded />
-                    </IconButton>
-                    <IconButton color="primary" onClick={() => openSprintDialog(sprint._id)}>
-                      <EditRounded />
-                    </IconButton>
-                    <IconButton color="primary" onClick={() => sprintDetailsClick(sprint._id)}>
-                      <ArrowForwardRounded />
-                    </IconButton>
-                  </div>
+                    ))
+                  }
                 </div>
-              ))
-            }
+                <div className="center_divider" />
+                <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+                  <ProjectWall />
+                </div>
+            </div>
         </>
       }
     </>

@@ -33,3 +33,19 @@ export interface ISprint {
   sprintVelocity: number,
   sprintProjectId: string,
 }
+
+export interface IPost {
+  _id: string;
+  projectId: string;
+  userId: string;
+  timestamp: number;
+  text: string;
+}
+
+export interface IComment {
+  _id: string;
+  postId: string;
+  userId: string;
+  timestamp: number;
+  text: string;
+}
