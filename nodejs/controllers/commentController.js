@@ -2,7 +2,7 @@ const path = require('path');
 const commentModel = require('../models/commentModel');
 
 exports.viewAll = function (req, res) {
-    commentModel.find(function (err, comments) {
+    commentModel.find({postId: req.params.postid},function (err, comments) {
         if (err) {
             res.status(400).json(err);
             return;
