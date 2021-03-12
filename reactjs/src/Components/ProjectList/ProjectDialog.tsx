@@ -68,8 +68,8 @@ export default ({ open, handleClose, openSnack, editId }: IProps) => {
     if(editId !== undefined) {
       // Project
       const gottenProject = (await getProject(editId)).data.data as IProject;
-      setProjectTitle(gottenProject.projectName);
-      setProjectDescription(gottenProject.projectDescription);
+      setProjectTitle(gottenProject.name);
+      setProjectDescription(gottenProject.description);
 
       // Project Users
       const gottenProjectUsers = (await getProjectUsers(editId)).data.data as IProjectUser[];

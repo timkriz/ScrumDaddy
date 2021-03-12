@@ -4,16 +4,16 @@ import {IComment, IPost, IUser} from "../ProjectList/IProjectList";
 import moment from "moment";
 import Comment from "./Comment";
 import IconButton from "@material-ui/core/IconButton";
-import {Send} from "@material-ui/icons";
+import {ClearRounded, Send} from "@material-ui/icons";
 import {getUser} from "../../api/UserService";
-import {getComments, postComment} from "../../api/ProjectWallService";
+import {deletePost, getComments, postComment} from "../../api/ProjectWallService";
 import {Color} from "@material-ui/lab";
 import {getUserId} from "../../api/TokenService";
 
 interface IProps {
   projectId: string;
   post: IPost;
-  openSnack: (message: string, severity: Color) => void;
+  openSnack: (message: string, severity: Color, refresh?: boolean) => void;
 }
 
 export default ({ projectId, post, openSnack }: IProps) => {
@@ -50,6 +50,16 @@ export default ({ projectId, post, openSnack }: IProps) => {
     }
   }
 
+  const deleteClickedPost = async () => {
+    await deletePost(projectId, post._id)
+      .then(() => {
+        openSnack("Post deletion successful!", "success", true);
+      })
+      .catch(() => {
+        openSnack("Post deletion failed!", "error");
+      });
+  }
+
   return (
     <>
       {
@@ -58,11 +68,19 @@ export default ({ projectId, post, openSnack }: IProps) => {
           <CardHeader subheader={"Posted at "+moment.unix(post.timestamp).format("DD.MM.YYYY HH:mm")} title={user.name+" "+user.surname} />
           <CardContent>
 
-            <Typography variant="body1" style={{ marginBottom: 32 }}>{post.text}</Typography>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+                <Typography variant="body1">{post.text}</Typography>
+                <IconButton color="secondary" onClick={deleteClickedPost}>
+                    <ClearRounded />
+                </IconButton>
+            </div>
 
             {
               comments.map(comment => (
-                <Comment key={comment._id} comment={comment} />
+                <Comment key={comment._id} projectId={projectId} postId={post._id} comment={comment} openSnack={(message, severity, refresh) => {
+                  if(refresh) fetchComments();
+                  openSnack(message, severity);
+                }} />
               ))
             }
 

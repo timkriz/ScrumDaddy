@@ -66,7 +66,10 @@ export default ({ projectId, openSnack }: IProps) => {
 
       {
         posts.map(post => (
-          <Post key={post._id} projectId={projectId} post={post} openSnack={openSnack} />
+          <Post key={post._id} projectId={projectId} post={post} openSnack={(message, severity, refresh) => {
+            if(refresh) fetchPosts();
+            openSnack(message, severity);
+          }} />
         ))
       }
 

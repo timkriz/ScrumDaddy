@@ -30,13 +30,13 @@ const allStories: IStories[] = [
 const allProjects: IProject[] = [
     {
       _id: "0",
-      projectName: "Super Mario Brothers",
-      projectDescription: ""
+      name: "Super Mario Brothers",
+      description: ""
     },
     {
       _id: "1",
-      projectName: "Mario Kart",
-      projectDescription: ""
+      name: "Mario Kart",
+      description: ""
     }
   ];
 export default () => {
@@ -74,7 +74,7 @@ export default () => {
                 >
                     {
                     projects.map((project, i) => (
-                        <Button key={i} onClick={() => setSelectedProject(project)} style={{justifyContent: "flex-start"}}>{project.projectName}</Button>
+                        <Button key={i} onClick={() => setSelectedProject(project)} style={{justifyContent: "flex-start"}}>{project.name}</Button>
                     ))
                     }
                 </ButtonGroup>
@@ -87,7 +87,7 @@ export default () => {
                     boxShadow: "none",
                 }} className="{paper_project">
                 <Typography variant="h6">
-                    {selectedProject.projectName}
+                    {selectedProject.name}
                 </Typography>
                 
                 {/* TABS */}

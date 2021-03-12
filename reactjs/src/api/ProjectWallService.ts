@@ -13,6 +13,10 @@ export const postPost = (projectId: string, userId: string, timestamp: number, t
   });
 };
 
+export const deletePost = (projectId: string, postId: string): Promise<any> => {
+  return axiosAuth.delete(`${BACKEND_URL}/projects/${projectId}/posts/${postId}`);
+};
+
 export const getComments = (projectId: string, postId: string): Promise<any> => {
   return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/posts/${postId}/comments`);
 };
@@ -24,4 +28,8 @@ export const postComment = (projectId: string, postId: string, userId: string, t
     timestamp,
     text
   });
+};
+
+export const deleteComment = (projectId: string, postId: string, commentId: string): Promise<any> => {
+  return axiosAuth.delete(`${BACKEND_URL}/projects/${projectId}/posts/${postId}/comments/${commentId}`);
 };

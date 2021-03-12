@@ -12,17 +12,17 @@ export const deleteProject = (id: string): Promise<any> => {
   return axiosAuth.delete(`${BACKEND_URL}/projects/${id}`);
 };
 
-export const postProject = (projectName: string, projectDescription: string): Promise<any> => {
+export const postProject = (name: string, description: string): Promise<any> => {
   return axiosAuth.post(`${BACKEND_URL}/projects`, {
-    projectName,
-    projectDescription
+    name,
+    description
   });
 };
 
-export const putProject = (id: string, projectName: string, projectDescription: string): Promise<any> => {
+export const putProject = (id: string, name: string, description: string): Promise<any> => {
   return axiosAuth.put(`${BACKEND_URL}/projects/${id}`, {
-    projectName,
-    projectDescription
+    name,
+    description
   });
 };
 

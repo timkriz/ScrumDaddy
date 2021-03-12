@@ -82,7 +82,7 @@ export default () => {
       {
         projects.map((project, i) => (
           <div key={i} className="project_row">
-            <div className="project_row_title">{project.projectName}</div>
+            <div className="project_row_title">{project.name}</div>
             <div className="project_row_icons">
               <IconButton color="primary" onClick={() => deleteClickedProject(project._id)}>
                 <DeleteRounded />
