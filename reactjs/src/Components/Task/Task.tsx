@@ -9,10 +9,9 @@ import {Button} from "@material-ui/core";
 import {Color} from "@material-ui/lab/Alert";
 import {getProject} from "../../api/ProjectService";
 import {deleteSprint, getSprints} from "../../api/SprintService";
-import "./project.css";
+import "./task.css";
 import moment from "moment";
-import SprintDialog from "./SprintDialog";
-import TaskDialog from "../Task/TaskDialog";
+import TaskDialog from "./TaskDialog";
 
 interface IProjectParams {
   projectId: string;
@@ -21,7 +20,6 @@ interface IProjectParams {
 export default () => {
   const [ project, setProject ] = useState<IProject>();
   const [ spriteDialogOpen, setSpriteDialogOpen ] = useState<boolean>(false);
-  const [ taskDialogOpen, setTaskDialogOpen ] = useState<boolean>(false);
   const [ editId, setEditId ] = useState<string>();
   const [ sprints, setSprints ] = useState<ISprint[]>([]);
 
@@ -76,17 +74,6 @@ export default () => {
     setEditId(undefined);
   }
 
-  const openTaskDialog = (taskId?: string) => {
-    taskId !== undefined && setEditId(taskId);
-
-    setTaskDialogOpen(true);
-  }
-
-  const closeTaskDialog = () => {
-    setTaskDialogOpen(false);
-    setEditId(undefined);
-  }
-
   const sprintDetailsClick = (sprintId: string) => {
     history.push(`/projects/${projectId}/sprints/${sprintId}`);
   }
@@ -116,10 +103,9 @@ export default () => {
             </div>
 
             <Button variant="contained" color="primary" onClick={() => openSprintDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD SPRINT</Button>
-            <Button variant="contained" color="primary" onClick={() => openTaskDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD TASK</Button>
 
-            <SprintDialog projectId={projectId} open={spriteDialogOpen} handleClose={closeSprintDialog} openSnack={openSnack} editId={editId} />
-            <TaskDialog projectId={projectId} open={taskDialogOpen} handleClose={closeTaskDialog} openSnack={openSnack} editId={editId} />
+            <TaskDialog projectId={projectId} open={spriteDialogOpen} handleClose={closeSprintDialog} openSnack={openSnack} editId={editId} />
+
             <hr style={{ margin: "30px 0" }}/>
 
             {
