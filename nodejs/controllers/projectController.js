@@ -8,7 +8,7 @@ exports.viewAll = function (req, res) {
             return;
         }
         res.json({
-            message: 'Loading projects data..',
+            message: "Projects found",
             data: projects
         });
     });
@@ -19,31 +19,29 @@ exports.view = function (req, res) {
         if (err) {
             res.status(400).send(err);
             return;
-        }
-        
+        }       
         res.json({
-            message: 'Loading projects data..',
+            message: "Project found",
             data: project
         });
     });
 };
 
-// Handle create project actions
 exports.new = function (req, res) {
     var project = new projectModel();
-    project.projectName = req.body.projectName;
-    project.projectDescription = req.body.projectDescription;
+    
+    project.name            = req.body.name;
+    project.description     = req.body.description;
 
     project.save(function (err) {
         if (err){
             res.json(err);
+            return;
         }
-        else{
-            res.json({
-                message: 'project success',
-                data: project
-            });
-        }
+        res.json({
+            message: "Project created",
+            data: project
+        });
     });
 };
 
@@ -54,14 +52,14 @@ exports.update = function (req, res) {
             return;
         }
         
-        project.projectName = req.body.projectName;
-        project.projectDescription = req.body.projectDescription;
+        project.name            = req.body.name || project.name;
+        project.description     = req.body.description || project.description;
 
         project.save(function (err) {
             if (err)
                 res.json(err);
             res.json({
-                message: 'project Info updated',
+                message: "Project updated",
                 data: project
             });
         });
@@ -75,8 +73,8 @@ exports.delete = function (req, res) {
             return;
         }
         res.json({
-            status: "success",
-            message: 'project deleted'
+            message: "Project deleted",
+            data: project
         });
     });
 };

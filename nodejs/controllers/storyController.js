@@ -2,13 +2,13 @@ const path = require('path');
 const storyModel = require('../models/storyModel');
 
 exports.viewAll = function (req, res) {
-    storyModel.find({storySprintId: req.params.sprintid}, function (err, stories) {
+    storyModel.find({sprintId: req.params.sprintid}, function (err, stories) {
         if (err) {
-            res.status(400).send(err);
+            res.status(400).json(err);
             return;
         }
         res.json({
-            message: 'Loading stories data..',
+            message: "Stories found",
             data: stories
         });
     });
@@ -17,64 +17,65 @@ exports.viewAll = function (req, res) {
 exports.view = function (req, res) {
     storyModel.findOne({_id: req.params.storyid}, function (err, story) {
         if (err) {
-            res.status(400).send(err);
+            res.status(400).json(err);
             return;
         }
         res.json({
-            message: 'Loading story data..',
+            message: "Story found",
             data: story
         });
     });
 };
 
-// Handle create task actions
 exports.new = function (req, res) {
     var story = new storyModel();
-    story.storyName = req.body.storyName;
-    story.storyTimeEstimate = req.body.storyTimeEstimate;
-    story.storyBusinessValue = req.body.storyBusinessValue;
-    story.storyComment = req.body.storyComment;
-    story.storyPriority = req.body.storyPriority;
-    story.storyTests = req.body.storyTests;
-    story.storyStatus = req.body.storyStatus;
-    story.storyProjectId = req.params.projectid;
-    story.storySprintId = req.params.sprintid;
+
+    story.name              = req.body.name;
+    story.timeEstimate      = req.body.timeEstimate;
+    story.businessValue     = req.body.businessValue;
+    story.comment           = req.body.comment;
+    story.priority          = req.body.priority;
+    story.tests             = req.body.tests;
+    story.status            = req.body.status;
+    story.projectId         = req.params.projectid;
+    story.sprintId          = req.params.sprintid;
 
     story.save(function (err) {
-        if (err){
-            res.json(err);
+        if (err) {
+            res.status(400).json(err);
+            return;
         }
-        else{
-            res.json({
-                message: 'story success',
-                data: story
-            });
-        }
+        res.json({
+            message: "Story created",
+            data: story
+        });
     });
 };
 
 exports.update = function (req, res) {
     storyModel.findOne({_id: req.params.storyid}, function (err, story) {
         if (err) {
-            res.status(400).send(err);
+            res.status(400).json(err);
             return;
         }
-        
-        story.storyName = req.body.storyName;
-        story.storyTimeEstimate = req.body.storyTimeEstimate;
-        story.storyBusinessValue = req.body.storyBusinessValue;
-        story.storyComment = req.body.storyComment;
-        story.storyPriority = req.body.storyPriority;
-        story.storyTests = req.body.storyTests;
-        story.storyStatus = req.body.storyStatus;
-        story.storyProjectId = req.params.projectid;
-        story.storySprintId = req.params.sprintid;
+
+        story.name              = req.body.name || story.name;
+        story.timeEstimate      = req.body.timeEstimate || story.timeEstimate;
+        story.businessValue     = req.body.businessValue || story.businessValue;
+        story.comment           = req.body.comment || story.comment;
+        story.priority          = req.body.priority || story.priority;
+        story.tests             = req.body.tests || story.tests;
+        story.status            = req.body.status || story.status;
+        story.projectId         = req.params.projectid || story.projectId;
+        story.sprintId          = req.params.sprintid || story.sprintId;
 
         story.save(function (err) {
-            if (err)
-                res.json(err);
+            if (err) {
+                res.status(400).json(err);
+                return;
+            }
             res.json({
-                message: 'story Info updated',
+                message: "Story updated",
                 data: story
             });
         });
@@ -82,14 +83,27 @@ exports.update = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-    taskModel.remove({_id: req.params.storyid}, function (err, story) {
+    storyModel.remove({_id: req.params.storyid}, function (err, story) {
         if (err) {
-            res.status(400).send(err);
+            res.status(400).json(err);
             return;
         }
         res.json({
-            status: "success",
-            message: 'story deleted'
+            message: "Story deleted",
+            data: story
+        });
+    });
+};
+
+exports.deleteMany = function (req, res) {
+    storyModel.deleteMany({projectId: req.params.projectid}, function (err, stories) {
+        if (err) {
+            res.status(400).json(err);
+            return;
+        }
+        res.json({
+            message: "Stories deleted",
+            data: stories
         });
     });
 };

@@ -12,3 +12,11 @@
     color: #0097a7;
     align-self: center;
 }
+
+.page_subtitle {
+    font-family: Roboto;
+    font-weight: 700;
+    font-size: 32px;
+    color: #0097a7;
+    align-self: center;
+}

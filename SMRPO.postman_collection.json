@@ -1,12 +1,12 @@
 {
 	"info": {
-		"_postman_id": "1f0b40f5-3392-473e-a096-8921ada2a522",
+		"_postman_id": "cc848c1e-6c57-43cb-ac33-8cb78011042f",
 		"name": "SMRPO",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "homeCheck",
+			"name": "Home",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -24,32 +24,13 @@
 			"response": []
 		},
 		{
-			"name": "AllUsers",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/api/users",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Register",
+			"name": "Register POST",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"username\",\r\n    \"password\": \"password\",\r\n    \"role\": \"admin\",\r\n    \"name\": \"name\",\r\n    \"surname\": \"surname\",\r\n    \"email\": \"test@test.com\"\r\n}",
+					"raw": "{\r\n    \"username\": \"velipeli\",\r\n    \"password\": \"velipeli\",\r\n    \"role\": \"USER\",\r\n    \"name\": \"Jan\",\r\n    \"surname\": \"Pelicon\",\r\n    \"email\": \"jnpelicon@gmail.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -71,13 +52,13 @@
 			"response": []
 		},
 		{
-			"name": "Login",
+			"name": "Login POST",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"username\",\r\n    \"password\": \"password\"\r\n}",
+					"raw": "{\r\n    \"username\": \"jan\",\r\n    \"password\": \"velipeli\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -99,29 +80,18 @@
 			"response": []
 		},
 		{
-			"name": "ProjectsUsers POST",
+			"name": "Users GET All",
 			"request": {
-				"method": "POST",
+				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"projectId\": \"asdd\",\r\n    \"userId\": \"asd2\",\r\n    \"userRole\": 1\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "localhost:8080/api/projects/asdd/users",
+					"raw": "localhost:8080/api/users",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"api",
-						"projects",
-						"asdd",
 						"users"
 					]
 				}
@@ -129,7 +99,87 @@
 			"response": []
 		},
 		{
-			"name": "ProjectsUsers GET",
+			"name": "Users GET",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/users/604a0b981cfb6034d4e64a0a",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"users",
+						"604a0b981cfb6034d4e64a0a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Users UPDATE",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"jan\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/users/604a0b981cfb6034d4e64a0a",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"users",
+						"604a0b981cfb6034d4e64a0a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Users DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/users/604396915a44be11f8653683",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"users",
+						"604396915a44be11f8653683"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Project GET All",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -138,80 +188,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"projectId\": \"asd\",\r\n    \"userId\": \"asd\",\r\n    \"userRole\": 1\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/api/projects/asdd/users/asd",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"projects",
-						"asdd",
-						"users",
-						"asd"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "ProjectsUsers GET ALL",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/api/projects/asdd/users",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"projects",
-						"asdd",
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "ProjectsUsers DELETE ALL",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "localhost:8080/api/projects/asdd/users",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"projects",
-						"asdd",
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Project POST",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"projectName\": \"default\",\r\n    \"projectDescription\": \"default\"\r\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -250,7 +227,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227",
+					"raw": "localhost:8080/api/projects/",
 					"host": [
 						"localhost"
 					],
@@ -258,23 +235,20 @@
 					"path": [
 						"api",
 						"projects",
-						"6048b6881f05c2465c276227"
+						""
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Project GET ALL",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
+			"name": "Project POST",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n    \"name\": \"test_project\",\r\n    \"description\": \"Project description\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -296,13 +270,13 @@
 			"response": []
 		},
 		{
-			"name": "Sprint POST",
+			"name": "Project UPDATE",
 			"request": {
-				"method": "POST",
+				"method": "PATCH",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"sprintName\": \"default\",\r\n    \"sprintDescription\": \"default\",\r\n    \"sprintStartTime\": \"420\",\r\n    \"sprintEndTime\": \"420\",\r\n    \"sprintVelocity\": \"420\",\r\n    \"sprintProjectId\": \"6048b6881f05c2465c276227\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Project unique name\",\r\n    \"description\": \"Project description\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -310,7 +284,36 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints",
+					"raw": "localhost:8080/api/project/60437c44c13208406cb573d4",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"project",
+						"60437c44c13208406cb573d4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Project DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8bce67549b262404d3aa",
 					"host": [
 						"localhost"
 					],
@@ -318,7 +321,508 @@
 					"path": [
 						"api",
 						"projects",
-						"6048b6881f05c2465c276227",
+						"604b8bce67549b262404d3aa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Project DELETE All",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProjectsUsers GET All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b9a09a397a7236cd6d3f7/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b9a09a397a7236cd6d3f7",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProjectsUsers GET",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/users/604a0b981cfb6034d4e64a0a",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"users",
+						"604a0b981cfb6034d4e64a0a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProjectsUsers POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"projectId\": \"604b9a09a397a7236cd6d3f7\",\r\n    \"userId\": \"604a0b981cfb6034d4e64a0a\",\r\n    \"userRole\": \"USER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/604b9a09a397a7236cd6d3f7/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b9a09a397a7236cd6d3f7",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProjectsUsers UPDATE",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"projectId\": \"604b8ba167549b262404d3a9\",\r\n    \"userId\": \"604a0b981cfb6034d4e64a0a\",\r\n    \"userRole\": \"USER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/users/604a0b981cfb6034d4e64a0a",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"users",
+						"604a0b981cfb6034d4e64a0a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProjectsUsers DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/users/604a0b981cfb6034d4e64a0a",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"users",
+						"604a0b981cfb6034d4e64a0a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProjectsUsers DELETE All",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post GET All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b9a09a397a7236cd6d3f7/posts",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b9a09a397a7236cd6d3f7",
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post GET",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/posts/604b9275a9c7f44b54f0a19b",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"posts",
+						"604b9275a9c7f44b54f0a19b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"projectId\": \"604b9a09a397a7236cd6d3f7\",\r\n    \"userId\": \"604a0b981cfb6034d4e64a0a\",\r\n    \"timestamp\": 420,\r\n    \"text\": \"This is a post\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/604b9a09a397a7236cd6d3f7/posts",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b9a09a397a7236cd6d3f7",
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post UPDATE",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/posts/604b8f6a67549b262404d3ad",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"posts",
+						"604b8f6a67549b262404d3ad"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/posts/604b9275a9c7f44b54f0a19b",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"posts",
+						"604b9275a9c7f44b54f0a19b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post DELETE All",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment GET All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/posts/604b9275a9c7f44b54f0a19b/comments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"posts",
+						"604b9275a9c7f44b54f0a19b",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment GET",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/posts/604b9275a9c7f44b54f0a19b/comments/604b906267549b262404d3ae",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"posts",
+						"604b9275a9c7f44b54f0a19b",
+						"comments",
+						"604b906267549b262404d3ae"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"postId\": \"604b9a52a397a7236cd6d3f9\",\r\n    \"userId\": \"604a0b981cfb6034d4e64a0a\",\r\n    \"timestamp\": 420,\r\n    \"text\": \"This is a comment on a post.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/604b9a09a397a7236cd6d3f7/posts/604b9a52a397a7236cd6d3f9/comments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b9a09a397a7236cd6d3f7",
+						"posts",
+						"604b9a52a397a7236cd6d3f9",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment UPDATE",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"postId\": \"604b8f6a67549b262404d3ad\",\r\n    \"userId\": \"604a0b981cfb6034d4e64a0a\",\r\n    \"timestamp\": 420,\r\n    \"text\": \"This is a comment on a post which is updated\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/posts/604b8f6a67549b262404d3ad/comments/604b906267549b262404d3ae",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"posts",
+						"604b8f6a67549b262404d3ad",
+						"comments",
+						"604b906267549b262404d3ae"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/posts/604b9275a9c7f44b54f0a19b/comments/604b948209ad441c1025850e",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"posts",
+						"604b9275a9c7f44b54f0a19b",
+						"comments",
+						"604b948209ad441c1025850e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment DELETE All",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/posts/604b9275a9c7f44b54f0a19b/comments",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"posts",
+						"604b9275a9c7f44b54f0a19b",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sprint GET All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b9a09a397a7236cd6d3f7/sprints",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b9a09a397a7236cd6d3f7",
 						"sprints"
 					]
 				}
@@ -331,7 +835,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228",
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints",
 					"host": [
 						"localhost"
 					],
@@ -339,41 +843,7 @@
 					"path": [
 						"api",
 						"projects",
-						"6048b6881f05c2465c276227",
-						"sprints",
-						"6048b6fa1f05c2465c276228"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Sprint GET ALL",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"projects",
-						"6048b6881f05c2465c276227",
+						"604b8ba167549b262404d3a9",
 						"sprints"
 					]
 				}
@@ -381,13 +851,13 @@
 			"response": []
 		},
 		{
-			"name": "Story POST",
+			"name": "Sprint POST",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"storyName\": \"default\",\r\n    \"storyTimeEstimate\": \"420\",\r\n    \"storyBusinessValue\": \"420\",\r\n    \"storyComment\": \"DefaultComment\",\r\n    \"storyPriority\": \"420\",\r\n    \"storyTests\": \"DefaultTests\",\r\n    \"storyStatus\": \"DefaultStatus\",\r\n    \"storyProjectId\": \"6048b6881f05c2465c276227\",\r\n    \"storySprintId\": \"6048b6fa1f05c2465c276228\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Default sprint name\",\r\n    \"description\": \"Default description\",\r\n    \"startTime\": 420,\r\n    \"endTime\": 420,\r\n    \"velocity\": 420,\r\n    \"projectId\": \"604b9a09a397a7236cd6d3f7\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -395,7 +865,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228/stories",
+					"raw": "localhost:8080/api/projects/604b9a09a397a7236cd6d3f7/sprints",
 					"host": [
 						"localhost"
 					],
@@ -403,9 +873,101 @@
 					"path": [
 						"api",
 						"projects",
-						"6048b6881f05c2465c276227",
+						"604b9a09a397a7236cd6d3f7",
+						"sprints"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sprint UPDATE",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/:sprintid",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
 						"sprints",
-						"6048b6fa1f05c2465c276228",
+						":sprintid"
+					],
+					"variable": [
+						{
+							"key": "sprintid",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sprint DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9613fe8ee50cc043c8ee",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"sprints",
+						"604b9613fe8ee50cc043c8ee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sprint DELETE All",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"sprints"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Story GET All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9ab8a397a7236cd6d3fb/stories",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"sprints",
+						"604b9ab8a397a7236cd6d3fb",
 						"stories"
 					]
 				}
@@ -418,7 +980,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228/stories/6048b75d8fccf507ecb0353c",
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9613fe8ee50cc043c8ee/stories/storyid",
 					"host": [
 						"localhost"
 					],
@@ -426,27 +988,24 @@
 					"path": [
 						"api",
 						"projects",
-						"6048b6881f05c2465c276227",
+						"604b8ba167549b262404d3a9",
 						"sprints",
-						"6048b6fa1f05c2465c276228",
+						"604b9613fe8ee50cc043c8ee",
 						"stories",
-						"6048b75d8fccf507ecb0353c"
+						"storyid"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Story GET ALL",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
+			"name": "Story POST",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n    \"name\": \"Default story name\",\r\n    \"timeEstimate\": 420,\r\n    \"businessValue\": 420,\r\n    \"comment\": \"Default comment\",\r\n    \"priority\": 420,\r\n    \"tests\": \"Default tests\",\r\n    \"status\": \"Default status\",\r\n    \"projectId\": \"604b8ba167549b262404d3a9\",\r\n    \"sprintId\": \"604b9613fe8ee50cc043c8ee\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -454,7 +1013,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228/stories",
+					"raw": "localhost:8080/api/projects/604b9a09a397a7236cd6d3f7/sprints/604b9ab8a397a7236cd6d3fb/stories",
 					"host": [
 						"localhost"
 					],
@@ -462,9 +1021,9 @@
 					"path": [
 						"api",
 						"projects",
-						"6048b6881f05c2465c276227",
+						"604b9a09a397a7236cd6d3f7",
 						"sprints",
-						"6048b6fa1f05c2465c276228",
+						"604b9ab8a397a7236cd6d3fb",
 						"stories"
 					]
 				}
@@ -472,13 +1031,13 @@
 			"response": []
 		},
 		{
-			"name": "Task POST",
+			"name": "Story UPDATE",
 			"request": {
-				"method": "POST",
+				"method": "PATCH",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"taskName\": \"default\",\r\n    \"taskDescription\": \"default\",\r\n    \"taskTimeEstimate\": \"420\",\r\n    \"taskSuggestedUser\": \"UserID\",\r\n    \"taskAssignedUser\": \"UserID\",\r\n    \"taskStoryId\": \"6048be82c4a7991da49c1c65\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Default story name\",\r\n    \"timeEstimate\": 420,\r\n    \"businessValue\": 420,\r\n    \"comment\": \"Default comment\",\r\n    \"priority\": 420,\r\n    \"tests\": \"Default tests\",\r\n    \"status\": \"Default status\",\r\n    \"projectId\": \"604b8ba167549b262404d3a9\",\r\n    \"sprintId\": \"604b9613fe8ee50cc043c8ee\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -486,7 +1045,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228/stories/6048b75d8fccf507ecb0353c/tasks",
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9613fe8ee50cc043c8ee/stories/604b9786fe8ee50cc043c8ef",
 					"host": [
 						"localhost"
 					],
@@ -494,11 +1053,82 @@
 					"path": [
 						"api",
 						"projects",
-						"6048b6881f05c2465c276227",
+						"604b8ba167549b262404d3a9",
 						"sprints",
-						"6048b6fa1f05c2465c276228",
+						"604b9613fe8ee50cc043c8ee",
 						"stories",
-						"6048b75d8fccf507ecb0353c",
+						"604b9786fe8ee50cc043c8ef"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Story DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9613fe8ee50cc043c8ee/stories/604b9786fe8ee50cc043c8ef",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"sprints",
+						"604b9613fe8ee50cc043c8ee",
+						"stories",
+						"604b9786fe8ee50cc043c8ef"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Story DELETE All",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9613fe8ee50cc043c8ee/stories",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"sprints",
+						"604b9613fe8ee50cc043c8ee",
+						"stories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task GET All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9613fe8ee50cc043c8ee/stories/604b9786fe8ee50cc043c8ef/tasks",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"sprints",
+						"604b9613fe8ee50cc043c8ee",
+						"stories",
+						"604b9786fe8ee50cc043c8ef",
 						"tasks"
 					]
 				}
@@ -511,7 +1141,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228/stories/6048b75d8fccf507ecb0353c/tasks/6048b7ac87e6686198a925fe",
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9613fe8ee50cc043c8ee/stories/604b9786fe8ee50cc043c8ef/tasks",
 					"host": [
 						"localhost"
 					],
@@ -519,29 +1149,25 @@
 					"path": [
 						"api",
 						"projects",
-						"6048b6881f05c2465c276227",
+						"604b8ba167549b262404d3a9",
 						"sprints",
-						"6048b6fa1f05c2465c276228",
+						"604b9613fe8ee50cc043c8ee",
 						"stories",
-						"6048b75d8fccf507ecb0353c",
-						"tasks",
-						"6048b7ac87e6686198a925fe"
+						"604b9786fe8ee50cc043c8ef",
+						"tasks"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Task GET ALL",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
+			"name": "Task POST",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n    \"name\": \"Default task name\",\r\n    \"description\": \"Default description\",\r\n    \"timeEstimate\": 420,\r\n    \"suggestedUser\": \"suggestedUser\",\r\n    \"assignedUser\": \"assignedUser\",\r\n    \"storyId\": \"604b9786fe8ee50cc043c8ef\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -549,7 +1175,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/projects/6048b6881f05c2465c276227/sprints/6048b6fa1f05c2465c276228/stories/6048be82c4a7991da49c1c65/tasks",
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9613fe8ee50cc043c8ee/stories/604b9786fe8ee50cc043c8ef/tasks",
 					"host": [
 						"localhost"
 					],
@@ -557,11 +1183,97 @@
 					"path": [
 						"api",
 						"projects",
-						"6048b6881f05c2465c276227",
+						"604b8ba167549b262404d3a9",
 						"sprints",
-						"6048b6fa1f05c2465c276228",
+						"604b9613fe8ee50cc043c8ee",
 						"stories",
-						"6048be82c4a7991da49c1c65",
+						"604b9786fe8ee50cc043c8ef",
+						"tasks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task UPDATE",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Default task name\",\r\n    \"description\": \"Default description\",\r\n    \"timeEstimate\": 420,\r\n    \"suggestedUser\": \"suggestedUser\",\r\n    \"assignedUser\": \"assignedUser\",\r\n    \"storyId\": \"604b9786fe8ee50cc043c8ef\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9613fe8ee50cc043c8ee/stories/604b9786fe8ee50cc043c8ef/tasks/taskid",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"sprints",
+						"604b9613fe8ee50cc043c8ee",
+						"stories",
+						"604b9786fe8ee50cc043c8ef",
+						"tasks",
+						"taskid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9613fe8ee50cc043c8ee/stories/604b9786fe8ee50cc043c8ef/tasks/604b98c2cf655141b0843b64",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"sprints",
+						"604b9613fe8ee50cc043c8ee",
+						"stories",
+						"604b9786fe8ee50cc043c8ef",
+						"tasks",
+						"604b98c2cf655141b0843b64"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task DELETE All",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9613fe8ee50cc043c8ee/stories/604b9786fe8ee50cc043c8ef/tasks",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"projects",
+						"604b8ba167549b262404d3a9",
+						"sprints",
+						"604b9613fe8ee50cc043c8ee",
+						"stories",
+						"604b9786fe8ee50cc043c8ef",
 						"tasks"
 					]
 				}

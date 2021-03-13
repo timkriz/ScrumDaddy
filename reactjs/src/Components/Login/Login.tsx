@@ -3,7 +3,7 @@ import "./login.css";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import {userLogin} from "../../api/AuthService";
-import {setToken} from "../../api/TokenService";
+import {setToken, setUserId, setUserRole} from "../../api/TokenService";
 import {useHistory} from "react-router-dom";
 
 export default () => {
@@ -16,6 +16,8 @@ export default () => {
     userLogin(username, password).then((res) => {
       const token = res.data.token;
       setToken(token);
+      setUserId(res.data.userId);
+      setUserRole(res.data.userRole);
       history.push("/projects");
     });
   }

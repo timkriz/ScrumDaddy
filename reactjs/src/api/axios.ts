@@ -1,6 +1,8 @@
 import axios from 'axios';
 import {getToken, removeToken} from "./TokenService";
 
+export const BACKEND_URL = "http://localhost:8080/api";
+
 const instance = axios.create();
 
 instance.interceptors.request.use(
