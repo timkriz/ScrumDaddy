@@ -103,6 +103,7 @@ export default () => {
         setSelectedProject(shownProjects[0])
         const ISprintCollection = await fetchSprints(shownProjects[0]._id);  
         setSprintCollection(ISprintCollection);
+        setSelectedBtn(0) // Change button color
       }
       //setProjectRoles(shownProjectRoles);
     }
@@ -134,6 +135,7 @@ export default () => {
     const ISprintCollection = await fetchSprints(project._id);  
     setSprintCollection(ISprintCollection); // Update sprint and its stories
     setSelectedBtn(buttonIn) // Change button color
+    console.log(buttonIn)
   }
 
   return (
@@ -141,7 +143,7 @@ export default () => {
 
         <Grid container direction="row" justify="center" alignItems="flex-start">
 
-            {/* SELECT PROJECT */}
+            {/* PROJECT SELECTION */}
 
             <Grid item xs={12} md={3}>
             <Paper elevation={0} style={{
@@ -152,15 +154,14 @@ export default () => {
                     List of my projects
                 </Typography>
                 <div className="">
-                <ButtonGroup
+                <ButtonGroup 
                     orientation="vertical"
-                    color="primary"
-                    aria-label="vertical contained primary button group"
+                    aria-label="vertical contained button group"
                     variant="text"
                 >
                     {
                     projects.map((project, i) => (
-                        <Button key={i} color={selectedBtn === i ? "secondary" : "primary"} onClick={() => projectSelectionClick(project, i)} style={{justifyContent: "flex-start"}}>{project.name}</Button>
+                        <Button key={i} onClick={() => projectSelectionClick(project, i)} style={selectedBtn == i ?{justifyContent: "flex-start", color: "#26a69a"} : {justifyContent: "flex-start", color: "#000000"}}>{project.name}</Button>
                     ))
                     }
                 </ButtonGroup>
@@ -228,13 +229,13 @@ export default () => {
                         <div className="page_subtitle" style={{ marginBottom: 20 }}>Product backlog</div>
 
                         <Typography component={'span'} display = "block" variant="subtitle2" className="story_row_status">
-                                  Not assigned to sprints yet
+                                Needs an new endpoint i think
                         </Typography>
                         <Button variant="contained" color="primary" style={{ alignSelf: "flex-start" }}>ADD USER STORY</Button>
                     </TabPanel>
                     <TabPanel value={valueTab} index={1}>
                         <Typography component={'span'} display = "block" variant="subtitle2" className="story_row_status">
-                                  Needs an new endpoint i think
+                                In progress
                         </Typography>
                     </TabPanel>
                 </div>
