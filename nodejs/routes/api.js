@@ -108,10 +108,10 @@ router.route('/projects')
     .post(projectController.new)
     .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectController.viewAll);
 router.route('/projects/:projectid')
-    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectController.view)
-    .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectController.update)
-    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, projectController.update)
-    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, projectController.delete);
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkProjectId, projectController.view)
+    .put((req,res,next)     => authenticate(req,res,next), authTools.checkProjectId, projectController.update)
+    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkProjectId, projectController.update)
+    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkProjectId, projectController.delete);
 
 router.route('/projects/:projectid/users')
     .post(projectsUsersController.new)
@@ -147,12 +147,12 @@ router.route('/projects/:projectid/posts/:postid/comments/:commentid')
 
 router.route('/projects/:projectid/sprints')
     .post(sprintController.new)
-    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, sprintController.viewAll);
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkProjectId, sprintController.viewAll);
 router.route('/projects/:projectid/sprints/:sprintid')
-    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, sprintController.view)
-    .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, sprintController.update)
-    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, sprintController.update)
-    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, sprintController.delete);
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkProjectId, sprintController.view)
+    .put((req,res,next)     => authenticate(req,res,next), authTools.checkProjectId, sprintController.update)
+    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkProjectId, sprintController.update)
+    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkProjectId, sprintController.delete);
 
 router.route('/projects/:projectid/sprints/:sprintid/stories')
     .post(storyController.new)
@@ -177,7 +177,7 @@ router.route('/projects/:projectid/sprints/:sprintid/stories/:storyid/tasks/:tas
 module.exports = router;
 
 function authenticate(req, res, next){
-    return next(); //TODO
+    //return next(); //TODO
     passport.authenticate('jwt', {session: false}, function (err, user, info){
         if(user){
             req.user = user;

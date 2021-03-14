@@ -16,44 +16,49 @@ module.exports = {
             return;
         }
     },
-    checkIdVillage: async function(req, res, next, param) {
-        let village = await(await(await tools.doApiRequest("villages/" + req.params.idVillage, "GET", "", false)).json()).data; 
-        if (req.user._id == village.owner || req.user.email == "admin@test.com"){
-            return next();
-        } else{
-            res.json({
-                message: 'Authentication failed',
-                data: ""
-            });
-            return;
+    checkProjectId: async function(req, res, next) {
+        let projectsUsers = await(await(await tools.doApiRequest("projects/" + req.params.projectid + "/users", "GET", "", false)).json()).data;
+        //return next();
+        for(let projectsUser of projectsUsers){
+            if (req.user._id == projectsUser.userId || req.user.email == "admin@test.com"){
+                return next();
+            } else{
+                res.json({
+                    message: 'Authentication failed! User is not assigned to this project',
+                    data: ""
+                });
+                return;
+            }
         }
     },
-    checkBuildingUpgradeId: async function(req, res, next) {
-        if (req.user.email == "admin@test.com") return next();
-        let villageBuildingUpgrade = await(await(await tools.doApiRequest("villageBuildingUpgrade/" + req.params.upgradeId, "GET", "", false)).json()).data;    
-        let village = await(await(await tools.doApiRequest("villages/" + villageBuildingUpgrade.idVillage, "GET", "", false)).json()).data;
-        if (req.user._id == village.owner || req.user.email == "admin@test.com"){
-            return next();
-        } else{
-            res.json({
-                message: 'Authentication failed',
-                data: ""
-            });
-            return;
+    isProdLead: async function(req, res, next) {
+        let projectsUsers = await(await(await tools.doApiRequest("projects/" + req.params.projectid + "/users", "GET", "", false)).json()).data;
+        //return next();
+        for(let projectsUser of projectsUsers){
+            if (req.user._id == projectsUser.userId && projectsUser.userRole == "PROD_LEAD" || req.user.email == "admin@test.com"){
+                return next();
+            } else{
+                res.json({
+                    message: 'Authentication failed! User is not assigned to this project',
+                    data: ""
+                });
+                return;
+            }
         }
     },
-    checkResFieldUpgradeId: async function(req, res, next) {
-        if (req.user.email == "admin@test.com") return next();
-        let villageResFieldUpgrade = await(await(await tools.doApiRequest("villageResFieldUpgrade/" + req.params.upgradeId, "GET", "", false)).json()).data;    
-        let village = await(await(await tools.doApiRequest("villages/" + villageResFieldUpgrade.idVillage, "GET", "", false)).json()).data;
-        if (req.user._id == village.owner || req.user.email == "admin@test.com"){
-            return next();
-        } else{
-            res.json({
-                message: 'Authentication failed',
-                data: ""
-            });
-            return;
+    isMethKeeperOrProdLead: async function(req, res, next) {
+        let projectsUsers = await(await(await tools.doApiRequest("projects/" + req.params.projectid + "/users", "GET", "", false)).json()).data;
+        //return next();
+        for(let projectsUser of projectsUsers){
+            if (req.user._id == projectsUser.userId && (projectsUser.userRole == "PROD_LEAD" || projectsUser.userRole == "METH_KEEPER") || req.user.email == "admin@test.com"){
+                return next();
+            } else{
+                res.json({
+                    message: 'Authentication failed! User is not assigned to this project',
+                    data: ""
+                });
+                return;
+            }
         }
-    },
+    }
 };
