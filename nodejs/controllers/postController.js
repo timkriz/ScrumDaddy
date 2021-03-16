@@ -3,7 +3,7 @@ const postModel = require('../models/postModel');
 const commentModel = require('../models/commentModel');
 
 exports.viewAll = function (req, res) {
-    postModel.find(function (err, posts) {
+    postModel.find({projectId: req.params.projectid}, function (err, posts) {
         if (err) {
             res.status(400).json(err);
             return;
