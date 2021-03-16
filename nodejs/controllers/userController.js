@@ -1,5 +1,8 @@
 const path = require('path');
 const userModel = require('../models/userModel');
+const projectsUsersModel = require('../models/projectsUsersModel');
+const postModel = require('../models/postModel');
+const commentModel = require('../models/commentModel');
 
 exports.view = function (req, res) {
     userModel.find(function (err, users) {
@@ -87,4 +90,7 @@ exports.delete = function (req, res) {
             data: user
         });
     });
+    projectsUsersModel.deleteMany({userId: req.params.id}, function (err, projectsUsers) {});
+    postModel.deleteMany({userId: req.params.id}, function (err, posts) {});
+    commentModel.deleteMany({userId: req.params.id}, function (err, comments) {});
 };

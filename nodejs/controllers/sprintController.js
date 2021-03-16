@@ -1,5 +1,7 @@
 const path = require('path');
 const sprintModel = require('../models/sprintModel');
+const storyModel = require('../models/storyModel');
+const taskModel = require('../models/taskModel');
 
 exports.viewAll = function (req, res) {
     sprintModel.find({projectId: req.params.projectid}, function (err, sprints) {
@@ -61,7 +63,6 @@ exports.update = function (req, res) {
         sprint.startTime        = req.body.startTime || sprint.startTime;
         sprint.endTime          = req.body.endTime || sprint.endTime;
         sprint.velocity         = req.body.velocity || sprint.velocity;
-        sprint.projectId        = req.params.projectid || sprint.projectId;
 
         sprint.save(function (err) {
             if (err) {
@@ -87,4 +88,21 @@ exports.delete = function (req, res) {
             data: sprint
         });
     });
+    storyModel.deleteMany({sprintId: req.params.sprintid}, function (err, stories) {});
+    taskModel.deleteMany({sprintId: req.params.sprintid}, function (err, tasks) {});
+};
+
+exports.deleteMany = function (req, res) {
+    sprintModel.deleteMany({projectId: req.params.projectid}, function (err, stories) {
+        if (err) {
+            res.status(400).json(err);
+            return;
+        }
+        res.json({
+            message: "Stories deleted",
+            data: stories
+        });
+    });
+    storyModel.deleteMany({projectId: req.params.projectid}, function (err, stories) {});
+    taskModel.deleteMany({projectId: req.params.projectid}, function (err, tasks) {});
 };

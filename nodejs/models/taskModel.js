@@ -7,6 +7,8 @@ const taskSchema = new Schema ({
     timeEstimate: { type: Number, required: true},
     suggestedUser: { type: String, required: true},
     assignedUser: { type: String, required: true},
+    projectId: { type: String, required: true},
+    sprintId: { type: String, required: true},
     storyId: { type: String, required: true},
 });
 

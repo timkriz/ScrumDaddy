@@ -1,5 +1,6 @@
 const path = require('path');
 const storyModel = require('../models/storyModel');
+const taskModel = require('../models/taskModel');
 
 exports.viewAll = function (req, res) {
     storyModel.find({sprintId: req.params.sprintid}, function (err, stories) {
@@ -66,8 +67,6 @@ exports.update = function (req, res) {
         story.priority          = req.body.priority || story.priority;
         story.tests             = req.body.tests || story.tests;
         story.status            = req.body.status || story.status;
-        story.projectId         = req.params.projectid || story.projectId;
-        story.sprintId          = req.params.sprintid || story.sprintId;
 
         story.save(function (err) {
             if (err) {
@@ -93,10 +92,11 @@ exports.delete = function (req, res) {
             data: story
         });
     });
+    taskModel.deleteMany({storyId: req.params.storyid}, function (err, tasks) {});
 };
 
 exports.deleteMany = function (req, res) {
-    storyModel.deleteMany({projectId: req.params.projectid}, function (err, stories) {
+    storyModel.deleteMany({sprintId: req.params.sprintid}, function (err, stories) {
         if (err) {
             res.status(400).json(err);
             return;
@@ -106,4 +106,5 @@ exports.deleteMany = function (req, res) {
             data: stories
         });
     });
+    taskModel.deleteMany({sprintId: req.params.sprintid}, function (err, tasks) {});
 };

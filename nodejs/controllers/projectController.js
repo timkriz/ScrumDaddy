@@ -1,5 +1,11 @@
 const path = require('path');
 const projectModel = require('../models/projectModel');
+const projectsUsersModel = require('../models/projectsUsersModel');
+const postModel = require('../models/postModel');
+const commentModel = require('../models/commentModel');
+const sprintModel = require('../models/sprintModel');
+const storyModel = require('../models/storyModel');
+const taskModel = require('../models/taskModel');
 
 exports.viewAll = function (req, res) {
     projectModel.find(function (err, projects) {
@@ -77,4 +83,10 @@ exports.delete = function (req, res) {
             data: project
         });
     });
+    projectsUsersModel.deleteMany({projectId: req.params.projectid}, function (err, projectsUsers) {});
+    postModel.deleteMany({projectId: req.params.projectid}, function (err, posts) {});
+    commentModel.deleteMany({projectId: req.params.projectid}, function (err, comments) {});
+    sprintModel.deleteMany({projectId: req.params.projectid}, function (err, sprints) {});
+    storyModel.deleteMany({projectId: req.params.projectid}, function (err, stories) {});
+    taskModel.deleteMany({projectId: req.params.projectid}, function (err, tasks) {});
 };

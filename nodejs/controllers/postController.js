@@ -1,5 +1,6 @@
 const path = require('path');
 const postModel = require('../models/postModel');
+const commentModel = require('../models/commentModel');
 
 exports.viewAll = function (req, res) {
     postModel.find(function (err, posts) {
@@ -30,10 +31,10 @@ exports.view = function (req, res) {
 exports.new = function (req, res) {
     var post = new postModel();
 
-    post.projectId      = req.body.projectId;
     post.userId         = req.body.userId;
     post.timestamp      = req.body.timestamp;
     post.text           = req.body.text;
+    post.projectId      = req.params.projectid;
 
     post.save(function (err) {
         if (err) {
@@ -54,7 +55,6 @@ exports.update = function (req, res) {
             return;
         }
 
-        post.projectId      = req.body.projectId || post.projectId;
         post.userId         = req.body.userId || post.userId;
         post.timestamp      = req.body.timestamp || post.timestamp;
         post.text           = req.body.text || post.text;
@@ -83,6 +83,7 @@ exports.delete = function (req, res) {
             data: post
         });
     });
+    commentModel.deleteMany({postId: req.params.postid}, function (err, comments) {});
 };
 
 exports.deleteMany = function (req, res) {
@@ -96,4 +97,5 @@ exports.deleteMany = function (req, res) {
             data: posts
         });
     });
+    commentModel.deleteMany({projectId: req.params.projectid}, function (err, comments) {});
 };
