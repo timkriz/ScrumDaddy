@@ -153,6 +153,9 @@ router.route('/projects/:projectid/sprints/:sprintid')
     .patch((req,res,next)   => authenticate(req,res,next), authTools.checkProjectId, sprintController.update)
     .delete((req,res,next)  => authenticate(req,res,next), authTools.checkProjectId, sprintController.delete);
 
+router.route('/projects/:projectid/stories')
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, storyController.viewNotInSprint)
+
 router.route('/projects/:projectid/sprints/:sprintid/stories')
     .post(storyController.new)
     .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, storyController.viewAll)

@@ -5,7 +5,7 @@ import {Button} from "@material-ui/core";
 //import {IStory} from "./IStory"
 import {IProjectUser} from "../ProjectList/IProjectList";
 import {getProjects, getProjectUser} from "../../api/ProjectService";
-import {getSprints, getStories} from "../../api/UserStoriesService";
+import {getSprints, getStories, rejectUserStory, acceptUserStory} from "../../api/UserStoriesService";
 import {getUserId, getUserRole} from "../../api/TokenService";
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Grid from '@material-ui/core/Grid';
@@ -17,6 +17,8 @@ import {TabPanel} from "./TabPanel"
 import { useHistory } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
 import {ArrowForwardRounded, DeleteRounded, EditRounded} from "@material-ui/icons";
+import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
+import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
 import {ProjectRoles, SystemRoles} from "../../data/Roles";
 
 interface IProject {
@@ -109,6 +111,7 @@ export default () => {
         setSprintCollection(ISprintCollection);
         setSelectedBtn(0) // Change button color
       }
+      console.log(shownProjectRoles);
       //setProjectRoles(shownProjectRoles);
     }
   }
@@ -117,22 +120,27 @@ export default () => {
   const fetchSprints = async (project_id: string) => {
     const allSprints = (await getSprints(project_id)).data.data as ISprint[];
     const ISprintCollection:ISprintCollection[] = [];
-
+    const currentTime = Math.floor(Date.now() / 1000)
+    
     setSprints(allSprints);
     allSprints.forEach( async (sprint) => {
       const found1 = ISprintCollection.some((el:ISprintCollection) => el._id === sprint._id);
+      /*  CORRECTION - just active sprint */
+
       /* Get stories of a sprint */
-      if (!found1 && sprint.name != "PRODUCT_BACKLOG") {
+      if (!found1 && sprint.startTime < currentTime && currentTime < sprint.endTime) {
         ISprintCollection.push({ _id: sprint._id, name: sprint.name,  stories: []});
         const allStories = (await getStories(project_id, sprint._id)).data.data as IStory[];
         const found2 = ISprintCollection.find((el:ISprintCollection) => el._id === sprint._id);
 
         /* Filter already accepted and realized stories*/
         if(found2){
+          acceptedStories.length = 0;
           allStories.forEach( async (story) => {
             if(story.status === "Accepted") {
               const found3 = acceptedStories.some((el:IStory) => el._id === story._id);
               if(!found3) acceptedStories.push(story);
+              setAcceptedStories(acceptedStories)
             }
             else {
               const found3 = found2.stories.some((el:IStory) => el._id === story._id);
@@ -143,8 +151,8 @@ export default () => {
         setStories(allStories)
       }
       /* Get stories of a product backlog */
-      if (!found1 && sprint.name === "PRODUCT_BACKLOG") {
-        const allStoriesInProductBacklog = (await getStories(project_id, sprint._id)).data.data as IStory[];
+      if (!found1) {
+        const allStoriesInProductBacklog = (await getStories(project_id, "")).data.data as IStory[];
         if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
         setStories(allStoriesInProductBacklog)
       }
@@ -161,6 +169,30 @@ export default () => {
     setSelectedBtn(buttonIn) // Change button color
   }
 
+  /* "PROD_LEAD" can accept story once it is finished*/
+  const handleAcceptUserStory = async (project: IProject, story: IStory) => {
+    await acceptUserStory(project._id, story.sprintId, story._id);
+
+    const ISprintCollection = await fetchSprints(project._id);
+    setSprintCollection(ISprintCollection); // Update sprint and its stories
+  }
+
+  /* "PROD_LEAD" can reject story and it goes back to product backlog*/
+  const handleRejectUserStory = async (project: IProject, story: IStory) => {
+    //await rejectUserStory(story._id);
+
+    const ISprintCollection = await fetchSprints(project._id);
+    setSprintCollection(ISprintCollection); // Update sprint and its stories
+  }
+
+  /* TEMPORARY - MOVE ACCEPTED STORY BACK TO UNREALIZED STORIES*/
+  const handleRestoreUserStory = async (project: IProject, story: IStory) => {
+    await rejectUserStory(project._id, story.sprintId, story._id);
+
+    const ISprintCollection = await fetchSprints(project._id);
+    setSprintCollection(ISprintCollection); // Update sprint and its stories
+    setAcceptedStories(acceptedStories);
+  }
   return (
     <div className="product_backlog_container">
 
@@ -206,7 +238,10 @@ export default () => {
                 
                 <TabPanel value={valueTab} index={0}>
                     <div>
-                    <div className="page_subtitle" style={{ marginBottom: 20 }}>Stories in sprints</div>
+                    <div className="page_subtitle" style={{ marginBottom: 20 }}>Active sprints</div>
+                    <Typography component={'span'} display = "block" variant="subtitle2" className="story_row_status">
+                      {ISprintCollection === undefined || ISprintCollection.length == 0 ? 'No active sprints.' : ''}
+                    </Typography>
                     {/* DIFFERENT SPRINTS */}
                     {
                       ISprintCollection.map((sprint, i) => (
@@ -225,19 +260,26 @@ export default () => {
                               <div key={j} className="story_row">
                                 <div className="story_row_title">{story.name}</div>
                                 <div className="story_row_title">
-                                  <Typography key={j} component={'span'} display = "block" variant="subtitle2" className="story_row_status">Status: {story.status}</Typography>
-                                  <Typography key={j} component={'span'} display = "block" variant="subtitle2" className="story_row_status">Priority: {story.priority}</Typography>
-                                  <Typography key={j} component={'span'} display = "block" variant="subtitle2" className="story_row_status">Business Value: {story.businessValue}</Typography>
+                                  <Typography key={j} component={'span'} display = "block" variant="caption" className="story_row_status">Status: {story.status}</Typography>
+                                  <Typography key={j} component={'span'} display = "block" variant="caption" className="story_row_status">Priority: {story.priority}</Typography>
+                                  <Typography key={j} component={'span'} display = "block" variant="caption" className="story_row_status">Business Value: {story.businessValue}</Typography>
                                 </div>
                                 <div className="story_row_icons">
                                   <IconButton color="primary">
-                                    <DeleteRounded />
-                                  </IconButton>
-                                  <IconButton color="primary">
-                                    <EditRounded />
-                                  </IconButton>
-                                  <IconButton color="primary">
                                     <ArrowForwardRounded />
+                                  </IconButton>
+                                </div>
+                                <div className="story_row_description">
+                                 {story.comment}
+                                </div>
+                                <div className="story_row_icons">
+                                  <IconButton color="primary" onClick={() => handleAcceptUserStory(selectedProject, story)}>
+                                    <DoneRoundedIcon /> 
+                                    <Typography component={'span'} display = "block" variant="caption">Accept</Typography>
+                                  </IconButton>
+                                  <IconButton color="primary" onClick={() => handleRejectUserStory(selectedProject, story)}>
+                                    <CloseRoundedIcon />
+                                    <Typography component={'span'} display = "block" variant="caption">Remove</Typography>
                                   </IconButton>
                                 </div>
                               </div>
@@ -248,7 +290,9 @@ export default () => {
                       ))
                     }
                     </div>
+                    
                     <hr style={{ margin: "30px 0" }}/>
+
                     <div className="page_subtitle" style={{ marginBottom: 20 }}>Product backlog</div>
 
                     <div>
@@ -263,20 +307,17 @@ export default () => {
                           <div key={i} className="story_row">
                             <div className="story_row_title">{story.name}</div>
                             <div className="story_row_title">
-                              <Typography key={i} component={'span'} display = "block" variant="subtitle2" className="story_row_status">Status: {story.status}</Typography>
-                              <Typography key={i} component={'span'} display = "block" variant="subtitle2" className="story_row_status">Priority: {story.priority}</Typography>
-                              <Typography key={i} component={'span'} display = "block" variant="subtitle2" className="story_row_status">Business Value: {story.businessValue}</Typography>
+                              <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Status: {story.status}</Typography>
+                              <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Priority: {story.priority}</Typography>
+                              <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Business Value: {story.businessValue}</Typography>
                             </div>
                             <div className="story_row_icons">
                               <IconButton color="primary">
-                                <DeleteRounded />
-                              </IconButton>
-                              <IconButton color="primary">
-                                <EditRounded />
-                              </IconButton>
-                              <IconButton color="primary">
                                 <ArrowForwardRounded />
                               </IconButton>
+                            </div>
+                            <div className="story_row_description">
+                              {story.comment}
                             </div>
                           </div>
                           ))
@@ -299,21 +340,22 @@ export default () => {
                         <div key={i} className="story_row">
                           <div className="story_row_title">{story.name}</div>
                           <div className="story_row_title">
-                            <Typography key={i} component={'span'} display = "block" variant="subtitle2" className="story_row_status">Status: {story.status}</Typography>
-                            <Typography key={i} component={'span'} display = "block" variant="subtitle2" className="story_row_status">Priority: {story.priority}</Typography>
-                            <Typography key={i} component={'span'} display = "block" variant="subtitle2" className="story_row_status">Business Value: {story.businessValue}</Typography>
+                            <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Status: {story.status}</Typography>
+                            <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Priority: {story.priority}</Typography>
+                            <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Business Value: {story.businessValue}</Typography>
                           </div>
                           <div className="story_row_icons">
-                            <IconButton color="primary">
-                              <DeleteRounded />
-                            </IconButton>
-                            <IconButton color="primary">
-                              <EditRounded />
-                            </IconButton>
                             <IconButton color="primary">
                               <ArrowForwardRounded />
                             </IconButton>
                           </div>
+                          <div className="story_row_description">
+                            {story.comment}
+                          </div>
+                          <IconButton color="primary" onClick={() => handleRestoreUserStory(selectedProject, story)}>
+                            <CloseRoundedIcon /> 
+                            <Typography component={'span'} display = "block" variant="caption">Move back to sprint</Typography>
+                          </IconButton>
                         </div>
                         ))
                     }

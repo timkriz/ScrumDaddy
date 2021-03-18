@@ -28,6 +28,19 @@ exports.view = function (req, res) {
     });
 };
 
+exports.viewNotInSprint = function (req, res) {
+    storyModel.find({projectId: req.params.projectid, sprintId: ""}, function (err, stories) {
+        if (err) {
+            res.status(400).json(err);
+            return;
+        }
+        res.json({
+            message: "Stories found",
+            data: stories
+        });
+    });
+};
+
 exports.new = function (req, res) {
     var story = new storyModel();
 
