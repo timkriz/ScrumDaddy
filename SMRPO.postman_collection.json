@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cc848c1e-6c57-43cb-ac33-8cb78011042f",
+		"_postman_id": "336f649c-7ba6-4539-be87-d5dbee5948af",
 		"name": "SMRPO",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -30,7 +30,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"velipeli\",\r\n    \"password\": \"velipeli\",\r\n    \"role\": \"USER\",\r\n    \"name\": \"Jan\",\r\n    \"surname\": \"Pelicon\",\r\n    \"email\": \"jnpelicon@gmail.com\"\r\n}",
+					"raw": "{\r\n    \"username\": \"username\",\r\n    \"password\": \"password\",\r\n    \"role\": \"USER\",\r\n    \"name\": \"Name1\",\r\n    \"surname\": \"Surname1\",\r\n    \"email\": \"username@test.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -396,7 +396,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"projectId\": \"604b9a09a397a7236cd6d3f7\",\r\n    \"userId\": \"604a0b981cfb6034d4e64a0a\",\r\n    \"userRole\": \"USER\"\r\n}",
+					"raw": "{\r\n    \"userId\": \"6053814cd11c072e74a01b4b\",\r\n    \"userRole\": \"PROD_LEAD\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -404,7 +404,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/projects/604b9a09a397a7236cd6d3f7/users",
+					"raw": "localhost:8080/api/projects/60538181d11c072e74a01b4d/users",
 					"host": [
 						"localhost"
 					],
@@ -412,7 +412,7 @@
 					"path": [
 						"api",
 						"projects",
-						"604b9a09a397a7236cd6d3f7",
+						"60538181d11c072e74a01b4d",
 						"users"
 					]
 				}
@@ -857,7 +857,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Default sprint name\",\r\n    \"description\": \"Default description\",\r\n    \"startTime\": 420,\r\n    \"endTime\": 420,\r\n    \"velocity\": 420,\r\n    \"projectId\": \"604b9a09a397a7236cd6d3f7\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Default sprint name\",\r\n    \"description\": \"Default description\",\r\n    \"startTime\": 1616085803,\r\n    \"endTime\": 1618760603,\r\n    \"velocity\": 10\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -865,7 +865,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/projects/604b9a09a397a7236cd6d3f7/sprints",
+					"raw": "localhost:8080/api/projects/60538181d11c072e74a01b4d/sprints",
 					"host": [
 						"localhost"
 					],
@@ -873,7 +873,7 @@
 					"path": [
 						"api",
 						"projects",
-						"604b9a09a397a7236cd6d3f7",
+						"60538181d11c072e74a01b4d",
 						"sprints"
 					]
 				}
@@ -1005,7 +1005,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Default story name\",\r\n    \"timeEstimate\": 420,\r\n    \"businessValue\": 420,\r\n    \"comment\": \"Default comment\",\r\n    \"priority\": 420,\r\n    \"tests\": \"Default tests\",\r\n    \"status\": \"Default status\",\r\n    \"projectId\": \"604b8ba167549b262404d3a9\",\r\n    \"sprintId\": \"604b9613fe8ee50cc043c8ee\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Default story name\",\r\n    \"timeEstimate\": 420,\r\n    \"businessValue\": 420,\r\n    \"comment\": \"Default comment\",\r\n    \"priority\": 420,\r\n    \"tests\": \"Default tests\",\r\n    \"status\": \"Default status\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1013,7 +1013,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/projects/604b9a09a397a7236cd6d3f7/sprints/604b9ab8a397a7236cd6d3fb/stories",
+					"raw": "localhost:8080/api/projects/60538181d11c072e74a01b4d/sprints/605384624f504e0dec99bb48/stories",
 					"host": [
 						"localhost"
 					],
@@ -1021,9 +1021,9 @@
 					"path": [
 						"api",
 						"projects",
-						"604b9a09a397a7236cd6d3f7",
+						"60538181d11c072e74a01b4d",
 						"sprints",
-						"604b9ab8a397a7236cd6d3fb",
+						"605384624f504e0dec99bb48",
 						"stories"
 					]
 				}
@@ -1167,7 +1167,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Default task name\",\r\n    \"description\": \"Default description\",\r\n    \"timeEstimate\": 420,\r\n    \"suggestedUser\": \"suggestedUser\",\r\n    \"assignedUser\": \"assignedUser\",\r\n    \"storyId\": \"604b9786fe8ee50cc043c8ef\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Default task name\",\r\n    \"description\": \"Default description\",\r\n    \"timeEstimate\": 420,\r\n    \"suggestedUser\": \"6053815ad11c072e74a01b4c\",\r\n    \"assignedUser\": \"6053815ad11c072e74a01b4c\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1175,7 +1175,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/api/projects/604b8ba167549b262404d3a9/sprints/604b9613fe8ee50cc043c8ee/stories/604b9786fe8ee50cc043c8ef/tasks",
+					"raw": "localhost:8080/api/projects/60538181d11c072e74a01b4d/sprints/605384624f504e0dec99bb48/stories/605384bd4f504e0dec99bb49/tasks",
 					"host": [
 						"localhost"
 					],
@@ -1183,11 +1183,11 @@
 					"path": [
 						"api",
 						"projects",
-						"604b8ba167549b262404d3a9",
+						"60538181d11c072e74a01b4d",
 						"sprints",
-						"604b9613fe8ee50cc043c8ee",
+						"605384624f504e0dec99bb48",
 						"stories",
-						"604b9786fe8ee50cc043c8ef",
+						"605384bd4f504e0dec99bb49",
 						"tasks"
 					]
 				}

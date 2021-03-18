@@ -145,7 +145,7 @@ router.route('/projects/:projectid/posts/:postid/comments/:commentid')
 
 router.route('/projects/:projectid/sprints')
     .post(sprintController.new)
-    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, sprintController.viewAll)
+    .get(sprintController.viewAll)
     .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, sprintController.deleteMany);
 router.route('/projects/:projectid/sprints/:sprintid')
     .get((req,res,next)     => authenticate(req,res,next), authTools.checkProjectId, sprintController.view)
