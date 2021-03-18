@@ -32,11 +32,11 @@ exports.view = function (req, res) {
 exports.new = function (req, res) {
     var sprint = new sprintModel();
 
-    sprint.name             = req.body.name;
-    sprint.description      = req.body.description;
-    sprint.startTime        = req.body.startTime;
-    sprint.endTime          = req.body.endTime;
-    sprint.velocity         = req.body.velocity;
+    sprint.name             = req.body.sprintName;
+    sprint.description      = req.body.sprintDescription;
+    sprint.startTime        = req.body.sprintStartTime;
+    sprint.endTime          = req.body.sprintEndTime;
+    sprint.velocity         = req.body.sprintVelocity;
     sprint.projectId        = req.params.projectid;
 
     sprint.save(function (err) {
