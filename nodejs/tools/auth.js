@@ -27,7 +27,11 @@ module.exports = {
             }
         }
 
-        
+        res.status(403).json({
+            message: 'Authentication failed! User is not assigned to this project',
+            data: ""
+        });
+        return;        
     },
     isProdLead: async function(req, res, next) {
         let projectsUsers = await(await(await tools.doApiRequest("projects/" + req.params.projectid + "/users", "GET", "", false)).json()).data;
