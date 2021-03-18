@@ -19,6 +19,9 @@ import {drawerItems} from "../../data/DrawerItems";
 import ManageUsers from "../ManageUsers/ManageUsers";
 import ProductBacklog from "../ProductBacklog/ProductBacklog";
 import Project from "../Project/Project";
+import Sprint from "../Sprint/Sprint";
+import Story from "../Story/Story";
+import Task from "../Task/Task";
 
 function App() {
   const [ open, setOpen ] = useState<boolean>();
@@ -97,6 +100,15 @@ function App() {
           </Route>
           <Route path="/projects/:projectId">
             <Project />
+          </Route>
+          <Route path="/sprints/:projectId/:sprintId">
+            <Sprint />
+          </Route>
+          <Route path="/stories/:projectId/:sprintId/:storyId">
+            <Story />
+          </Route>
+          <Route path="/tasks/:projectId/:sprintId/:storyId/:taskId">
+            <Task />
           </Route>
           <Route path="/manage_users">
             <ManageUsers />

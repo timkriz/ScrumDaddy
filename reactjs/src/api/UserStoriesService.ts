@@ -7,6 +7,12 @@ export const getSprints = (projectId: string): Promise<any> => {
 export const getSprint = (projectId: string, sprintId: string): Promise<any> => {
   return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}`);
 };
+
 export const getStories = (projectId: string, sprintId: string): Promise<any> => {
   return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories`);
 };
+
+export const getStory = (projectId: string, sprintId: string, storyId: string): Promise<any> => {
+  return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`);
+};
+

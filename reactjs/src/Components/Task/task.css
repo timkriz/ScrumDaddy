@@ -1,0 +1,50 @@
+.sprint_row {
+    margin: 0 0 30px 0;
+    padding: 10px 20px;
+    border-radius: 15px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sprint_row_title {
+    font-size: 20px;
+    font-family: Roboto;
+    color: #707070;
+    font-weight: 500;
+}
+
+.sprint_row_icons {
+    display: flex;
+}
+
+.sprint_label {
+    font-family: Roboto;
+    font-size: 18px;
+    font-weight: 500;
+    color: #0097a7;
+    margin-bottom: 4px;
+}
+
+.sprint_value {
+    font-family: Roboto;
+    font-weight: 500;
+    color: rgba(0,0,0,0.67);
+}
+
+.import_button {
+    font-family: Roboto;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #26A69A;
+    cursor: pointer;
+    line-height: 1.75;
+    letter-spacing: 0.02857em;
+}
+
+.center_divider {
+    margin: 0 40px;
+    width: 1px;
+    background: rgba(0,0,0,0.2);
+}
