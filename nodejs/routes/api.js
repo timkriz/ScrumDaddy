@@ -106,7 +106,7 @@ router.route('/users/:id')
 
 router.route('/projects')
     .post(projectController.new)
-    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, projectController.viewAll);
+    .get(projectController.viewAll);
 router.route('/projects/:projectid')
     .get((req,res,next)     => authenticate(req,res,next), authTools.checkProjectId, projectController.view)
     .put((req,res,next)     => authenticate(req,res,next), authTools.checkProjectId, projectController.update)

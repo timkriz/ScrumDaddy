@@ -52,18 +52,23 @@ exports.new = function (req, res) {
 };
 
 exports.update = function (req, res) {
+    console.log("bbasd");
     projectModel.findOne({_id: req.params.projectid}, function (err, project) {
         if (err) {
             res.status(400).send(err);
             return;
         }
+        console.log("asd");
+
         
         project.name            = req.body.name || project.name;
         project.description     = req.body.description || project.description;
 
         project.save(function (err) {
-            if (err)
+            if (err){
                 res.json(err);
+                return;
+            }
             res.json({
                 message: "Project updated",
                 data: project
