@@ -3,8 +3,10 @@ import "./productbacklog.css";
 import {Button} from "@material-ui/core";
 //import {ISprint, IProject} from "../ProjectList/IProjectList";
 //import {IStory} from "./IStory"
-import {getProjects} from "../../api/ProjectService";
-import {getSprints, getStories} from "../../api/UserStoriesService";
+import {IProjectUser} from "../ProjectList/IProjectList";
+import {getProjects, getProjectUser} from "../../api/ProjectService";
+import {getSprints, getStories, rejectUserStory, acceptUserStory} from "../../api/UserStoriesService";
+import {getUserId, getUserRole} from "../../api/TokenService";
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -15,6 +17,9 @@ import {TabPanel} from "./TabPanel"
 import { useHistory } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
 import {ArrowForwardRounded, DeleteRounded, EditRounded} from "@material-ui/icons";
+import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
+import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
+import {ProjectRoles, SystemRoles} from "../../data/Roles";
 
 interface IProject {
   _id: string;
@@ -42,21 +47,34 @@ interface IStory {
   projectId: string;
   sprintId: string;
 }
+interface ISprintCollection{ 
+  _id: string; 
+  name: string;
+  stories: IStory[];
+}
 
-const allProjects: IProject[] = [
+const project1: IProject[] = [
     {
-      _id: "6046abf2543fd334f05175e9",
+      _id: "",
       name: "",
       description: ""
     }
   ];
+
 export default () => {
-  const [ projects, setProjects ] = useState<IProject[]>([]);
+  const [ projects, setProjects ] = useState<IProject[]>([]); 
   const [ sprints, setSprints ] = useState<ISprint[]>([]);
   const [ stories, setStories ] = useState<IStory[]>([]);
-  let [selectedProject, setSelectedProject] = React.useState(allProjects[0]);
+
+  const [ ISprintCollection, setSprintCollection ] = useState<ISprintCollection[]>([]); /* Categorized stories into sprints */
+  const [ productBacklog, setProductBacklog ] = useState<IStory[]>([]);  /* Special sprint for stories not assigned to sprint */
+  const [ acceptedStories, setAcceptedStories ] = useState<IStory[]>([]);  /* Realized and accepted user stories*/
+
+  let [selectedProject, setSelectedProject] = useState<IProject>(project1[0]);
   const [valueTab, setValue] = React.useState(0);
+  const [selectedBtn, setSelectedBtn] = React.useState(-1);
   const history = useHistory();
+  const userRole = getUserRole();
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -66,117 +84,287 @@ export default () => {
     fetchProjects();
   }, []);
 
-  /* Fetch all projects*/
+  /* Fetch all projects */
   const fetchProjects = async () => {
-    const allFetchedProjects = (await getProjects()).data.data as IProject[];
-    setProjects(allFetchedProjects);
+    const userId = getUserId();
+    if(userId !== null) {
+      const allFetchedProjects = (await getProjects()).data.data as IProject[];
+
+      /* Show projects that belong to the user */
+      let shownProjects: IProject[] = [];
+      let shownProjectRoles: (ProjectRoles | null)[] = [];
+
+      for(let i = 0; i < allFetchedProjects.length; i++) {
+        const curProject = allFetchedProjects[i];
+        const gottenProjectUser = (await getProjectUser(curProject._id, userId)).data.data as IProjectUser;
+
+        if(userRole === SystemRoles.ADMIN || gottenProjectUser !== null) {
+          shownProjects.push(curProject);
+          shownProjectRoles.push(gottenProjectUser ? gottenProjectUser.userRole : null);
+        }
+      }
+      setProjects(shownProjects);
+      /* Set initial project to first one*/
+      if(shownProjects[0] != undefined) {
+        setSelectedProject(shownProjects[0])
+        const ISprintCollection = await fetchSprints(shownProjects[0]._id);  
+        setSprintCollection(ISprintCollection);
+        setSelectedBtn(0) // Change button color
+      }
+      console.log(shownProjectRoles);
+      //setProjectRoles(shownProjectRoles);
+    }
   }
-  /* Fetch all sprints*/
+
+  /* Fetch all sprints */
   const fetchSprints = async (project_id: string) => {
     const allSprints = (await getSprints(project_id)).data.data as ISprint[];
+    const ISprintCollection:ISprintCollection[] = [];
+    const currentTime = Math.floor(Date.now() / 1000)
+    
     setSprints(allSprints);
-    allSprints.forEach( (sprint) => {
-      fetchStories(sprint._id)
+    allSprints.forEach( async (sprint) => {
+      const found1 = ISprintCollection.some((el:ISprintCollection) => el._id === sprint._id);
+      /*  CORRECTION - just active sprint */
+
+      /* Get stories of a sprint */
+      if (!found1 && sprint.startTime < currentTime && currentTime < sprint.endTime) {
+        ISprintCollection.push({ _id: sprint._id, name: sprint.name,  stories: []});
+        const allStories = (await getStories(project_id, sprint._id)).data.data as IStory[];
+        const found2 = ISprintCollection.find((el:ISprintCollection) => el._id === sprint._id);
+
+        /* Filter already accepted and realized stories*/
+        if(found2){
+          acceptedStories.length = 0;
+          allStories.forEach( async (story) => {
+            if(story.status === "Accepted") {
+              const found3 = acceptedStories.some((el:IStory) => el._id === story._id);
+              if(!found3) acceptedStories.push(story);
+              setAcceptedStories(acceptedStories)
+            }
+            else {
+              const found3 = found2.stories.some((el:IStory) => el._id === story._id);
+              if(!found3) found2.stories.push(story);
+            }
+          });
+        }
+        setStories(allStories)
+      }
+      /* Get stories of a product backlog */
+      if (!found1) {
+        const allStoriesInProductBacklog = (await getStories(project_id, "")).data.data as IStory[];
+        if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
+        setStories(allStoriesInProductBacklog)
+      }
+
+      
      });
+     return ISprintCollection
   }
-  /* Fetch stories for sprints*/
-  const fetchStories = async (sprint_id: string) => {
-    const allStories = (await getStories(selectedProject._id, sprint_id)).data.data as IStory[];
-    setStories(allStories);
-    console.log(allStories)
-  }
-
-  const projectSelectionClick= (project: IProject) => {
-    setSelectedProject(project);
-    fetchSprints(project._id)
+ 
+  const projectSelectionClick = async (project: IProject, buttonIn:number) => {
+    setSelectedProject(project); // Update clicked project
+    const ISprintCollection = await fetchSprints(project._id);  
+    setSprintCollection(ISprintCollection); // Update sprint and its stories
+    setSelectedBtn(buttonIn) // Change button color
   }
 
+  /* "PROD_LEAD" can accept story once it is finished*/
+  const handleAcceptUserStory = async (project: IProject, story: IStory) => {
+    await acceptUserStory(project._id, story.sprintId, story._id);
+
+    const ISprintCollection = await fetchSprints(project._id);
+    setSprintCollection(ISprintCollection); // Update sprint and its stories
+  }
+
+  /* "PROD_LEAD" can reject story and it goes back to product backlog*/
+  const handleRejectUserStory = async (project: IProject, story: IStory) => {
+    //await rejectUserStory(story._id);
+
+    const ISprintCollection = await fetchSprints(project._id);
+    setSprintCollection(ISprintCollection); // Update sprint and its stories
+  }
+
+  /* TEMPORARY - MOVE ACCEPTED STORY BACK TO UNREALIZED STORIES*/
+  const handleRestoreUserStory = async (project: IProject, story: IStory) => {
+    await rejectUserStory(project._id, story.sprintId, story._id);
+
+    const ISprintCollection = await fetchSprints(project._id);
+    setSprintCollection(ISprintCollection); // Update sprint and its stories
+    setAcceptedStories(acceptedStories);
+  }
   return (
     <div className="product_backlog_container">
-        <div className="page_title">Product backlog: {selectedProject.name}</div>
-        <hr style={{ margin: "30px 0" }}/>
 
-        <Grid container direction="row" justify="center" alignItems="flex-start">
+      <Grid container direction="row" justify="center" alignItems="flex-start">
 
-            {/* SELECT PROJECT */}
+          {/* PROJECT SELECTION */}
 
-            <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={3}>
+          <Paper elevation={0} style={{
+                  backgroundColor: "transparent",
+                  boxShadow: "none",
+              }} className="project_">
+              <Typography variant="h6">
+                  List of my projects
+              </Typography>
+              <div className="">
+              <ButtonGroup 
+                  orientation="vertical"
+                  aria-label="vertical contained button group"
+                  variant="text"
+              >
+                  {
+                  projects.map((project, i) => (
+                      <Button key={i} onClick={() => projectSelectionClick(project, i)} style={selectedBtn == i ?{justifyContent: "flex-start", color: "#26a69a"} : {justifyContent: "flex-start", color: "#000000"}}>{project.name}</Button>
+                  ))
+                  }
+              </ButtonGroup>
+              </div>
+          </Paper>
+          </Grid>
+          <Grid item xs={12} md={9}>
             <Paper elevation={0} style={{
-                    backgroundColor: "transparent",
-                    boxShadow: "none",
-                }} className="project_">
-                <Typography variant="h6">
-                    List of my projects
-                </Typography>
-                <div className="">
-                <ButtonGroup
-                    orientation="vertical"
-                    color="primary"
-                    aria-label="vertical contained primary button group"
-                    variant="text"
-                >
-                    {
-                    projects.map((project, i) => (
-                        <Button key={i} onClick={() => projectSelectionClick(project)} style={{justifyContent: "flex-start"}}>{project.name}</Button>
-                    ))
-                    }
-                </ButtonGroup>
-                </div>
-            </Paper>
-            </Grid>
-            <Grid item xs={12} md={9}>
-                <Paper elevation={0} style={{
-                    backgroundColor: "transparent",
-                    boxShadow: "none",
-                }} className="{paper_project">
+                backgroundColor: "transparent",
+                boxShadow: "none",
+            }} className="{paper_project">
+            
+            {/* TABS */}
+            <div>
+                    <Tabs value={valueTab} onChange={handleChange} aria-label="simple tabs example">
+                    <Tab label="Unrealized stories"  />
+                    <Tab label="Realized stories"  />
+                    </Tabs>
                 
-                {/* TABS */}
-                <div>
-                        <Tabs value={valueTab} onChange={handleChange} aria-label="simple tabs example">
-                        <Tab label="Unrealized stories"  />
-                        <Tab label="Realized stories"  />
-                        </Tabs>
+                <TabPanel value={valueTab} index={0}>
+                    <div>
+                    <div className="page_subtitle" style={{ marginBottom: 20 }}>Active sprints</div>
+                    <Typography component={'span'} display = "block" variant="subtitle2" className="story_row_status">
+                      {ISprintCollection === undefined || ISprintCollection.length == 0 ? 'No active sprints.' : ''}
+                    </Typography>
+                    {/* DIFFERENT SPRINTS */}
+                    {
+                      ISprintCollection.map((sprint, i) => (
+                        <div key={i}>
+                          <Typography key={i} variant="h6">{sprint.name}</Typography>
+
+                          <div>
+                            <Typography key={i} component={'span'} display = "block" variant="subtitle2" className="story_row_status">
+                              {sprint.stories === undefined || sprint.stories.length == 0 ? 'No stories in sprint' : ''}
+                            </Typography>
+                          </div>
+                          <div>
+                          {/* DIFFERENT STORY CARDS */}
+                          {
+                            sprint.stories.map((story, j) =>(
+                              <div key={j} className="story_row">
+                                <div className="story_row_title">{story.name}</div>
+                                <div className="story_row_title">
+                                  <Typography key={j} component={'span'} display = "block" variant="caption" className="story_row_status">Status: {story.status}</Typography>
+                                  <Typography key={j} component={'span'} display = "block" variant="caption" className="story_row_status">Priority: {story.priority}</Typography>
+                                  <Typography key={j} component={'span'} display = "block" variant="caption" className="story_row_status">Business Value: {story.businessValue}</Typography>
+                                </div>
+                                <div className="story_row_icons">
+                                  <IconButton color="primary">
+                                    <ArrowForwardRounded />
+                                  </IconButton>
+                                </div>
+                                <div className="story_row_description">
+                                 {story.comment}
+                                </div>
+                                <div className="story_row_icons">
+                                  <IconButton color="primary" onClick={() => handleAcceptUserStory(selectedProject, story)}>
+                                    <DoneRoundedIcon /> 
+                                    <Typography component={'span'} display = "block" variant="caption">Accept</Typography>
+                                  </IconButton>
+                                  <IconButton color="primary" onClick={() => handleRejectUserStory(selectedProject, story)}>
+                                    <CloseRoundedIcon />
+                                    <Typography component={'span'} display = "block" variant="caption">Remove</Typography>
+                                  </IconButton>
+                                </div>
+                              </div>
+                              ))
+                          }
+                          </div>
+                        </div>
+                      ))
+                    }
+                    </div>
                     
-                    <TabPanel value={valueTab} index={0}>
-                        {
-                        sprints.map((sprint, i) => (
-                          <Typography key={i} component={'span'} variant="h5" style={{marginBottom: "10px"}}>{sprint.name}</Typography>
-                        ))
-                        }
-                        {/*  CARDS OF STORIES */}
-                        {
-                        stories.map((story, i) => (
+                    <hr style={{ margin: "30px 0" }}/>
+
+                    <div className="page_subtitle" style={{ marginBottom: 20 }}>Product backlog</div>
+
+                    <div>
+                      {/* STORY CARDS IN PRODUCT*/}
+                      <div>
+                        <Typography component={'span'} display = "block" variant="subtitle2" className="story_row_status">
+                          {productBacklog === undefined || productBacklog.length == 0 ? 'No stories in product backlog.' : ''}
+                        </Typography>
+                      </div>
+                      {
+                        productBacklog.map((story, i) =>(
                           <div key={i} className="story_row">
                             <div className="story_row_title">{story.name}</div>
                             <div className="story_row_title">
-                              <Typography key={i} component={'span'} display = "block" variant="subtitle2" className="story_row_status">Status: {story.status}</Typography>
-                              <Typography key={i} component={'span'} display = "block" variant="subtitle2" className="story_row_status">Priority: {story.priority}</Typography>
-                              <Typography key={i} component={'span'} display = "block" variant="subtitle2" className="story_row_status">Business Value: {story.businessValue}</Typography>
+                              <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Status: {story.status}</Typography>
+                              <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Priority: {story.priority}</Typography>
+                              <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Business Value: {story.businessValue}</Typography>
                             </div>
                             <div className="story_row_icons">
-                              <IconButton color="primary">
-                                <DeleteRounded />
-                              </IconButton>
-                              <IconButton color="primary">
-                                <EditRounded />
-                              </IconButton>
                               <IconButton color="primary">
                                 <ArrowForwardRounded />
                               </IconButton>
                             </div>
+                            <div className="story_row_description">
+                              {story.comment}
+                            </div>
                           </div>
+                          ))
+                      }
+                    </div>
+
+                    <Button variant="contained" color="primary" style={{ alignSelf: "flex-start" }}>ADD USER STORY</Button>
+                </TabPanel>
+                <TabPanel value={valueTab} index={1}>
+                  <div className="page_subtitle" style={{ marginBottom: 20 }}>Accepted user stories</div>
+                  <div>
+                    {/* ACCEPTED AND REALIZED STORY CARDS*/}
+                    <div>
+                      <Typography component={'span'} display = "block" variant="subtitle2" className="story_row_status">
+                        {acceptedStories === undefined || acceptedStories.length == 0 ? 'No stories realized yet.' : ''}
+                      </Typography>
+                    </div>
+                    {
+                      acceptedStories.map((story, i) =>(
+                        <div key={i} className="story_row">
+                          <div className="story_row_title">{story.name}</div>
+                          <div className="story_row_title">
+                            <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Status: {story.status}</Typography>
+                            <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Priority: {story.priority}</Typography>
+                            <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Business Value: {story.businessValue}</Typography>
+                          </div>
+                          <div className="story_row_icons">
+                            <IconButton color="primary">
+                              <ArrowForwardRounded />
+                            </IconButton>
+                          </div>
+                          <div className="story_row_description">
+                            {story.comment}
+                          </div>
+                          <IconButton color="primary" onClick={() => handleRestoreUserStory(selectedProject, story)}>
+                            <CloseRoundedIcon /> 
+                            <Typography component={'span'} display = "block" variant="caption">Move back to sprint</Typography>
+                          </IconButton>
+                        </div>
                         ))
-                        }
-                        <p>Not assigned to sprints</p>
-                        <Button variant="contained" color="primary" style={{ alignSelf: "flex-start" }}>ADD USER STORY</Button>
-                    </TabPanel>
-                    <TabPanel value={valueTab} index={1}>
-                        <p>Realized stories</p>
-                    </TabPanel>
-                </div>
-                </Paper>
-            </Grid>
-        </Grid>
+                    }
+                  </div>
+                </TabPanel>
+            </div>
+            </Paper>
+          </Grid>
+      </Grid>
     </div>
   )
 }

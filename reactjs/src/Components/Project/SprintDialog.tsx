@@ -49,11 +49,11 @@ export default ({ projectId, open, handleClose, openSnack, editId }: IProps) => 
     if(editId !== undefined) {
       const gottenSprint = (await getSprint(projectId, editId)).data.data as ISprint;
 
-      setSprintTitle(gottenSprint.sprintName);
-      setSprintDescription(gottenSprint.sprintDescription);
-      setStartDate(moment.unix(gottenSprint.sprintStartTime));
-      setEndDate(moment.unix(gottenSprint.sprintEndTime));
-      setSprintVelocity(gottenSprint.sprintVelocity);
+      setSprintTitle(gottenSprint.name);
+      setSprintDescription(gottenSprint.description);
+      setStartDate(moment.unix(gottenSprint.startTime));
+      setEndDate(moment.unix(gottenSprint.endTime));
+      setSprintVelocity(gottenSprint.velocity);
     }
   }
 

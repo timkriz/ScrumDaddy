@@ -104,7 +104,7 @@ export default () => {
   }
 
   const sprintDetailsClick = (sprintId: string) => {
-    history.push(`/projects/${projectId}/sprints/${sprintId}`);
+    history.push(`/sprints/${projectId}/${sprintId}`);
   }
 
   const deleteClickedSprint = async (sprintId: string) => {
@@ -159,21 +159,21 @@ export default () => {
                     sprints.map((sprint, i) => (
                       <div key={i} className="sprint_row">
                         <div style={{ display: "flex", flexDirection: "column" }}>
-                          <div className="sprint_row_title">{sprint.sprintName}</div>
+                          <div className="sprint_row_title">{sprint.name}</div>
                           <div style={{ display: "flex", marginTop: 10 }}>
                             <div style={{ marginRight: 20 }}>
                               <div className="sprint_label">Start Date:</div>
-                              <div className="sprint_value">{moment.unix(sprint.sprintStartTime).format("DD.MM.YYYY")}</div>
+                              <div className="sprint_value">{moment.unix(sprint.startTime).format("DD.MM.YYYY")}</div>
                             </div>
 
                             <div style={{ marginRight: 20 }}>
                               <div className="sprint_label">End Date:</div>
-                              <div className="sprint_value">{moment.unix(sprint.sprintEndTime).format("DD.MM.YYYY")}</div>
+                              <div className="sprint_value">{moment.unix(sprint.endTime).format("DD.MM.YYYY")}</div>
                             </div>
 
                             <div>
                               <div className="sprint_label">Sprint Velocity:</div>
-                              <div className="sprint_value">{sprint.sprintVelocity}</div>
+                              <div className="sprint_value">{sprint.velocity}</div>
                             </div>
                           </div>
                         </div>

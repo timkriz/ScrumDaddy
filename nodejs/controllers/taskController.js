@@ -35,6 +35,8 @@ exports.new = function (req, res) {
     task.timeEstimate       = req.body.timeEstimate;
     task.suggestedUser      = req.body.suggestedUser;
     task.assignedUser       = req.body.assignedUser;
+    task.projectId          = req.params.projectid;
+    task.sprintId           = req.params.sprintid;
     task.storyId            = req.params.storyid;
 
     task.save(function (err) {
@@ -61,7 +63,6 @@ exports.update = function (req, res) {
         task.timeEstimate       = req.body.timeEstimate || task.timeEstimate;
         task.suggestedUser      = req.body.suggestedUser || task.suggestedUser;
         task.assignedUser       = req.body.assignedUser || task.assignedUser;
-        task.storyId            = req.params.storyid || task.storyId;
 
         task.save(function (err) {
             if (err) {
@@ -83,8 +84,21 @@ exports.delete = function (req, res) {
             return;
         }
         res.json({
-            message: "Task removed",
+            message: "Task deleted",
             data: task
+        });
+    });
+};
+
+exports.deleteMany = function (req, res) {
+    taskModel.deleteMany({storyId: req.params.storyid}, function (err, tasks) {
+        if (err) {
+            res.status(400).json(err);
+            return;
+        }
+        res.json({
+            message: "Tasks deleted",
+            data: tasks
         });
     });
 };

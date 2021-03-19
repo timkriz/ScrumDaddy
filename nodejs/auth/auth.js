@@ -15,8 +15,8 @@ var cookieExtractor = function (req) {
 
 var headerExtractor = function (req) {
     var token = null;
-    if (req.headers['Authorization']) {
-        token = req.headers['Authorization'].split(' ')[1];
+    if (req.headers['authorization']) {
+        token = req.headers['authorization'].split(' ')[1];
     }
     return token;
 };

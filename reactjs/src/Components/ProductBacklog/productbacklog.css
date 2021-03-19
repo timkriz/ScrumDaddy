@@ -18,6 +18,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .story_row_title {
@@ -36,4 +37,12 @@
 .story_row_icons {
     display: flex;
 
+}
+.story_row_description {
+    font-size: 10px;
+    font-family: Roboto;
+    color: #707070;
+    font-weight: 400;
+    padding: 10px;
+    width: 100%;
 }

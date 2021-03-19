@@ -55,7 +55,6 @@ exports.update = function (req, res) {
         
         projectsUsers.userRole          = req.body.userRole || projectsUsers.userRole;
         projectsUsers.projectId         = req.body.projectId || projectsUsers.projectId;
-        projectsUsers.userId            = req.params.userid || projectsUsers.userId;
 
         projectsUsers.save(function (err) {
             if (err){

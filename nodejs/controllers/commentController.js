@@ -30,10 +30,11 @@ exports.view = function (req, res) {
 exports.new = function (req, res) {
     var comment = new commentModel();
 
-    comment.postId      = req.body.postId;
     comment.userId      = req.body.userId;
     comment.timestamp   = req.body.timestamp;
     comment.text        = req.body.text;
+    comment.projectId   = req.params.projectid;
+    comment.postId      = req.params.postid;
 
     comment.save(function (err) {
         if (err) {
@@ -54,7 +55,6 @@ exports.update = function (req, res) {
             return;
         }
 
-        comment.postId      = req.body.postId || comment.postId;
         comment.userId      = req.body.userId || comment.userId;
         comment.timestamp   = req.body.timestamp || comment.timestamp;
         comment.text        = req.body.text || comment.text;
@@ -85,9 +85,8 @@ exports.delete = function (req, res) {
     });
 };
 
-// TODO
 exports.deleteMany = function (req, res) {
-    commentModel.deleteMany({$and:[{postId: req.params.postid}, {projectId:req.params.projectid}]}, function (err, comments) {
+    commentModel.deleteMany({postId: req.params.postid}, function (err, comments) {
         if (err) {
             res.status(400).json(err);
             return;
