@@ -12,7 +12,6 @@ import {deleteSprint, getSprints} from "../../api/SprintService";
 import "./project.css";
 import moment from "moment";
 import SprintDialog from "./SprintDialog";
-import TaskDialog from "../Task/TaskDialog";
 import DocDialog from "./DocDialog";
 import ProjectWall from "./ProjectWall";
 import {getUserId} from "../../api/TokenService";

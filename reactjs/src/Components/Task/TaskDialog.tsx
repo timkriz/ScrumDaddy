@@ -4,7 +4,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
-import {ITask, ITaskDialogAssign, ITaskUser, IUser} from "./ITaskList";
+import {ITaskDialogAssign, ITaskUser, IUser} from "./ITaskList";
 import {Button} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import FormControl from "@material-ui/core/FormControl";
@@ -15,18 +15,20 @@ import {Color} from "@material-ui/lab";
 import {ClearRounded} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import {getProjectUsers} from "../../api/ProjectService";
-//import {getTask, postTask, putTask} from "../../api/TaskService";
-//import {ITask} from "../TaskList/ITaskList";
+import {getTask, putTask, postTask} from "../../api/TaskService";
+import {ITask} from "../ProjectList/IProjectList";
 
 interface IProps {
   projectId: string;
+  sprintId: string;
+  storyId: string;
   open: boolean;
   handleClose: () => void;
   openSnack: (message: string, severity: Color, refresh?: boolean) => void;
   editId?: string;
 }
 
-export default ({ projectId, open, handleClose, openSnack, editId }: IProps) => {
+export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, editId }: IProps) => {
   const [ TaskTitle, setTaskTitle ] = useState<string>("");
   const [ TaskDescription, setTaskDescription ] = useState<string>("");
   const [ TaskTime, setTaskTime] = useState<number>(10);
@@ -36,9 +38,9 @@ export default ({ projectId, open, handleClose, openSnack, editId }: IProps) => 
 
   useEffect(() => {
     if(open) {
-      // Fetch project users
+      // Fetch task
       if(editId !== undefined) {
-        fetchProjectUsers();
+        fetchTask();
       }
 
       // Clear the fields
@@ -52,34 +54,21 @@ export default ({ projectId, open, handleClose, openSnack, editId }: IProps) => 
   }, [ open ]);
 
 
-  const fetchProjectUsers = async () => {
-    if(editId !== undefined) {
-      // Project Users
-      const gottenProjectUsers = (await getProjectUsers(editId)).data.data as ITaskUser[];
-      let newAssignedUsers: ITaskDialogAssign[] = [];
-      gottenProjectUsers.forEach(user => {
-        const newAssign: ITaskDialogAssign = { userId: user.userId };
-        newAssignedUsers.push(newAssign);
-      });
-      setAssignedUsers(newAssignedUsers);
-    }
-  };
-/*
   const fetchTask = async () => {
     if(editId !== undefined) {
-      const gottenTask = (await getTask(projectId, editId)).data.data as ITask;
+      const gottenTask = (await getTask(projectId, sprintId, storyId, editId)).data.data as ITask;
 
-      setTaskTitle(gottenTask.TaskName);
-      setTaskDescription(gottenTask.TaskDescription);
-      setTaskTime(gottenTask.TaskTime);
+      setTaskTitle(gottenTask.name);
+      setTaskDescription(gottenTask.description);
+      setTaskTime(gottenTask.timeEstimate);
     }
   }
 
   const confirmAction = async () => {
-    // Edit Task
+    // Edit task
     if(editId !== undefined) {
       try {
-        await putTask(projectId, editId, TaskTitle, TaskDescription, TaskTime);
+        await putTask(projectId, sprintId, storyId, editId, TaskTitle, TaskDescription, TaskTime);
 
         openSnack("Task updated successfully!", "success", true);
         handleClose();
@@ -88,39 +77,27 @@ export default ({ projectId, open, handleClose, openSnack, editId }: IProps) => 
       }
     }
 
-    // Add Task
+    // Add task
     else {
-      try {
-        await postTask(projectId, TaskTitle, TaskDescription, TaskTime);
+    try {
+      await postTask(projectId, sprintId, storyId, TaskTitle, TaskDescription, TaskTime);
 
-        openSnack("Task created successfully!", "success", true);
-        handleClose();
-      } catch (e) {
-        openSnack("Task creation failed!", "error");
-      }
+      openSnack("Task created successfully!", "success", true);
+      handleClose();
+    } catch (e) {
+      openSnack("Task creation failed!", "error");
     }
-  };
-  */
+  }
+};
 
-  const addAssignRow = () => {
-    if(projectUsers.length > 0) {
-      let assignedUsersCopy: ITaskDialogAssign[] = JSON.parse(JSON.stringify(assignedUsers));
-      setAssignedUsers([ ...assignedUsersCopy, { userId: projectUsers[0]._id}]);
-    }
-  };
+const addAssignRow = () => {
+};
 
-  const deleteAssignRow = (i: number) => {
-    let assignedUsersCopy: ITaskDialogAssign[] = JSON.parse(JSON.stringify(assignedUsers));
-    assignedUsersCopy = assignedUsersCopy.filter((assignedUser, j) => i !== j);
-    setAssignedUsers(assignedUsersCopy);
-  };
+const deleteAssignRow = (i: number) => {
+};
 
-  const handleUserSelect = (e: any, i: number) => {
-    let assignedUsersCopy: ITaskDialogAssign[] = JSON.parse(JSON.stringify(assignedUsers));
-    assignedUsersCopy[i].userId = e.target.value;
-    setAssignedUsers(assignedUsersCopy);
-  };
-
+const handleUserSelect = (e: any, i: number) => {
+};
 
 
 

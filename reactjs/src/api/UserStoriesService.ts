@@ -27,3 +27,17 @@ export const rejectUserStory = (projectId: string, sprintId: string, storyId: st
     status: "New"
   });
 };
+
+export const postStory = (projectId: string, sprintId: string, name: string, timeEstimate: number): Promise<any> => {
+  return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories`, {
+    name,
+    timeEstimate
+  });
+};
+
+export const putStory = (projectId: string, sprintId: string, taskId: string, name: string, timeEstimate: number): Promise<any> => {
+  return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${taskId}`, {
+    name,
+    timeEstimate
+  });
+};
