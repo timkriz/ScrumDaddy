@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useHistory, useParams} from "react-router-dom";
-import {IProject, ISprint, IStory, ITask} from "../ProjectList/IProjectList";
+import {IProject, ISprint, IStory, ITask, IUser} from "../ProjectList/IProjectList";
 import {ArrowBackRounded, ArrowForwardRounded, DeleteRounded, EditRounded} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -10,7 +10,7 @@ import {Color} from "@material-ui/lab/Alert";
 import {getProject} from "../../api/ProjectService";
 import {getSprint} from "../../api/SprintService";
 import {getStory} from "../../api/UserStoriesService";
-import {getTask} from "../../api/TaskService";
+import {getTask, putTask} from "../../api/TaskService";
 import "./task.css";
 import moment from "moment";
 import {getUserId} from "../../api/TokenService";
@@ -37,6 +37,8 @@ export default () => {
   const [ project, setProject] = useState<IProject>();
   const [ story, setStory ] = useState<IStory>();
   const [ task, setTask ] = useState<ITask>();
+
+  const [ assignedUser, setAssignedUser ] = useState<IUser>();
 
   const [snackOpen, setSnackOpen] = useState<boolean>(false);
   const [snackMessage, setSnackMessage] = useState<string>("");
@@ -78,7 +80,7 @@ export default () => {
   }
 
   const back = () => {
-    history.push(`/stories/${projectId}/${sprintId}/${storyId}`);
+    history.push(`/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`);
   }
 
   const closeSnack = () => {
@@ -90,6 +92,30 @@ export default () => {
     setSnackSeverity(severity);
     setSnackOpen(true);
   }
+
+  const assignUser = (set: boolean) => {
+    if(set) {
+      try {
+        if (task !== undefined){
+          const userId = getUserId();
+          if (userId !== null){
+            putTask(projectId, sprintId, storyId, taskId, task.name, task.description, task.timeEstimate, task.suggestedUser, userId);
+          }
+        }
+      } catch (e) {
+        console.log("ERR PUT TASK")
+      }
+    }else{
+      try {
+        if (task !== undefined){
+          putTask(projectId, sprintId, storyId, taskId, task.name, task.description, task.timeEstimate, task.suggestedUser, "None");
+        }
+      } catch (e) {
+        console.log("ERR PUT TASK")
+      }
+    }
+    window.location.reload(true);
+  };
 
   return (
     <>
@@ -109,13 +135,17 @@ export default () => {
                     <ArrowBackRounded fontSize="large" />
                 </IconButton>
             </div>
-
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Button variant="contained" color="primary" onClick={() => void 0} style={{ alignSelf: "flex-start", marginTop: 20 }}>ACCEPT TASK</Button>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Button variant="contained" color="primary" onClick={() => void 0} style={{ alignSelf: "flex-start", marginTop: 20 }}>DECLINE TASK</Button>
-            </div>
+            {task.assignedUser == getUserId()? (
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <Button variant="contained" color="primary" onClick={() => assignUser(false)} style={{ alignSelf: "flex-start", marginTop: 20 }}>DECLINE TASK</Button>
+                </div>      
+            ) : task.assignedUser == "None"? (
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <Button variant="contained" color="primary" onClick={() => assignUser(true)} style={{ alignSelf: "flex-start", marginTop: 20 }}>ACCEPT TASK</Button>
+                </div>
+            ) : (
+              <div style={{ display: "flex", justifyContent: "space-between" }}>USER ALREADY ASSIGNED TO THIS TASK</div>
+            )}
             <hr style={{ margin: "30px 0" }}/>
 
         </>
