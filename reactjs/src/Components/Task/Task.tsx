@@ -96,7 +96,7 @@ export default () => {
                 <IconButton size="medium" color="primary" onClick={back}>
                     <ArrowBackRounded fontSize="large" />
                 </IconButton>
-                <div className="page_title">{project.projectName}</div>
+                <div className="page_title">{project.name}</div>
                 <IconButton size="medium" color="secondary" style={{ opacity: 0, cursor: "auto" }}>
                     <ArrowBackRounded fontSize="large" />
                 </IconButton>
