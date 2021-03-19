@@ -9,6 +9,13 @@ import {BrowserRouter} from "react-router-dom";
 import cyan from "@material-ui/core/colors/cyan";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
+import WebFont from "webfontloader";
+
+WebFont.load({
+  google: {
+    families: ['Roboto:300,400,500,700,900']
+  }
+});
 
 const theme = createMuiTheme({
   palette: {
