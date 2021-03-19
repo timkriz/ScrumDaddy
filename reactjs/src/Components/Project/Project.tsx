@@ -24,7 +24,6 @@ interface IProjectParams {
 
 export default () => {
   const [ project, setProject ] = useState<IProject>();
-  const [ taskDialogOpen, setTaskDialogOpen ] = useState<boolean>(false);
   const [ sprintDialogOpen, setSprintDialogOpen ] = useState<boolean>(false);
   const [ docDialogOpen, setDocDialogOpen ] = useState<boolean>(false);
   const [ editId, setEditId ] = useState<string>();
@@ -92,17 +91,6 @@ export default () => {
     setEditId(undefined);
   }
 
-  const openTaskDialog = (taskId?: string) => {
-    taskId !== undefined && setEditId(taskId);
-
-    setTaskDialogOpen(true);
-  }
-
-  const closeTaskDialog = () => {
-    setTaskDialogOpen(false);
-    setEditId(undefined);
-  }
-
   const sprintDetailsClick = (sprintId: string) => {
     history.push(`/sprints/${projectId}/${sprintId}`);
   }
@@ -143,11 +131,9 @@ export default () => {
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <Button variant="contained" color="primary" onClick={() => openSprintDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD SPRINT</Button>
                 <Button variant="contained" color="primary" onClick={() => openDocDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>SEE DOCUMENTATION</Button>
-                <Button variant="contained" color="primary" onClick={() => openTaskDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD TASK</Button>
             </div>
 
             <SprintDialog projectId={projectId} open={sprintDialogOpen} handleClose={closeSprintDialog} openSnack={openSnack} editId={editId} />
-            <TaskDialog projectId={projectId} open={taskDialogOpen} handleClose={closeTaskDialog} openSnack={openSnack} editId={editId} />
             { project && <DocDialog project={project} open={docDialogOpen} handleClose={closeDocDialog} openSnack={openSnack} /> }
 
             <hr style={{ margin: "30px 0" }}/>

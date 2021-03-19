@@ -15,6 +15,7 @@ import "./story.css";
 import moment from "moment";
 import {getUserId} from "../../api/TokenService";
 import {ProjectRoles} from "../../data/Roles";
+import TaskDialog from "../Task/TaskDialog";
 
 interface IProjectParams {
   projectId: string;
@@ -33,6 +34,8 @@ export default () => {
   const [ project, setProject] = useState<IProject>();
   const [ story, setStory ] = useState<IStory>();
   const [ tasks, setTasks ] = useState<ITask[]>([]);
+  const [ taskDialogOpen, setTaskDialogOpen ] = useState<boolean>(false);
+  const [ editId, setEditId ] = useState<string>();
 
   const [snackOpen, setSnackOpen] = useState<boolean>(false);
   const [snackMessage, setSnackMessage] = useState<string>("");
@@ -90,6 +93,17 @@ export default () => {
     setSnackOpen(true);
   }
 
+  const openTaskDialog = (taskId?: string) => {
+    taskId !== undefined && setEditId(taskId);
+
+    setTaskDialogOpen(true);
+  }
+
+  const closeTaskDialog = () => {
+    setTaskDialogOpen(false);
+    setEditId(undefined);
+  }
+
   return (
     <>
       {
@@ -104,11 +118,11 @@ export default () => {
                     <ArrowBackRounded fontSize="large" />
                 </IconButton>
                 <div className="page_title">{story.name}</div>
-                <IconButton size="medium" color="secondary" style={{ opacity: 0, cursor: "auto" }}>
-                    <ArrowBackRounded fontSize="large" />
-                </IconButton>
+                <Button variant="contained" color="primary" onClick={() => openTaskDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD TASK</Button>
             </div>
-
+            {/*
+            <TaskDialog projectId={projectId} open={taskDialogOpen} handleClose={closeTaskDialog} openSnack={openSnack} editId={editId} />
+            */}
             <hr style={{ margin: "30px 0" }}/>
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
