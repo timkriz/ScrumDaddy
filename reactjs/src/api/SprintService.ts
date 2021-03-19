@@ -8,23 +8,23 @@ export const getSprint = (projectId: string, sprintId: string): Promise<any> => 
   return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}`);
 };
 
-export const postSprint = (projectId: string, sprintName: string, sprintDescription: string, sprintStartTime: number, sprintEndTime: number, sprintVelocity: number): Promise<any> => {
+export const postSprint = (projectId: string, name: string, description: string, startTime: number, endTime: number, velocity: number): Promise<any> => {
   return axiosAuth.post(`${BACKEND_URL}/projects/${projectId}/sprints`, {
-    sprintName,
-    sprintDescription,
-    sprintStartTime,
-    sprintEndTime,
-    sprintVelocity
+    name,
+    description,
+    startTime,
+    endTime,
+    velocity
   });
 };
 
-export const putSprint = (projectId: string, sprintId: string, sprintName: string, sprintDescription: string, sprintStartTime: number, sprintEndTime: number, sprintVelocity: number): Promise<any> => {
+export const putSprint = (projectId: string, sprintId: string, name: string, description: string, startTime: number, endTime: number, velocity: number): Promise<any> => {
   return axiosAuth.put(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}`, {
-    sprintName,
-    sprintDescription,
-    sprintStartTime,
-    sprintEndTime,
-    sprintVelocity
+    name,
+    description,
+    startTime,
+    endTime,
+    velocity
   });
 };
 
