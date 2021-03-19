@@ -17,7 +17,6 @@ import ProjectList from "../ProjectList/ProjectList";
 import Button from "@material-ui/core/Button";
 import {drawerItems} from "../../data/DrawerItems";
 import ManageUsers from "../ManageUsers/ManageUsers";
-import ProductBacklog from "../ProductBacklog/ProductBacklog";
 import Project from "../Project/Project";
 import Sprint from "../Sprint/Sprint";
 import Story from "../Story/Story";
@@ -109,9 +108,6 @@ function App() {
           </Route>
           <Route path="/manage_users">
             <ManageUsers />
-          </Route>
-          <Route path="/product_backlog">
-            <ProductBacklog />
           </Route>
           <Route path="/projects/:projectId">
             <Project />

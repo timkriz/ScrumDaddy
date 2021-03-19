@@ -16,6 +16,7 @@ import DocDialog from "./DocDialog";
 import ProjectWall from "./ProjectWall";
 import {getUserId} from "../../api/TokenService";
 import {ProjectRoles} from "../../data/Roles";
+import ProductBacklog from "../ProductBacklog/ProductBacklog";
 
 interface IProjectParams {
   projectId: string;
@@ -176,6 +177,11 @@ export default () => {
                       </div>
                     ))
                   }
+                
+                  <hr style={{ margin: "30px 0" }}/>
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1}}>
+                    { userRole !== undefined && <ProductBacklog projectId={projectId} userRole={userRole} openSnack={openSnack} /> }
+                  </div>
                 </div>
 
                 <div className="center_divider" />
