@@ -91,7 +91,7 @@ export default () => {
   }
 
   const sprintDetailsClick = (sprintId: string) => {
-    history.push(`/sprints/${projectId}/${sprintId}`);
+    history.push(`/projects/${projectId}/sprints/${sprintId}`);
   }
 
   const deleteClickedSprint = async (sprintId: string) => {

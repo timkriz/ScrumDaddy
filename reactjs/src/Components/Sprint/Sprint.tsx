@@ -63,10 +63,10 @@ export default () => {
     history.push(`/projects/${projectId}`);
   }
 
-  const storyDetailsClick = (projectId: string, sprintId: string, storyId: string) => {
-    history.push(`/stories/${projectId}/${sprintId}/${storyId}`);
+  const storyDetailsClick = (storyId: string) => {
+    history.push(`/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`);
   }
-
+  
   const closeSnack = () => {
     setSnackOpen(false);
   }
@@ -117,7 +117,7 @@ export default () => {
                           <IconButton color="primary" onClick={() => void 0}>
                             <EditRounded />
                           </IconButton>
-                          <IconButton color="primary" onClick={() => storyDetailsClick(projectId, sprintId, story._id)}>
+                          <IconButton color="primary" onClick={() => storyDetailsClick(story._id)}>
                             <ArrowForwardRounded />
                           </IconButton>
                         </div>

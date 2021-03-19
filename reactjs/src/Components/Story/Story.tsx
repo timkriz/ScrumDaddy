@@ -73,11 +73,11 @@ export default () => {
   }
 
   const back = () => {
-    history.push(`/sprints/${projectId}/${sprintId}`);
+    history.push(`/projects/${projectId}/sprints/${sprintId}`);
   }
 
   const taskDetailsClick = (taskId: string) => {
-    history.push(`/tasks/${projectId}/${sprintId}/${storyId}/${taskId}`);
+    history.push(`/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/task/${taskId}`);
   }
 
   const closeSnack = () => {

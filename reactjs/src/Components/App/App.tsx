@@ -98,16 +98,13 @@ function App() {
           <Route exact path="/projects">
             <ProjectList />
           </Route>
-          <Route path="/projects/:projectId">
-            <Project />
-          </Route>
-          <Route path="/sprints/:projectId/:sprintId">
+          <Route exact path="/projects/:projectId/sprints/:sprintId">
             <Sprint />
           </Route>
-          <Route path="/stories/:projectId/:sprintId/:storyId">
+          <Route exact path="/projects/:projectId/sprints/:sprintId/stories/:storyId">
             <Story />
           </Route>
-          <Route path="/tasks/:projectId/:sprintId/:storyId/:taskId">
+          <Route exact path="/projects/:projectId/sprints/:sprintId/stories/:storyId/task/:taskId">
             <Task />
           </Route>
           <Route path="/manage_users">
@@ -115,6 +112,9 @@ function App() {
           </Route>
           <Route path="/product_backlog">
             <ProductBacklog />
+          </Route>
+          <Route path="/projects/:projectId">
+            <Project />
           </Route>
         </Switch>
       </div>
