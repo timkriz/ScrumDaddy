@@ -120,7 +120,7 @@ export default () => {
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div className="sprint_row_title">{task.name}</div>
                           <div style={{ display: "flex", marginTop: 10 }}>
-                            {task.name}
+                            {task.description}
                           </div>
                         </div>
                         <div className="sprint_row_icons">

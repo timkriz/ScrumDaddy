@@ -144,10 +144,13 @@ export default () => {
                   <Button variant="contained" color="primary" onClick={() => assignUser(true)} style={{ alignSelf: "flex-start", marginTop: 20 }}>ACCEPT TASK</Button>
                 </div>
             ) : (
-              <div style={{ display: "flex", justifyContent: "space-between" }}>USER ALREADY ASSIGNED TO THIS TASK</div>
+              <div className="page_title">USER ALREADY ASSIGNED TO THIS TASK</div>
             )}
             <hr style={{ margin: "30px 0" }}/>
-
+            <div className="page_title">Description: {task.description}</div>
+            <div className="page_title">Time estimate: {task.timeEstimate}</div>
+            <div className="page_title">Suggested user: {task.suggestedUser}</div>
+            <div className="page_title">Assigned user: {task.assignedUser}</div>
         </>
       } 
     </>
