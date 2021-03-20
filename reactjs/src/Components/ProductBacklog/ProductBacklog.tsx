@@ -13,6 +13,7 @@ import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
 import {ProjectRoles, SystemRoles} from "../../data/Roles";
 import {Color} from "@material-ui/lab";
+import RejectStoryDialog from './RejectStoryDialog';
 
 interface IProject {
   _id: string;
@@ -69,11 +70,10 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
   const [ productBacklog, setProductBacklog ] = useState<IStory[]>([]);  /* Special sprint for stories not assigned to sprint */
   const [ acceptedStories, setAcceptedStories ] = useState<IStory[]>([]);  /* Realized and accepted user stories*/
 
-  let [selectedProject, setSelectedProject] = useState<IProject>(project1[0]);
   const [valueTab, setValue] = React.useState(0);
-  const [selectedBtn, setSelectedBtn] = React.useState(-1);
-  const history = useHistory();
-  //const userRole = getUserRole();
+  const [ rejectDialogOpen, setRejectDialogOpen ] = useState<boolean>(false);
+  const [ rejectedStorySprintId, setRejectedStorySprintId ] = useState<string>("");
+  const [ rejectedStoryId, setRejectedStoryId ] = useState<string>("");
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -90,7 +90,6 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
     const ISprintCollection:ISprintCollection[] = [];
     const currentTime = Math.floor(Date.now() / 1000)
-    console.log(gottenSprints)
 
     gottenSprints.forEach( async (sprint) => {
       const found1 = ISprintCollection.some((el:ISprintCollection) => el._id === sprint._id);
@@ -121,36 +120,44 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
       }
       /* Get stories of a product backlog */
       if (!found1) {
-        const allStoriesInProductBacklog = (await getStories(projectId, "")).data.data as IStory[];
+        const allStoriesInProductBacklog = (await getStories(projectId, "/")).data.data as IStory[];
         if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
         setStories(allStoriesInProductBacklog)
       }
      });
-     console.log(ISprintCollection)
      setSprintCollection(ISprintCollection); // Update sprint and its stories
      return ISprintCollection
   }
 
   /* "PROD_LEAD" can accept story once it is finished*/
-  const handleAcceptUserStory = async (project: IProject, story: IStory) => {
-    await acceptUserStory(projectId, story.sprintId, story._id);
-
+  const handleAcceptUserStory = async (story: IStory) => {
+    if(userRole === "PROD_LEAD"){
+      await acceptUserStory(projectId, story.sprintId, story._id);
+    }
     const ISprintCollection = await fetchSprints();
   }
 
   /* "PROD_LEAD" can reject story and it goes back to product backlog*/
-  const handleRejectUserStory = async (project: IProject, story: IStory) => {
-    //await rejectUserStory(story._id);
-
-    const ISprintCollection = await fetchSprints();
+  const handleRejectUserStory = async (story: IStory) => {
+    setRejectedStorySprintId(story.sprintId)
+    setRejectedStoryId(story._id)
+    openRejectDialog()
   }
 
   /* TEMPORARY - MOVE ACCEPTED STORY BACK TO UNREALIZED STORIES*/
-  const handleRestoreUserStory = async (project: IProject, story: IStory) => {
-    await rejectUserStory(projectId, story.sprintId, story._id);
+  const handleRestoreUserStory = async (story: IStory) => {
+    //await rejectUserStory(projectId, story.sprintId, story._id);
 
     const ISprintCollection = await fetchSprints();
     setAcceptedStories(acceptedStories);
+  }
+
+  const openRejectDialog = () => {
+    setRejectDialogOpen(true);
+  }
+  const closeRejectDialog = () => {
+    fetchSprints();
+    setRejectDialogOpen(false);
   }
   return (
     <>
@@ -178,6 +185,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                     <div key={i} className="story_row">
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div className="story_row_title">{story.name}</div>
+                          <div className="story_value">Comment: {story.comment}</div>
                           <div style={{ display: "flex", marginTop: 10 }}>
                             <div style={{ marginRight: 20 }}>
                               <div className="story_label">Status:</div>
@@ -257,16 +265,20 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                             </div>
                           </div>
                         </div>
+                        {userRole ==="PROD_LEAD" &&
                         <div className="story_row_icons">
-                          <IconButton color="primary" onClick={() => handleAcceptUserStory(selectedProject, story)}>
+                          <IconButton color="primary" disabled={userRole !== "PROD_LEAD"} onClick={() => handleAcceptUserStory(story)}>
                             <DoneRoundedIcon /> 
                             <Typography component={'span'} display = "block" variant="caption">Accept</Typography>
                           </IconButton>
-                          <IconButton color="primary" onClick={() => handleRejectUserStory(selectedProject, story)}>
+                          <IconButton color="primary" disabled={userRole !== "PROD_LEAD"} onClick={() => handleRejectUserStory(story)}>
                             <CloseRoundedIcon />
                             <Typography component={'span'} display = "block" variant="caption">Remove</Typography>
                           </IconButton>
                         </div>
+                        }
+                        { <RejectStoryDialog projectId={projectId} sprintId={rejectedStorySprintId} storyId={rejectedStoryId} open={rejectDialogOpen} handleClose={closeRejectDialog} openSnack={openSnack} /> }
+
                       </div>
                       ))
                     }
@@ -308,7 +320,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                       </div>
                     </div>
                     <div className="story_row_icons">
-                      <IconButton color="primary" onClick={() => handleRestoreUserStory(selectedProject, story)}>
+                      <IconButton color="primary" onClick={() => handleRestoreUserStory(story)}>
                         <CloseRoundedIcon />
                         <Typography component={'span'} display = "block" variant="caption">Restore story</Typography>
                       </IconButton>
