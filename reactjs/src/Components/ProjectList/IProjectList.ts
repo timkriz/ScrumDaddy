@@ -55,7 +55,7 @@ export interface IStory {
   timeEstimate: number,
   businessValue: number,
   comment: string,
-  priority: number,
+  priority: string,
   tests: string,
   status: string,
   projectId: string,
