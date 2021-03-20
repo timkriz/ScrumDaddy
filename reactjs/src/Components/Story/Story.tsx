@@ -110,7 +110,9 @@ export default () => {
       if (task !== undefined){
         if (userId !== null){
           if (action == "assign") {
-            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.suggestedUser, userId, "assigned");
+            if(task.assignedUser !== "None"){
+              putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.suggestedUser, userId, "assigned");
+            }
           }else if(action == "unassign") {
             putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.suggestedUser, "None", "unassigned");
           }else if(action == "activate") {
