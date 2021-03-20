@@ -115,6 +115,8 @@ export default () => {
             putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.suggestedUser, "None", "unassigned");
           }else if(action == "activate") {
             putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.suggestedUser, task.assignedUser, "active");
+          }else if(action == "deactivate") {
+            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.suggestedUser, task.assignedUser, "assigned");
           }else if(action == "complete") {
             putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.suggestedUser, task.assignedUser, "completed");
           }
@@ -175,8 +177,7 @@ export default () => {
                     <div key={i} className="sprint_row">
                       <div style={{ display: "flex", flexDirection: "column" }}>
                         <div className="sprint_row_title">{task.name}</div>
-                        <div className="sprint_label">Description: </div>
-                        <div style={{ display: "flex"}}>{task.description}</div>
+                        <div style={{ display: "flex", marginTop: 10 }}>TODO</div>
                       </div>
                       <div className="sprint_row_icons">
                         <IconButton color="primary" onClick={() => deleteClickedTask(task._id)}>
@@ -213,15 +214,13 @@ export default () => {
                             </IconButton>
                             {
                               task.assignedUser == getUserId()? (
+                                <div>
                                   <Button variant="contained" color="primary" onClick={() => assignUser(task, "unassign")} style={{alignSelf: "flex-start", marginTop: 5}}>DECLINE TASK</Button>
-                              ) : (
-                                  <Button variant="contained" color="primary" onClick={() => void 0} style={{alignSelf: "flex-start", marginTop: 5}}>ASSIGNED</Button>
-                              )
-                              }
-                            {
-                              task.assignedUser == getUserId()? (
                                   <Button variant="contained" color="primary" onClick={() => assignUser(task, "activate")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 5}}>ACTIVATE</Button>
-                              ) : (void 0)
+                                </div>
+                              ) : (
+                                <Button variant="contained" color="default" onClick={() => void 0} style={{alignSelf: "flex-start", marginTop: 5}}>ASSIGNED</Button>
+                              )
                             }
                           </div>
                         </div>
@@ -251,16 +250,14 @@ export default () => {
                             </IconButton>
                             {
                               task.assignedUser == getUserId()? (
-                                  <Button variant="contained" color="primary" onClick={() => assignUser(task, "unassign")} style={{alignSelf: "flex-start", marginTop: 5}}>DECLINE TASK</Button>
+                                  <div>
+                                  <Button variant="contained" color="primary" onClick={() => assignUser(task, "complete")} style={{alignSelf: "flex-start", marginTop: 5}}>COMPLETE</Button>
+                                  <Button variant="contained" color="primary" onClick={() => assignUser(task, "deactivate")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 5}}>DEACTIVATE</Button>
+                                  </div>
                               ) : (
-                                  <Button variant="contained" color="primary" onClick={() => void 0} style={{alignSelf: "flex-start", marginTop: 5}}>ACTIVE</Button>
+                                  <Button variant="contained" color="default" onClick={() => void 0} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 5}}>ACTIVE</Button>
                               )
                               }
-                            {
-                              task.assignedUser == getUserId()? (
-                                  <Button variant="contained" color="primary" onClick={() => assignUser(task, "complete")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 5}}>COMPLETE</Button>
-                              ) : (void 0)
-                            }
                           </div>
                         </div>
                       ))
@@ -287,7 +284,7 @@ export default () => {
                             <IconButton color="primary" onClick={() => void 0}>
                               <EditRounded />
                             </IconButton>
-                            <Button variant="contained" color="primary" onClick={() => void 0} style={{alignSelf: "flex-start", marginTop: 5}}>COMPLETED TASK</Button>
+                            <Button variant="contained" color="default" onClick={() => void 0} style={{alignSelf: "flex-start", marginTop: 5}}>COMPLETED</Button>
                           </div>
                         </div>
                       ))
