@@ -21,7 +21,6 @@ import ProductBacklog from "../ProductBacklog/ProductBacklog";
 import Project from "../Project/Project";
 import Sprint from "../Sprint/Sprint";
 import Story from "../Story/Story";
-import Task from "../Task/Task";
 
 function App() {
   const [ open, setOpen ] = useState<boolean>();
@@ -103,9 +102,6 @@ function App() {
           </Route>
           <Route exact path="/projects/:projectId/sprints/:sprintId/stories/:storyId">
             <Story />
-          </Route>
-          <Route exact path="/projects/:projectId/sprints/:sprintId/stories/:storyId/task/:taskId">
-            <Task />
           </Route>
           <Route path="/manage_users">
             <ManageUsers />

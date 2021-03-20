@@ -35,6 +35,7 @@ exports.new = function (req, res) {
     task.timeEstimate       = req.body.timeEstimate;
     task.suggestedUser      = req.body.suggestedUser;
     task.assignedUser       = req.body.assignedUser;
+    task.status             = req.body.status;
     task.projectId          = req.params.projectid;
     task.sprintId           = req.params.sprintid;
     task.storyId            = req.params.storyid;
@@ -63,6 +64,7 @@ exports.update = function (req, res) {
         task.timeEstimate       = req.body.timeEstimate || task.timeEstimate;
         task.suggestedUser      = req.body.suggestedUser || task.suggestedUser;
         task.assignedUser       = req.body.assignedUser || task.assignedUser;
+        task.status             = req.body.status || task.status;
 
         task.save(function (err) {
             if (err) {

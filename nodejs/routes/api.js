@@ -176,8 +176,6 @@ router.route('/projects/:projectid/sprints/:sprintid/stories/:storyid/tasks/:tas
     .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, taskController.update)
     .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, taskController.delete);
 
-
-
 module.exports = router;
 
 function authenticate(req, res, next){
