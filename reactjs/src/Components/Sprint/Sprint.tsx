@@ -107,7 +107,7 @@ export default () => {
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div className="sprint_row_title">{story.name}</div>
                           <div style={{ display: "flex", marginTop: 10 }}>
-                            {story.name}
+                            {story.status}
                           </div>
                         </div>
                         <div className="sprint_row_icons">

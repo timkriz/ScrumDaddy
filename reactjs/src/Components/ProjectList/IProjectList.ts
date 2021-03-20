@@ -44,6 +44,7 @@ export interface ITask {
   timeEstimate: number,
   suggestedUser: string,
   assignedUser: string,
+  status: string,
   projectId: string,
   sprintId: string,
   storyId: string,
