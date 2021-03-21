@@ -46,7 +46,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack }: 
           rows={5}
           value={text}
           onChange={e => setText(e.target.value)}
-          label="Story Rejection Content"
+          label="Story Rejection Reason"
           variant="outlined"
         />
       </DialogContent>

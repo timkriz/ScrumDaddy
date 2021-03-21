@@ -28,3 +28,8 @@ export const rejectUserStory = (projectId: string, sprintId: string, storyId: st
     sprintId: "/"
   });
 };
+export const restoreUserStory = (projectId: string, sprintId: string, storyId: string): Promise<any> => {
+  return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
+    status: "In progress"
+  });
+};
