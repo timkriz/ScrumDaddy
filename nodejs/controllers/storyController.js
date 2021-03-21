@@ -29,7 +29,7 @@ exports.view = function (req, res) {
 };
 
 exports.viewNotInSprint = function (req, res) {
-    storyModel.find({projectId: req.params.projectid, sprintId: ""}, function (err, stories) {
+    storyModel.find({projectId: req.params.projectid, sprintId: "/"}, function (err, stories) {
         if (err) {
             res.status(400).json(err);
             return;
@@ -80,6 +80,7 @@ exports.update = function (req, res) {
         story.priority          = req.body.priority || story.priority;
         story.tests             = req.body.tests || story.tests;
         story.status            = req.body.status || story.status;
+        story.sprintId          = req.body.sprintId || story.sprintId;
 
         story.save(function (err) {
             if (err) {

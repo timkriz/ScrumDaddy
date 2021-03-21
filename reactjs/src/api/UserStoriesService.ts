@@ -9,7 +9,7 @@ export const getSprint = (projectId: string, sprintId: string): Promise<any> => 
 };
 
 export const getStories = (projectId: string, sprintId: string): Promise<any> => {
-  if(sprintId) return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories`);
+  if(sprintId != "/") return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories`);
   else return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/stories`);
 };
 
@@ -22,9 +22,10 @@ export const acceptUserStory = (projectId: string, sprintId: string, storyId: st
     status: "Accepted"
   });
 };
-export const rejectUserStory = (projectId: string, sprintId: string, storyId: string): Promise<any> => {
+export const rejectUserStory = (projectId: string, sprintId: string, storyId: string, newcomment: string): Promise<any> => {
   return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
-    status: "New"
+    comment: newcomment,
+    sprintId: "/"
   });
 };
 

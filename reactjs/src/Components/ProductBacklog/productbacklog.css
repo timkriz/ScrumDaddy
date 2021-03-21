@@ -9,7 +9,6 @@
     padding: 30px 60px;
     width: 100%;
 }
-
 .story_row {
     margin: 0 0 30px 0;
     padding: 10px 20px;
@@ -18,14 +17,32 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
 }
 
 .story_row_title {
-    font-size: 18px;
+    font-size: 20px;
     font-family: Roboto;
     color: #707070;
     font-weight: 500;
+}
+
+.story_row_icons {
+    display: flex;
+}
+
+.story_label {
+    font-family: Roboto;
+    font-size: 12px;
+    font-weight: 500;
+    color: #0097a7;
+    margin-bottom: 4px;
+}
+
+.story_value {
+    font-family: Roboto;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(0,0,0,0.67);
 }
 
 .story_row_status{
@@ -34,10 +51,7 @@
     color: #747373;
     font-weight: 100;
 }
-.story_row_icons {
-    display: flex;
 
-}
 .story_row_description {
     font-size: 10px;
     font-family: Roboto;

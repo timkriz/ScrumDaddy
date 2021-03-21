@@ -14,10 +14,5 @@ export const drawerItems = [
     title: "Manage Users",
     path: "/manage_users",
     roles: [ 0 ]
-  },
-  {
-    title: "Product Backlog",
-    path: "/product_backlog",
-    roles: [ 0, 1 ]
   }
 ];

@@ -8,18 +8,31 @@ export const getTask = (projectId: string, sprintId: string, storyId: string, ta
   return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/tasks/${taskId}`);
 };
 
-export const postTask = (projectId: string, sprintId: string, storyId: string, name: string, description: string, timeEstimate: number): Promise<any> => {
-  return axiosAuth.post(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/tasks`, {
-    name,
-    description,
-    timeEstimate
-  });
+export const deleteTask = (projectId: string, sprintId: string, storyId: string, taskId: string): Promise<any> => {
+  return axiosAuth.delete(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/tasks/${taskId}`);
 };
 
-export const putTask = (projectId: string, sprintId: string, storyId: string, taskId: string, name: string, description: string, timeEstimate: number): Promise<any> => {
+export const putTask = (projectId: string, sprintId: string, storyId: string, taskId: string,
+    name: string, description: string, timeEstimate: number, suggestedUser: string, assignedUser: string, status: string): Promise<any> => {
   return axiosAuth.put(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/tasks/${taskId}`, {
     name,
     description,
-    timeEstimate
+    timeEstimate,
+    suggestedUser,
+    assignedUser,
+    status
   });
 };
+
+export const postTask = (projectId: string, sprintId: string, storyId: string,
+    name: string, description: string, timeEstimate: number, suggestedUser: string, assignedUser: string, status: string): Promise<any> => {
+  return axiosAuth.post(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/tasks`, {
+    name,
+    description,
+    timeEstimate,
+    suggestedUser,
+    assignedUser,
+    status
+  });
+};
+

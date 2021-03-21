@@ -1,15 +1,7 @@
 import React, {useEffect, useState} from "react";
 import "./productbacklog.css";
 import {Button} from "@material-ui/core";
-//import {ISprint, IProject} from "../ProjectList/IProjectList";
-//import {IStory} from "./IStory"
-import {IProjectUser} from "../ProjectList/IProjectList";
-import {getProjects, getProjectUser} from "../../api/ProjectService";
 import {getSprints, getStories, rejectUserStory, acceptUserStory} from "../../api/UserStoriesService";
-import {getUserId, getUserRole} from "../../api/TokenService";
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Typography from "@material-ui/core/Typography";
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -20,6 +12,8 @@ import {ArrowForwardRounded, DeleteRounded, EditRounded} from "@material-ui/icon
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
 import {ProjectRoles, SystemRoles} from "../../data/Roles";
+import {Color} from "@material-ui/lab";
+import RejectStoryDialog from './RejectStoryDialog';
 
 interface IProject {
   _id: string;
@@ -41,7 +35,7 @@ interface IStory {
   timeEstimate: number;
   businessValue: number;
   comment: string;
-  priority: number;
+  priority: string;
   tests: string;
   status: string;
   projectId: string;
@@ -61,7 +55,13 @@ const project1: IProject[] = [
     }
   ];
 
-export default () => {
+interface IProps {
+  projectId: string;
+  userRole: ProjectRoles;
+  openSnack: (message: string, severity: Color, refresh?: boolean) => void;
+}
+
+export default ({ projectId, userRole, openSnack }: IProps) => {
   const [ projects, setProjects ] = useState<IProject[]>([]); 
   const [ sprints, setSprints ] = useState<ISprint[]>([]);
   const [ stories, setStories ] = useState<IStory[]>([]);
@@ -70,67 +70,35 @@ export default () => {
   const [ productBacklog, setProductBacklog ] = useState<IStory[]>([]);  /* Special sprint for stories not assigned to sprint */
   const [ acceptedStories, setAcceptedStories ] = useState<IStory[]>([]);  /* Realized and accepted user stories*/
 
-  let [selectedProject, setSelectedProject] = useState<IProject>(project1[0]);
   const [valueTab, setValue] = React.useState(0);
-  const [selectedBtn, setSelectedBtn] = React.useState(-1);
-  const history = useHistory();
-  const userRole = getUserRole();
+  const [ rejectDialogOpen, setRejectDialogOpen ] = useState<boolean>(false);
+  const [ rejectedStorySprintId, setRejectedStorySprintId ] = useState<string>("");
+  const [ rejectedStoryId, setRejectedStoryId ] = useState<string>("");
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
 
   useEffect(() => {
-    fetchProjects();
+    fetchSprints();
   }, []);
 
-  /* Fetch all projects */
-  const fetchProjects = async () => {
-    const userId = getUserId();
-    if(userId !== null) {
-      const allFetchedProjects = (await getProjects()).data.data as IProject[];
-
-      /* Show projects that belong to the user */
-      let shownProjects: IProject[] = [];
-      let shownProjectRoles: (ProjectRoles | null)[] = [];
-
-      for(let i = 0; i < allFetchedProjects.length; i++) {
-        const curProject = allFetchedProjects[i];
-        const gottenProjectUser = (await getProjectUser(curProject._id, userId)).data.data as IProjectUser;
-
-        if(userRole === SystemRoles.ADMIN || gottenProjectUser !== null) {
-          shownProjects.push(curProject);
-          shownProjectRoles.push(gottenProjectUser ? gottenProjectUser.userRole : null);
-        }
-      }
-      setProjects(shownProjects);
-      /* Set initial project to first one*/
-      if(shownProjects[0] != undefined) {
-        setSelectedProject(shownProjects[0])
-        const ISprintCollection = await fetchSprints(shownProjects[0]._id);  
-        setSprintCollection(ISprintCollection);
-        setSelectedBtn(0) // Change button color
-      }
-      console.log(shownProjectRoles);
-      //setProjectRoles(shownProjectRoles);
-    }
-  }
-
   /* Fetch all sprints */
-  const fetchSprints = async (project_id: string) => {
-    const allSprints = (await getSprints(project_id)).data.data as ISprint[];
+  const fetchSprints = async () => {
+    const gottenSprints = (await getSprints(projectId)).data.data as ISprint[];
+    setSprints(gottenSprints);
+
     const ISprintCollection:ISprintCollection[] = [];
     const currentTime = Math.floor(Date.now() / 1000)
-    
-    setSprints(allSprints);
-    allSprints.forEach( async (sprint) => {
+
+    gottenSprints.forEach( async (sprint) => {
       const found1 = ISprintCollection.some((el:ISprintCollection) => el._id === sprint._id);
       /*  CORRECTION - just active sprint */
 
       /* Get stories of a sprint */
       if (!found1 && sprint.startTime < currentTime && currentTime < sprint.endTime) {
         ISprintCollection.push({ _id: sprint._id, name: sprint.name,  stories: []});
-        const allStories = (await getStories(project_id, sprint._id)).data.data as IStory[];
+        const allStories = (await getStories(projectId, sprint._id)).data.data as IStory[];
         const found2 = ISprintCollection.find((el:ISprintCollection) => el._id === sprint._id);
 
         /* Filter already accepted and realized stories*/
@@ -152,219 +120,217 @@ export default () => {
       }
       /* Get stories of a product backlog */
       if (!found1) {
-        const allStoriesInProductBacklog = (await getStories(project_id, "")).data.data as IStory[];
+        const allStoriesInProductBacklog = (await getStories(projectId, "/")).data.data as IStory[];
         if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
         setStories(allStoriesInProductBacklog)
       }
-
-      
      });
+     setSprintCollection(ISprintCollection); // Update sprint and its stories
      return ISprintCollection
-  }
- 
-  const projectSelectionClick = async (project: IProject, buttonIn:number) => {
-    setSelectedProject(project); // Update clicked project
-    const ISprintCollection = await fetchSprints(project._id);  
-    setSprintCollection(ISprintCollection); // Update sprint and its stories
-    setSelectedBtn(buttonIn) // Change button color
   }
 
   /* "PROD_LEAD" can accept story once it is finished*/
-  const handleAcceptUserStory = async (project: IProject, story: IStory) => {
-    await acceptUserStory(project._id, story.sprintId, story._id);
-
-    const ISprintCollection = await fetchSprints(project._id);
-    setSprintCollection(ISprintCollection); // Update sprint and its stories
+  const handleAcceptUserStory = async (story: IStory) => {
+    if(userRole === "PROD_LEAD"){
+      await acceptUserStory(projectId, story.sprintId, story._id);
+    }
+    const ISprintCollection = await fetchSprints();
   }
 
   /* "PROD_LEAD" can reject story and it goes back to product backlog*/
-  const handleRejectUserStory = async (project: IProject, story: IStory) => {
-    //await rejectUserStory(story._id);
-
-    const ISprintCollection = await fetchSprints(project._id);
-    setSprintCollection(ISprintCollection); // Update sprint and its stories
+  const handleRejectUserStory = async (story: IStory) => {
+    setRejectedStorySprintId(story.sprintId)
+    setRejectedStoryId(story._id)
+    openRejectDialog()
   }
 
   /* TEMPORARY - MOVE ACCEPTED STORY BACK TO UNREALIZED STORIES*/
-  const handleRestoreUserStory = async (project: IProject, story: IStory) => {
-    await rejectUserStory(project._id, story.sprintId, story._id);
+  const handleRestoreUserStory = async (story: IStory) => {
+    //await rejectUserStory(projectId, story.sprintId, story._id);
 
-    const ISprintCollection = await fetchSprints(project._id);
-    setSprintCollection(ISprintCollection); // Update sprint and its stories
+    const ISprintCollection = await fetchSprints();
     setAcceptedStories(acceptedStories);
   }
+
+  const openRejectDialog = () => {
+    setRejectDialogOpen(true);
+  }
+  const closeRejectDialog = () => {
+    fetchSprints();
+    setRejectDialogOpen(false);
+  }
   return (
-    <div className="product_backlog_container">
+    <>
 
-      <Grid container direction="row" justify="center" alignItems="flex-start">
+      <div className="page_subtitle" style={{ marginBottom: 20 }}>Product backlog</div>
 
-          {/* PROJECT SELECTION */}
+      {/* TABS */}
+      <div>
+              <Tabs value={valueTab} onChange={handleChange} aria-label="simple tabs example">
+              <Tab label="Unrealized stories"  />
+              <Tab label="Realized stories"  />
+              </Tabs>
+          
+          <TabPanel value={valueTab} index={0}>
+              <div>
+              <div>
+                {/* STORY CARDS IN PRODUCT BACKLOG*/}
+                <div>
+                  <Typography component={'span'} display = "block" variant="subtitle2" className="story_row_status">
+                    {productBacklog === undefined || productBacklog.length == 0 ? 'No stories in product backlog.' : ''}
+                  </Typography>
+                </div>
+                {
+                  productBacklog.map((story, i) =>(
+                    <div key={i} className="story_row">
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                          <div className="story_row_title">{story.name}</div>
+                          <div className="story_value">Comment: {story.comment}</div>
+                          <div style={{ display: "flex", marginTop: 10 }}>
+                            <div style={{ marginRight: 20 }}>
+                              <div className="story_label">Status:</div>
+                              <div className="story_value">{story.status}</div>
+                            </div>
 
-          <Grid item xs={12} md={3}>
-          <Paper elevation={0} style={{
-                  backgroundColor: "transparent",
-                  boxShadow: "none",
-              }} className="project_">
-              <Typography variant="h6">
-                  List of my projects
-              </Typography>
-              <div className="">
-              <ButtonGroup 
-                  orientation="vertical"
-                  aria-label="vertical contained button group"
-                  variant="text"
-              >
-                  {
-                  projects.map((project, i) => (
-                      <Button key={i} onClick={() => projectSelectionClick(project, i)} style={selectedBtn == i ?{justifyContent: "flex-start", color: "#26a69a"} : {justifyContent: "flex-start", color: "#000000"}}>{project.name}</Button>
-                  ))
-                  }
-              </ButtonGroup>
-              </div>
-          </Paper>
-          </Grid>
-          <Grid item xs={12} md={9}>
-            <Paper elevation={0} style={{
-                backgroundColor: "transparent",
-                boxShadow: "none",
-            }} className="{paper_project">
-            
-            {/* TABS */}
-            <div>
-                    <Tabs value={valueTab} onChange={handleChange} aria-label="simple tabs example">
-                    <Tab label="Unrealized stories"  />
-                    <Tab label="Realized stories"  />
-                    </Tabs>
-                
-                <TabPanel value={valueTab} index={0}>
-                    <div>
-                    <div className="page_subtitle" style={{ marginBottom: 20 }}>Active sprints</div>
-                    <Typography component={'span'} display = "block" variant="subtitle2" className="story_row_status">
-                      {ISprintCollection === undefined || ISprintCollection.length == 0 ? 'No active sprints.' : ''}
-                    </Typography>
-                    {/* DIFFERENT SPRINTS */}
-                    {
-                      ISprintCollection.map((sprint, i) => (
-                        <div key={i}>
-                          <Typography key={i} variant="h6">{sprint.name}</Typography>
+                            <div style={{ marginRight: 20 }}>
+                              <div className="story_label">Priority:</div>
+                              <div className="story_value">{story.priority}</div>
+                            </div>
 
-                          <div>
-                            <Typography key={i} component={'span'} display = "block" variant="subtitle2" className="story_row_status">
-                              {sprint.stories === undefined || sprint.stories.length == 0 ? 'No stories in sprint' : ''}
-                            </Typography>
-                          </div>
-                          <div>
-                          {/* DIFFERENT STORY CARDS */}
-                          {
-                            sprint.stories.map((story, j) =>(
-                              <div key={j} className="story_row">
-                                <div className="story_row_title">{story.name}</div>
-                                <div className="story_row_title">
-                                  <Typography key={j} component={'span'} display = "block" variant="caption" className="story_row_status">Status: {story.status}</Typography>
-                                  <Typography key={j} component={'span'} display = "block" variant="caption" className="story_row_status">Priority: {story.priority}</Typography>
-                                  <Typography key={j} component={'span'} display = "block" variant="caption" className="story_row_status">Business Value: {story.businessValue}</Typography>
-                                </div>
-                                <div className="story_row_icons">
-                                  <IconButton color="primary">
-                                    <ArrowForwardRounded />
-                                  </IconButton>
-                                </div>
-                                <div className="story_row_description">
-                                 {story.comment}
-                                </div>
-                                <div className="story_row_icons">
-                                  <IconButton color="primary" onClick={() => handleAcceptUserStory(selectedProject, story)}>
-                                    <DoneRoundedIcon /> 
-                                    <Typography component={'span'} display = "block" variant="caption">Accept</Typography>
-                                  </IconButton>
-                                  <IconButton color="primary" onClick={() => handleRejectUserStory(selectedProject, story)}>
-                                    <CloseRoundedIcon />
-                                    <Typography component={'span'} display = "block" variant="caption">Remove</Typography>
-                                  </IconButton>
-                                </div>
-                              </div>
-                              ))
-                          }
+                            <div>
+                              <div className="story_label">Business Value:</div>
+                              <div className="story_value">{story.businessValue}</div>
+                            </div>
                           </div>
                         </div>
+                        <div className="sprint_row_icons">
+                          <IconButton color="primary">
+                            <DeleteRounded />
+                          </IconButton>
+                          <IconButton color="primary">
+                            <EditRounded />
+                          </IconButton>
+                          <IconButton color="primary">
+                            <ArrowForwardRounded />
+                          </IconButton>
+                        </div>
+                      </div>
+                    ))
+                }
+              </div>
+
+              <Button variant="contained" color="primary" style={{ alignSelf: "flex-start" }}>ADD USER STORY</Button>
+
+              <hr style={{ margin: "30px 0"}}/>
+
+              <Typography variant="h6" style={{ margin: "30px 0"}}>Active user stories</Typography>
+              <Typography component={'span'} display = "block" variant="subtitle2" className="story_row_status">
+                {ISprintCollection === undefined || ISprintCollection.length == 0 ? 'No active sprints.' : ''}
+              </Typography>
+              {/* DIFFERENT SPRINTS */}
+              {
+                ISprintCollection.map((sprint, i) => (
+                  <div key={i}>
+                    <div>
+                      <Typography key={i} component={'span'} display = "block" variant="subtitle2" className="story_row_status">
+                        {sprint.stories === undefined || sprint.stories.length == 0 ? 'No stories in sprint '.concat(sprint.name) : ''}
+                      </Typography>
+                    </div>
+                    <div>
+                    {/* ACTIVE STORY CARDS */}
+                    {
+                      sprint.stories.map((story, j) =>(
+                        <div key={i} className="story_row">
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                          <div className="story_row_title">{story.name}</div>
+                          <div style={{ display: "flex", marginTop: 10 }}>
+                            <div style={{ marginRight: 20 }}>
+                              <div className="story_label">Sprint:</div>
+                              <div className="story_value">{sprint.name}</div>
+                            </div>
+
+                            <div style={{ marginRight: 20 }}>
+                              <div className="story_label">Status:</div>
+                              <div className="story_value">{story.status}</div>
+                            </div>
+
+                            <div style={{ marginRight: 20 }}>
+                              <div className="story_label">Priority:</div>
+                              <div className="story_value">{story.priority}</div>
+                            </div>
+
+                            <div>
+                              <div className="story_label">Business Value:</div>
+                              <div className="story_value">{story.businessValue}</div>
+                            </div>
+                          </div>
+                        </div>
+                        {userRole ==="PROD_LEAD" &&
+                        <div className="story_row_icons">
+                          <IconButton color="primary" disabled={userRole !== "PROD_LEAD"} onClick={() => handleAcceptUserStory(story)}>
+                            <DoneRoundedIcon /> 
+                            <Typography component={'span'} display = "block" variant="caption">Accept</Typography>
+                          </IconButton>
+                          <IconButton color="primary" disabled={userRole !== "PROD_LEAD"} onClick={() => handleRejectUserStory(story)}>
+                            <CloseRoundedIcon />
+                            <Typography component={'span'} display = "block" variant="caption">Remove</Typography>
+                          </IconButton>
+                        </div>
+                        }
+                        { <RejectStoryDialog projectId={projectId} sprintId={rejectedStorySprintId} storyId={rejectedStoryId} open={rejectDialogOpen} handleClose={closeRejectDialog} openSnack={openSnack} /> }
+
+                      </div>
                       ))
                     }
                     </div>
-                    
-                    <hr style={{ margin: "30px 0" }}/>
-
-                    <div className="page_subtitle" style={{ marginBottom: 20 }}>Product backlog</div>
-
-                    <div>
-                      {/* STORY CARDS IN PRODUCT*/}
-                      <div>
-                        <Typography component={'span'} display = "block" variant="subtitle2" className="story_row_status">
-                          {productBacklog === undefined || productBacklog.length == 0 ? 'No stories in product backlog.' : ''}
-                        </Typography>
-                      </div>
-                      {
-                        productBacklog.map((story, i) =>(
-                          <div key={i} className="story_row">
-                            <div className="story_row_title">{story.name}</div>
-                            <div className="story_row_title">
-                              <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Status: {story.status}</Typography>
-                              <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Priority: {story.priority}</Typography>
-                              <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Business Value: {story.businessValue}</Typography>
-                            </div>
-                            <div className="story_row_icons">
-                              <IconButton color="primary">
-                                <ArrowForwardRounded />
-                              </IconButton>
-                            </div>
-                            <div className="story_row_description">
-                              {story.comment}
-                            </div>
-                          </div>
-                          ))
-                      }
-                    </div>
-
-                    <Button variant="contained" color="primary" style={{ alignSelf: "flex-start" }}>ADD USER STORY</Button>
-                </TabPanel>
-                <TabPanel value={valueTab} index={1}>
-                  <div className="page_subtitle" style={{ marginBottom: 20 }}>Accepted user stories</div>
-                  <div>
-                    {/* ACCEPTED AND REALIZED STORY CARDS*/}
-                    <div>
-                      <Typography component={'span'} display = "block" variant="subtitle2" className="story_row_status">
-                        {acceptedStories === undefined || acceptedStories.length == 0 ? 'No stories realized yet.' : ''}
-                      </Typography>
-                    </div>
-                    {
-                      acceptedStories.map((story, i) =>(
-                        <div key={i} className="story_row">
-                          <div className="story_row_title">{story.name}</div>
-                          <div className="story_row_title">
-                            <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Status: {story.status}</Typography>
-                            <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Priority: {story.priority}</Typography>
-                            <Typography key={i} component={'span'} display = "block" variant="caption" className="story_row_status">Business Value: {story.businessValue}</Typography>
-                          </div>
-                          <div className="story_row_icons">
-                            <IconButton color="primary">
-                              <ArrowForwardRounded />
-                            </IconButton>
-                          </div>
-                          <div className="story_row_description">
-                            {story.comment}
-                          </div>
-                          <IconButton color="primary" onClick={() => handleRestoreUserStory(selectedProject, story)}>
-                            <CloseRoundedIcon /> 
-                            <Typography component={'span'} display = "block" variant="caption">Move back to sprint</Typography>
-                          </IconButton>
-                        </div>
-                        ))
-                    }
                   </div>
-                </TabPanel>
+                ))
+              }
+              </div>
+          </TabPanel>
+          <TabPanel value={valueTab} index={1}>
+            <div>
+              {/* ACCEPTED AND REALIZED STORY CARDS*/}
+              <div>
+                <Typography component={'span'} display = "block" variant="subtitle2" className="story_row_status">
+                  {acceptedStories === undefined || acceptedStories.length == 0 ? 'No stories realized yet.' : ''}
+                </Typography>
+              </div>
+              {
+                acceptedStories.map((story, i) =>(
+                  <div key={i} className="story_row">
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <div className="story_row_title">{story.name}</div>
+                      <div style={{ display: "flex", marginTop: 10 }}>
+
+                        <div style={{ marginRight: 20 }}>
+                          <div className="story_label">Status:</div>
+                          <div className="story_value">{story.status}</div>
+                        </div>
+
+                        <div style={{ marginRight: 20 }}>
+                          <div className="story_label">Priority:</div>
+                          <div className="story_value">{story.priority}</div>
+                        </div>
+
+                        <div>
+                          <div className="story_label">Business Value:</div>
+                          <div className="story_value">{story.businessValue}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="story_row_icons">
+                      <IconButton color="primary" onClick={() => handleRestoreUserStory(story)}>
+                        <CloseRoundedIcon />
+                        <Typography component={'span'} display = "block" variant="caption">Restore story</Typography>
+                      </IconButton>
+                    </div>
+                  </div>
+                  ))
+              }
             </div>
-            </Paper>
-          </Grid>
-      </Grid>
-    </div>
+          </TabPanel>
+      </div>
+    </>
   )
 }

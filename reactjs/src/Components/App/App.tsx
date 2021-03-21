@@ -17,11 +17,9 @@ import ProjectList from "../ProjectList/ProjectList";
 import Button from "@material-ui/core/Button";
 import {drawerItems} from "../../data/DrawerItems";
 import ManageUsers from "../ManageUsers/ManageUsers";
-import ProductBacklog from "../ProductBacklog/ProductBacklog";
 import Project from "../Project/Project";
 import Sprint from "../Sprint/Sprint";
 import Story from "../Story/Story";
-import Task from "../Task/Task";
 
 function App() {
   const [ open, setOpen ] = useState<boolean>();
@@ -98,23 +96,17 @@ function App() {
           <Route exact path="/projects">
             <ProjectList />
           </Route>
-          <Route path="/projects/:projectId">
-            <Project />
-          </Route>
-          <Route path="/sprints/:projectId/:sprintId">
+          <Route exact path="/projects/:projectId/sprints/:sprintId">
             <Sprint />
           </Route>
-          <Route path="/stories/:projectId/:sprintId/:storyId">
+          <Route exact path="/projects/:projectId/sprints/:sprintId/stories/:storyId">
             <Story />
-          </Route>
-          <Route path="/tasks/:projectId/:sprintId/:storyId/:taskId">
-            <Task />
           </Route>
           <Route path="/manage_users">
             <ManageUsers />
           </Route>
-          <Route path="/product_backlog">
-            <ProductBacklog />
+          <Route path="/projects/:projectId">
+            <Project />
           </Route>
         </Switch>
       </div>

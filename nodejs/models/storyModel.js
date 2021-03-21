@@ -6,7 +6,7 @@ const storySchema = new Schema ({
     timeEstimate: { type: Number, required: true},
     businessValue: { type: Number, required: true},
     comment: { type: String, required: true},
-    priority: { type: Number, required: true},
+    priority: { type: String, required: true},
     tests: { type: String, required: true},
     status: { type: String, required: true},
     projectId: { type: String, required: true},

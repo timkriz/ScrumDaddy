@@ -66,10 +66,10 @@ export default () => {
     history.push(`/projects/${projectId}`);
   }
 
-  const storyDetailsClick = (projectId: string, sprintId: string, storyId: string) => {
-    history.push(`/stories/${projectId}/${sprintId}/${storyId}`);
+  const storyDetailsClick = (storyId: string) => {
+    history.push(`/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`);
   }
-
+  
   const closeSnack = () => {
     setSnackOpen(false);
   }
@@ -124,7 +124,7 @@ export default () => {
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div className="sprint_row_title">{story.name}</div>
                           <div style={{ display: "flex", marginTop: 10 }}>
-                            {story.name}
+                            {story.status}
                           </div>
                         </div>
                         <div className="sprint_row_icons">
@@ -134,7 +134,7 @@ export default () => {
                           <IconButton color="primary" onClick={() => void 0}>
                             <EditRounded />
                           </IconButton>
-                          <IconButton color="primary" onClick={() => storyDetailsClick(projectId, sprintId, story._id)}>
+                          <IconButton color="primary" onClick={() => storyDetailsClick(story._id)}>
                             <ArrowForwardRounded />
                           </IconButton>
                         </div>
