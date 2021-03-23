@@ -45,6 +45,7 @@ exports.new = function (req, res) {
     var story = new storyModel();
 
     story.name              = req.body.name;
+    story.description       = req.body.description;
     story.timeEstimate      = req.body.timeEstimate;
     story.businessValue     = req.body.businessValue;
     story.comment           = req.body.comment;
@@ -74,6 +75,7 @@ exports.update = function (req, res) {
         }
 
         story.name              = req.body.name || story.name;
+        story.description       = req.body.description || story.description;
         story.timeEstimate      = req.body.timeEstimate || story.timeEstimate;
         story.businessValue     = req.body.businessValue || story.businessValue;
         story.comment           = req.body.comment || story.comment;

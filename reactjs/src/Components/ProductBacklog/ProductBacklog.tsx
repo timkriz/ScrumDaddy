@@ -33,6 +33,7 @@ interface ISprint {
 interface IStory {
   _id: string;
   name: string;
+  description: string;
   timeEstimate: number;
   businessValue: number;
   comment: string;
@@ -210,7 +211,11 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                     <div key={i} className="story_row">
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div className="story_row_title">{story.name}</div>
-                          <div className="story_value">Comment: {story.comment}</div>
+                          <div className="story_value" style={{ padding: 10 }}>{story.description}</div>
+                          <div className="story_label">Comment:</div>
+                          <div className="story_value">{story.comment}</div>
+                          <div className="story_label">Tests:</div>
+                          <div className="story_value">{story.tests}</div>
                           <div style={{ display: "flex", marginTop: 10 }}>
                             <div style={{ marginRight: 20 }}>
                               <div className="story_label">Status:</div>
@@ -268,6 +273,9 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                         <div key={i} className="story_row">
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div className="story_row_title">{story.name}</div>
+                          <div className="story_value" style={{ padding: 10 }}>{story.description}</div>
+                          <div className="story_label">Tests:</div>
+                          <div className="story_value">{story.tests}</div>
                           <div style={{ display: "flex", marginTop: 10 }}>
                             <div style={{ marginRight: 20 }}>
                               <div className="story_label">Sprint:</div>
@@ -329,6 +337,9 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                   <div key={i} className="story_row">
                     <div style={{ display: "flex", flexDirection: "column" }}>
                       <div className="story_row_title">{story.name}</div>
+                      <div className="story_value" style={{ padding: 10 }}>{story.description}</div>
+                      <div className="story_label">Tests:</div>
+                      <div className="story_value">{story.tests}</div>
                       <div style={{ display: "flex", marginTop: 10 }}>
 
                         <div style={{ marginRight: 20 }}>

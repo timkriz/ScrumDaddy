@@ -106,6 +106,7 @@ export default () => {
                       <div key={i} className="sprint_row">
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div className="sprint_row_title">{story.name}</div>
+                          {story.description}
                           <div style={{ display: "flex", marginTop: 10 }}>
                             {story.status}
                           </div>

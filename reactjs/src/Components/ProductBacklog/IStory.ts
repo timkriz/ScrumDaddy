@@ -1,6 +1,7 @@
 export interface IStory {
     _id: string;
     name: string;
+    description: string;
     timeEstimate: number;
     businessValue: number;
     comment: string;

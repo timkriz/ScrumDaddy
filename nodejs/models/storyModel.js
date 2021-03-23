@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const storySchema = new Schema ({
     name: { type: String, required: true},
+    description: { type: String, required: true},
     timeEstimate: { type: Number, required: true},
     businessValue: { type: Number, required: true},
     comment: { type: String, required: true},
