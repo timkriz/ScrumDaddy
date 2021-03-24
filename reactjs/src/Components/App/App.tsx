@@ -12,7 +12,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import {AccountBalanceWallet, Face} from "@material-ui/icons";
-import {isAuthenticated, removeToken} from "../../api/TokenService";
+import {getUser, isAuthenticated, removeToken, removeUser} from "../../api/TokenService";
 import ProjectList from "../ProjectList/ProjectList";
 import Button from "@material-ui/core/Button";
 import {drawerItems} from "../../data/DrawerItems";
@@ -20,9 +20,12 @@ import ManageUsers from "../ManageUsers/ManageUsers";
 import Project from "../Project/Project";
 import Sprint from "../Sprint/Sprint";
 import Story from "../Story/Story";
+import {systemRoleTitles} from "../../data/Roles";
+import {IUser} from "../ProjectList/IProjectList";
 
 function App() {
   const [ open, setOpen ] = useState<boolean>();
+  const [ user, setUser ] = useState<IUser | null>();
   const history = useHistory();
 
   // Redirect to login if user not logged in
@@ -30,6 +33,13 @@ function App() {
     if(!isAuthenticated()) {
       history.push("/login");
     }
+  }, []);
+
+  // Listen to route changes
+  useEffect(() => {
+    const unlisten = history.listen(((location, action) => {
+      setUser(getUser());
+    }));
   }, []);
 
   const toggleDrawer = () => {
@@ -44,6 +54,7 @@ function App() {
 
   const logout = () => {
     removeToken();
+    removeUser();
     history.push("/login");
     setOpen(false);
   }
@@ -55,9 +66,16 @@ function App() {
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
             <Face />
           </IconButton>
-          <Typography variant="h6">
+          <Typography variant="h6" style={{ flexGrow: 1 }}>
             Scrum Daddy
           </Typography>
+
+          {
+            user !== null && user !== undefined &&
+              <Typography variant="body2">
+                {user.name} {user.surname} ({systemRoleTitles[user.role]})
+              </Typography>
+          }
         </Toolbar>
       </AppBar>
 

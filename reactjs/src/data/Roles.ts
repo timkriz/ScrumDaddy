@@ -19,6 +19,11 @@ export const systemRoles: ISystemRole[] = [
   }
 ];
 
+export const systemRoleTitles: any = {
+  [SystemRoles.ADMIN]: systemRoles[0].title,
+  [SystemRoles.USER]: systemRoles[1].title
+}
+
 export enum ProjectRoles {
   PROD_LEAD = "PROD_LEAD",
   METH_KEEPER = "METH_KEEPER",
