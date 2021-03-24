@@ -44,7 +44,7 @@ export default ({ projectId, postId, comment, userRole, openSnack }: IProps) => 
       {
         user &&
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(0,0,0,0.2)", marginTop: 15, paddingTop: 15 }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", flexDirection: "column", paddingLeft: 15 }}>
               <Typography variant="subtitle2">{user.name} {user.surname} commented at {moment.unix(comment.timestamp).format("DD.MM.YYYY HH:mm")}</Typography>
               <Typography variant="body2">{comment.text}</Typography>
           </div>
