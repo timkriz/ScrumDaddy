@@ -21,21 +21,29 @@ export default () => {
   const history = useHistory();
 
   const login = async () => {
-    try {
-      const login = (await userLogin(username, password)).data;
+    userLogin(username, password)
+      .then(res => {
+        console.log(res);
+        const token = res.data.token;
+        setToken(token);
+        setUserId(res.data.userId);
+        setUserRole(res.data.userRole);
 
-      const token = login.token;
-      setToken(token);
-      setUserId(login.userId);
-      setUserRole(login.userRole);
+        return res.data.userId;
+      })
+      .catch(e => {
+        const message = e.response.data.message || "Incorrect username or password!";
+        openSnack(message, "error");
+        return undefined;
+      })
+      .then(async (userId: string) => {
+        if(userId !== undefined) {
+          const user = (await getUser(userId)).data.data as IUser;
+          setUser(user);
 
-      const user = (await getUser(login.userId)).data.data as IUser;
-      setUser(user);
-
-      history.push("/projects");
-    } catch (e: any) {
-      openSnack("Incorrect username or password!", "error");
-    }
+          history.push("/projects");
+        }
+      })
   }
 
   const closeSnack = () => {
