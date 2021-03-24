@@ -15,8 +15,9 @@ import SprintDialog from "./SprintDialog";
 import DocDialog from "./DocDialog";
 import ProjectWall from "./ProjectWall";
 import {getUserId} from "../../api/TokenService";
-import {ProjectRoles} from "../../data/Roles";
+import {ProjectRoles, projectRoleTitles} from "../../data/Roles";
 import ProductBacklog from "../ProductBacklog/ProductBacklog";
+import Typography from "@material-ui/core/Typography";
 
 interface IProjectParams {
   projectId: string;
@@ -117,14 +118,12 @@ export default () => {
                 <Alert variant="filled" onClose={closeSnack} severity={snackSeverity}>{snackMessage}</Alert>
             </Snackbar>
 
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <IconButton size="medium" color="primary" onClick={back}>
                     <ArrowBackRounded fontSize="large" />
                 </IconButton>
                 <div className="page_title">{project.name}</div>
-                <IconButton size="medium" color="secondary" style={{ opacity: 0, cursor: "auto" }}>
-                    <ArrowBackRounded fontSize="large" />
-                </IconButton>
+                <Typography variant="body1">{ userRole !== undefined ? "Role: "+projectRoleTitles[userRole] : "" }</Typography>
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>

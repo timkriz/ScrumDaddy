@@ -38,14 +38,20 @@ export interface IProjectRole {
 export const projectRoles: IProjectRole[] = [
   {
     id: ProjectRoles.PROD_LEAD,
-    title: "Product Leader"
+    title: "Product Owner"
   },
   {
     id: ProjectRoles.METH_KEEPER,
-    title: "Methodology Keeper"
+    title: "Scrum Master"
   },
   {
     id: ProjectRoles.DEV_TEAM_MEMBER,
-    title: "Development Team Member"
+    title: "Developer"
   }
 ];
+
+export const projectRoleTitles: any = {
+  [ProjectRoles.PROD_LEAD]: projectRoles[0].title,
+  [ProjectRoles.METH_KEEPER]: projectRoles[1].title,
+  [ProjectRoles.DEV_TEAM_MEMBER]: projectRoles[2].title,
+}
