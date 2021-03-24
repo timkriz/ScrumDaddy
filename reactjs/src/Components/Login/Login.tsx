@@ -23,7 +23,6 @@ export default () => {
   const login = async () => {
     userLogin(username, password)
       .then(res => {
-        console.log(res);
         const token = res.data.token;
         setToken(token);
         setUserId(res.data.userId);
@@ -32,7 +31,8 @@ export default () => {
         return res.data.userId;
       })
       .catch(e => {
-        const message = e.response.data.message || "Incorrect username or password!";
+        let message = "Incorrect username or password!";
+        if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
         openSnack(message, "error");
         return undefined;
       })
