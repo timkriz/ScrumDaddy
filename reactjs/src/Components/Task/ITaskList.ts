@@ -20,4 +20,6 @@ export interface ITaskUser {
 
 export interface ITaskDialogAssign {
   userId: string;
+  name: string;
+  surname: string;
 }

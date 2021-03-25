@@ -29,12 +29,20 @@ interface IProps {
 }
 
 export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, editId }: IProps) => {
+  const [ projectUsers, setProjectUsers ] = useState<ITaskDialogAssign[]>([]);
+
   const [ TaskTitle, setTaskTitle ] = useState<string>("");
   const [ TaskDescription, setTaskDescription ] = useState<string>("");
   const [ TaskTime, setTaskTime] = useState<number>(10);
-  const [ projectUsers, setProjectUsers ] = useState<IUser[]>([]);
-  const [ assignedUsers, setAssignedUsers ] = useState<ITaskDialogAssign[]>([]);
+  const [ AssignedUser, setAssignedUser ] = useState<string>("");//ITaskDialogAssign[]>([]);
+  const [ SuggestedUser, setSuggestedUser ] = useState<string>("");
+  const [ Status, setStatus ] = useState<string>("");
 
+  
+
+  useEffect(() => {
+    fetchProjectUsers();
+  }, []);
 
   useEffect(() => {
     if(open) {
@@ -48,27 +56,58 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
         setTaskTitle("");
         setTaskDescription("");
         setTaskTime(0);
-        setAssignedUsers([]);
+        setSuggestedUser("");
+        setStatus("");
       }
     }
   }, [ open ]);
 
 
   const fetchTask = async () => {
+  };
+  /*
     if(editId !== undefined) {
-      const gottenTask = (await getTask(projectId, sprintId, storyId, editId)).data.data as ITask;
+      const gottenTask = (await getTask(projectId, sprintId, storyId, editId, )).data.data as ITask;
 
       setTaskTitle(gottenTask.name);
       setTaskDescription(gottenTask.description);
       setTaskTime(gottenTask.timeEstimate);
+      setSuggestedUser(gottenTask.suggestedUser);
+      setAssignedUser(gottenTask.assignedUser);
     }
-  }
+  }*/
 
+  const fetchProjectUsers = async () => {
+    const users = (await getProjectUsers(projectId)).data.data as IUser[];
+    let projectUsers: ITaskDialogAssign[] = [];
+    users.forEach(user => {
+      const newUser: ITaskDialogAssign = { userId: user._id, name:user.name, surname:user.surname};
+      projectUsers.push(newUser);
+    });
+    setProjectUsers(projectUsers);
+    console.log("P_users", users)
+    console.log("P2_sas",projectUsers)
+
+  }
+  /*
+  const fetchProjectUsers = async () => {
+    const gottenProjectUsers = (await getProjectUsers(projectId)).data.data as ITaskUser[];
+    let newAssignedUsers: ITaskDialogAssign[] = [];
+      gottenProjectUsers.forEach(user => {
+        const newAssign: ITaskDialogAssign = { userId: user.userId};
+        newAssignedUsers.push(newAssign);
+      });
+      setProjectUsers(newAssignedUsers);
+    
+  };
+  */
+
+ 
   const confirmAction = async () => {
     // Edit task
     if(editId !== undefined) {
       try {
-        await putTask(projectId, sprintId, storyId, editId, TaskTitle, TaskDescription, TaskTime);
+        await putTask(projectId, sprintId, storyId, editId, TaskTitle, TaskDescription, TaskTime, AssignedUser, SuggestedUser, Status);
 
         openSnack("Task updated successfully!", "success", true);
         handleClose();
@@ -79,25 +118,31 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
 
     // Add task
     else {
-    try {
-      await postTask(projectId, sprintId, storyId, TaskTitle, TaskDescription, TaskTime);
+      try {
+        await postTask(projectId, sprintId, storyId, TaskTitle, TaskDescription, TaskTime, AssignedUser, SuggestedUser, Status);
 
-      openSnack("Task created successfully!", "success", true);
-      handleClose();
-    } catch (e) {
-      openSnack("Task creation failed!", "error");
+        openSnack("Task created successfully!", "success", true);
+        handleClose();
+      } catch (e) {
+        openSnack("Task creation failed!", "error");
+      }
     }
-  }
-};
+  };
 
-const addAssignRow = () => {
-};
+  const addAssignRow = () => {
+  };
+  /*
+    if(projectUsers.length > 0) {
+      let assignedUsersCopy: ITaskDialogAssign[] = JSON.parse(JSON.stringify(AssignedUser));
+      setAssignedUser([ ...assignedUsersCopy, { userId: projectUsers[0]._id} ]);
+    }
+  };*/
 
-const deleteAssignRow = (i: number) => {
-};
+  const deleteAssignRow = (i: number) => {
+  };
 
-const handleUserSelect = (e: any, i: number) => {
-};
+  const handleUserSelect = (e: any, i: number) => {
+  };
 
 
 
@@ -132,16 +177,29 @@ const handleUserSelect = (e: any, i: number) => {
           onChange={(e) => {setTaskTime(e.target.value as unknown as number)}}
         />
 
+        {
+        <FormControl style={{ marginRight: "20px" }}>
+          <InputLabel>Suggest user</InputLabel>
+            <Select value={projectUsers} onChange={(e) => setAssignedUser(e.target.value as string)}>
+              {
+                projectUsers.map((user, j) => (
+                  <MenuItem key={j} value={user.userId}>{user.userId} {user.surname}</MenuItem>
+                ))
+              }
+            </Select>
+        </FormControl>
+          }
+
         <Button variant="contained" color="primary" onClick={addAssignRow} style={{ margin: "20px 0",float: 'right' }}>ASSIGN USER</Button>
 
-        {
-          assignedUsers.map((assignedUser, i) => (
+        {/*
+          projectUsers.map((projectUser, i) => (
             <div key={i} style={{ display: "flex", margin: "10px 0", justifyContent: "space-between" }}>
               <div>
                 <FormControl style={{ marginRight: "20px" }}>
                   <InputLabel>User</InputLabel>
                   <Select
-                    value={assignedUser.userId}
+                    value={projectUser._id}
                     onChange={(e) => { handleUserSelect(e, i) }}
                   >
                     {
@@ -160,14 +218,14 @@ const handleUserSelect = (e: any, i: number) => {
               </div>
             </div>
           ))
-        }
+                  */}
 
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={confirmAction} color="primary">
           { editId !== undefined ? "Confirm changes" : "Add" }
         </Button>
       </DialogActions>

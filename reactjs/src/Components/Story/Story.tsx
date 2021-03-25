@@ -180,9 +180,9 @@ export default () => {
                 <Button variant="contained" color="primary" onClick={() => openTaskDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD TASK</Button>
             </div>
 
-            {/*
-            <TaskDialog projectId={projectId} open={taskDialogOpen} handleClose={closeTaskDialog} openSnack={openSnack} editId={editId} />
-            */}
+            
+            <TaskDialog projectId={projectId} sprintId={sprintId} storyId={storyId} open={taskDialogOpen} handleClose={closeTaskDialog} openSnack={openSnack} editId={editId} />
+            
 
             <hr style={{ margin: "30px 0" }}/>
 
