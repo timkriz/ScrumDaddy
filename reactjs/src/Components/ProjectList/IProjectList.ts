@@ -48,6 +48,7 @@ export interface ITask {
   projectId: string,
   sprintId: string,
   storyId: string,
+  timeLog: number
 }
 
 export interface IStory {

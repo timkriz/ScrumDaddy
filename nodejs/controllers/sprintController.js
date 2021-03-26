@@ -6,7 +6,9 @@ const taskModel = require('../models/taskModel');
 exports.viewAll = function (req, res) {
     sprintModel.find({projectId: req.params.projectid}, function (err, sprints) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -19,7 +21,9 @@ exports.viewAll = function (req, res) {
 exports.view = function (req, res) {
     sprintModel.findOne({_id: req.params.sprintid}, function (err, sprint) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -39,9 +43,32 @@ exports.new = function (req, res) {
     sprint.velocity         = req.body.sprintVelocity || req.body.velocity;
     sprint.projectId        = req.params.projectid;
 
+    if(sprint.startTime > sprint.endTime){
+        res.status(400).json({
+            message: "Start time can not be after end time!",
+            data: ""});
+        return;
+    }
+
+    if(sprint.velocity < 1 || sprint.velocity > 1000){
+        res.status(400).json({
+            message: "Sprint velocity has to be over 0 and under 1000!",
+            data: ""});
+        return;
+    }
+
+    if(sprint.startTime < Math.round(new Date().getTime() / 1000)){
+        res.status(400).json({
+            message: "Sprint can not start in the past!",
+            data: ""});
+        return;
+    }
+
     sprint.save(function (err) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -54,7 +81,9 @@ exports.new = function (req, res) {
 exports.update = function (req, res) {
     sprintModel.findOne({_id: req.params.sprintid}, function (err, sprint) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         
@@ -64,10 +93,33 @@ exports.update = function (req, res) {
         sprint.endTime          = req.body.endTime || sprint.endTime;
         sprint.velocity         = req.body.velocity || sprint.velocity;
 
+        if(sprint.startTime > sprint.endTime){
+            res.status(400).json({
+                message: "Start time can not be after end time!",
+                data: ""});
+            return;
+        }
+    
+        if(sprint.velocity < 1 || sprint.velocity > 1000){
+            res.status(400).json({
+                message: "Sprint velocity has to be over 0 and under 1000!",
+                data: ""});
+            return;
+        }
+    
+        if(sprint.startTime < Math.round(new Date().getTime() / 1000)){
+            res.status(400).json({
+                message: "Sprint can not start in the past!",
+                data: ""});
+            return;
+        }
+
         sprint.save(function (err) {
             if (err) {
-                res.status(400).json(err);
-                return;
+                res.status(400).json({
+                message: err.toString(),
+                data: ""});
+            return;
             }
             res.json({
                 message: "Sprint updated",
@@ -80,7 +132,9 @@ exports.update = function (req, res) {
 exports.delete = function (req, res) {
     sprintModel.remove({_id: req.params.sprintid}, function (err, sprint) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -95,7 +149,9 @@ exports.delete = function (req, res) {
 exports.deleteMany = function (req, res) {
     sprintModel.deleteMany({projectId: req.params.projectid}, function (err, stories) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({

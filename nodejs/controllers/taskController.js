@@ -4,7 +4,9 @@ const taskModel = require('../models/taskModel');
 exports.viewAll = function (req, res) {
     taskModel.find({storyId: req.params.storyid}, function (err, tasks) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -17,7 +19,9 @@ exports.viewAll = function (req, res) {
 exports.view = function (req, res) {
     taskModel.findOne({_id: req.params.taskid}, function (err, task) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -43,7 +47,9 @@ exports.new = function (req, res) {
 
     task.save(function (err) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -56,7 +62,9 @@ exports.new = function (req, res) {
 exports.update = function (req, res) {
     taskModel.findOne({_id: req.params.taskid}, function (err, task) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         
@@ -70,8 +78,10 @@ exports.update = function (req, res) {
 
         task.save(function (err) {
             if (err) {
-                res.status(400).json(err);
-                return;
+                res.status(400).json({
+                message: err.toString(),
+                data: ""});
+            return;
             }
             res.json({
                 message: "Task updated",
@@ -84,7 +94,9 @@ exports.update = function (req, res) {
 exports.delete = function (req, res) {
     taskModel.remove({_id: req.params.taskid}, function (err, task) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -97,7 +109,9 @@ exports.delete = function (req, res) {
 exports.deleteMany = function (req, res) {
     taskModel.deleteMany({storyId: req.params.storyid}, function (err, tasks) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
