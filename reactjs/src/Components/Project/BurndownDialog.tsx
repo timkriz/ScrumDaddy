@@ -30,7 +30,7 @@ export default ({ open, handleClose }: IProps) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>Burndown Chart</DialogTitle>
       <DialogContent>
         <div id="burndown_chart" ref={onRefChange} />
