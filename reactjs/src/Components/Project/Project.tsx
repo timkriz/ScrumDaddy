@@ -150,7 +150,7 @@ export default () => {
 
             { project && <DocDialog project={project} open={docDialogOpen} handleClose={closeDocDialog} openSnack={openSnack} /> }
 
-            { project && <BurndownDialog open={burndownDialogOpen} handleClose={closeBurndownDialog} /> }
+            { project && <BurndownDialog projectId={projectId} open={burndownDialogOpen} handleClose={closeBurndownDialog} /> }
 
             <hr style={{ margin: "30px 0" }}/>
 
