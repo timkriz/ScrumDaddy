@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import Dialog from "@material-ui/core/Dialog";
-import c3, {ChartAPI} from "c3";
+import c3, {ChartAPI, generate} from "c3";
 import {getSprints} from "../../api/SprintService";
 import {ISprint} from "../ProjectList/IProjectList";
 import moment from "moment";
@@ -49,7 +49,6 @@ export default ({ projectId, open, handleClose }: IProps) => {
   // Populate chart
   useEffect(() => {
     if(days !== undefined && chart !== undefined) {
-      console.log(days);
       chart.load({
         columns: [
           [ChartData.XAXIS, ...days],
@@ -61,7 +60,11 @@ export default ({ projectId, open, handleClose }: IProps) => {
 
   // Generate chart
   const onRefChange = (chartRef: HTMLDivElement | null) => {
-    if(chartRef !== null && chart === undefined) {
+    generateChart(chartRef);
+  }
+
+  const generateChart = (chartRef: HTMLDivElement | null) => {
+    if(chartRef !== null && chart === undefined && open) {
       const generated = c3.generate({
         bindto: '#burndown_chart',
         data: {
@@ -85,8 +88,13 @@ export default ({ projectId, open, handleClose }: IProps) => {
     }
   }
 
+  const onClose = () => {
+    setChart(undefined);
+    handleClose();
+  };
+
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>Burndown Chart</DialogTitle>
       <DialogContent>
         <div id="burndown_chart" ref={onRefChange} />
