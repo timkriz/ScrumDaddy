@@ -4,8 +4,10 @@ import DialogContent from "@material-ui/core/DialogContent";
 import Dialog from "@material-ui/core/Dialog";
 import c3, {ChartAPI, generate} from "c3";
 import {getSprints} from "../../api/SprintService";
-import {ISprint} from "../ProjectList/IProjectList";
+import {ISprint, IStory, ITask} from "../ProjectList/IProjectList";
 import moment from "moment";
+import {getStories} from "../../api/UserStoriesService";
+import {getTasks} from "../../api/TaskService";
 
 interface IProps {
   projectId: string;
@@ -22,6 +24,8 @@ export enum ChartData {
 export default ({ projectId, open, handleClose }: IProps) => {
   const [chart, setChart] = useState<ChartAPI>();
   const [days, setDays] = useState<number[]>();
+  const [ideal, setIdeal] = useState<number[]>();
+  const [actual, setActual] = useState<number[]>();
 
   // Fetch chart data
   useEffect(() => {
@@ -29,18 +33,51 @@ export default ({ projectId, open, handleClose }: IProps) => {
       const sprints = (await getSprints(projectId)).data.data as ISprint[];
 
       if(sprints.length > 0) {
+        // Create data array for x axis
         const sortedSprints = sprints.sort((a, b) => a.startTime - b.startTime);
         let startTime = sortedSprints[0].startTime;
         const endTime = sortedSprints[sortedSprints.length-1].endTime;
 
-        let days = [];
+        let daysArray = [];
 
         while(startTime < endTime) {
-          days.push(startTime);
+          daysArray.push(startTime);
           startTime = moment.unix(startTime).add(1, "day").unix();
         }
 
-        setDays(days);
+        setDays(daysArray);
+
+        const dataPointNum = daysArray.length;
+
+        // Create data array for ideal chart
+
+        let stories: IStory[] = [];
+        for(let i = 0; i < sprints.length; i++) {
+          const sprintStories = (await getStories(projectId, sprints[i]._id)).data.data as IStory[];
+          stories = [ ...stories, ...sprintStories ];
+        }
+
+        let tasks: ITask[] = [];
+        for(let i = 0; i < stories.length; i++) {
+          const storyTasks = (await getTasks(projectId, stories[i].sprintId, stories[i]._id)).data.data as ITask[];
+          tasks = [ ...tasks, ...storyTasks ];
+        }
+
+        let totalEstimate = 0;
+        for(let i = 0; i < tasks.length; i++) {
+          totalEstimate += tasks[i].timeEstimate;
+        }
+
+        let idealArray: number[] = [];
+        for(let i = dataPointNum-1; i >= 0; i--) {
+          idealArray.push(Math.floor(totalEstimate / (dataPointNum-1) * i));
+        }
+
+        setIdeal(idealArray);
+
+        // Crate data array for actual chart
+
+        setActual([100, 200, 300, 300, 300, 350, 350, 400, 400, 400, 400, 400]);
       }
     }
     fetch();
@@ -48,15 +85,16 @@ export default ({ projectId, open, handleClose }: IProps) => {
 
   // Populate chart
   useEffect(() => {
-    if(days !== undefined && chart !== undefined) {
+    if(chart !== undefined && days !== undefined && ideal !== undefined && actual !== undefined) {
       chart.load({
         columns: [
           [ChartData.XAXIS, ...days],
-          [ChartData.IDEAL, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+          [ChartData.IDEAL, ...ideal],
+          [ChartData.ACTUAL, ...actual]
         ]
       })
     }
-  }, [days, chart]);
+  }, [chart, days, ideal, actual]);
 
   // Generate chart
   const onRefChange = (chartRef: HTMLDivElement | null) => {
@@ -81,6 +119,9 @@ export default ({ projectId, open, handleClose }: IProps) => {
               format: (x: any) => moment.unix(x).format("DD.MM.YYYY")
             }
           }
+        },
+        point: {
+          r: 1.5
         }
       });
 

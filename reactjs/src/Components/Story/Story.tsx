@@ -31,6 +31,13 @@ interface IStoryParams {
   storyId: string;
 }
 
+export enum TaskStatuses {
+  COMPLETED = "completed",
+  ASSIGNED = "assigned",
+  UNASSIGNED = "unassigned",
+  ACTIVE = "active"
+}
+
 export default () => {
   const [ sprint, setSprint ] = useState<ISprint>();
   const [ project, setProject] = useState<IProject>();
