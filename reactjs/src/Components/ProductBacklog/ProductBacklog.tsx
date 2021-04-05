@@ -97,13 +97,13 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
       const found1 = ISprintCollection.some((el:ISprintCollection) => el._id === sprint._id);
       /*  CORRECTION - just active sprint */
 
-      /* Get stories of a sprint */
+      /* Get stories of a active sprint */
       if (!found1 && sprint.startTime < currentTime && currentTime < sprint.endTime) {
         ISprintCollection.push({ _id: sprint._id, name: sprint.name,  stories: []});
         const allStories = (await getStories(projectId, sprint._id)).data.data as IStory[];
         const found2 = ISprintCollection.find((el:ISprintCollection) => el._id === sprint._id);
 
-        /* Filter already accepted and realized stories*/
+        /* Filter already accepted and realized stories */
         if(found2){
           acceptedStories.length = 0;
           allStories.forEach( async (story) => {
@@ -118,7 +118,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
             }
           });
         }
-        setStories(allStories)
+        setStories(allStories);
       }
       /* Get stories of a product backlog */
       if (!found1) {
@@ -126,6 +126,19 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
         if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
         setStories(allStoriesInProductBacklog)
       }
+
+      /* Get accepted stories from unactive sprints */
+      if (!found1){
+        const allStories = (await getStories(projectId, sprint._id)).data.data as IStory[];
+        allStories.forEach( async (story) => {
+          if(story.status === "Accepted") {
+            const found3 = acceptedStories.some((el:IStory) => el._id === story._id);
+            if(!found3) acceptedStories.push(story);
+            setAcceptedStories(acceptedStories);
+          }
+        });
+      }
+
      });
      setSprintCollection(ISprintCollection); // Update sprint and its stories
      return ISprintCollection
@@ -177,7 +190,6 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
     const ISprintCollection = await fetchSprints();
     setAcceptedStories(acceptedStories);
   }
-
   const openRejectDialog = () => {
     setRejectDialogOpen(true);
   }
@@ -302,7 +314,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div className="story_value">Acceptance test</div>
                           <div className="story_row_icons">
-                            <IconButton color="primary" disabled={userRole !== "PROD_LEAD"} onClick={() => handleAcceptUserStory(story)}>
+                            <IconButton color="primary" disabled={userRole !== "PROD_LEAD" || story.status !== "Completed"} onClick={() => handleAcceptUserStory(story)}>
                               <DoneRoundedIcon /> 
                               <Typography component={'span'} display = "block" variant="caption">Accept</Typography>
                             </IconButton>
@@ -341,6 +353,10 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                       <div className="story_label">Tests:</div>
                       <div className="story_value">{story.tests}</div>
                       <div style={{ display: "flex", marginTop: 10 }}>
+                      <div style={{ marginRight: 20 }}>
+                              <div className="story_label">Sprint:</div>
+                              <div className="story_value">{story.name}</div>
+                            </div>
 
                         <div style={{ marginRight: 20 }}>
                           <div className="story_label">Status:</div>
