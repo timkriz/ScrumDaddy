@@ -88,12 +88,6 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
     }
   }
 
-  const suggestedUser = (e: any) => {
-    let temp = JSON.stringify(projectUsers)
-    console.log(temp)
-    //setTaskSuggestedUser(e.target.value);
-  };
-
   const confirmAction = async () => {
     // Edit task
     if(editId !== undefined) {
@@ -102,7 +96,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
     // Add task
     else {
       try {
-        await postTask(projectId, sprintId, storyId, taskName, taskDescription, taskTimeEstimate, 0, "None", "None", "unassigned");
+        await postTask(projectId, sprintId, storyId, taskName, taskDescription, taskTimeEstimate, 0, 0, "None", "None", "unassigned");
 
         openSnack("Task created successfully!", "success", true);
         handleClose();
@@ -143,36 +137,6 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
           onChange={(e) => {setTaskTimeEstimate(e.target.value as unknown as number)}}
         />
 
-        <div style={{ display: "flex", margin: "10px 0", justifyContent: "space-between" }}>
-            <div>
-                <FormControl style={{ marginRight: "20px" }}>
-                <InputLabel>User</InputLabel>
-                <Select
-                    value=""
-                    onChange={(e) => {suggestedUser(e)}}
-                >
-                    {
-                    projectUsers.map((user, j) => (
-                      <div>
-                      {
-                        allUsers.map((user_all, i) => (
-                          <div>
-                            {
-                              user.userId == user_all._id? (
-                                <MenuItem key={j} value={user_all._id}>{user_all.name} {user_all.surname}</MenuItem>
-                              ) : (null)
-                            }
-                          </div>
-                        ))
-                      }
-                      </div>
-                    ))
-                    }
-                </Select>
-                </FormControl>
-            </div>
-        </div>
-
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
@@ -186,3 +150,34 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
   )
 }
 
+/*
+<div style={{ display: "flex", margin: "10px 0", justifyContent: "space-between" }}>
+<div>
+    <FormControl style={{ marginRight: "20px" }}>
+    <InputLabel>User</InputLabel>
+    <Select
+        value=""
+        onChange={(e) => {suggestedUser(e)}}
+    >
+        {
+        projectUsers.map((user, j) => (
+          <div>
+          {
+            allUsers.map((user_all, i) => (
+              <div>
+                {
+                  user.userId == user_all._id? (
+                    <MenuItem key={j} value={user_all._id}>{user_all.name} {user_all.surname}</MenuItem>
+                  ) : (null)
+                }
+              </div>
+            ))
+          }
+          </div>
+        ))
+        }
+    </Select>
+    </FormControl>
+</div>
+</div>
+*/

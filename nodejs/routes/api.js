@@ -17,6 +17,7 @@ const storyController = require('../controllers/storyController');
 const sprintController = require('../controllers/sprintController');
 const postController = require('../controllers/postController');
 const commentController = require('../controllers/commentController');
+const taskUserController = require('../controllers/taskUserController');
 
 router.get('/', function (req, res) {
     res.json({
@@ -175,6 +176,16 @@ router.route('/projects/:projectid/sprints/:sprintid/stories/:storyid/tasks/:tas
     .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, taskController.update)
     .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, taskController.update)
     .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, taskController.delete);
+
+router.route('/projects/:projectid/sprints/:sprintid/stories/:storyid/tasks/:taskid/taskUsers')
+    .post(taskUserController.new)
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, taskUserController.viewAll)
+    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, taskUserController.deleteMany);
+router.route('/projects/:projectid/sprints/:sprintid/stories/:storyid/tasks/:taskid/taskUsers/:taskuserid')
+    .get((req,res,next)     => authenticate(req,res,next), authTools.checkId, taskUserController.view)
+    .put((req,res,next)     => authenticate(req,res,next), authTools.checkId, taskUserController.update)
+    .patch((req,res,next)   => authenticate(req,res,next), authTools.checkId, taskUserController.update)
+    .delete((req,res,next)  => authenticate(req,res,next), authTools.checkId, taskUserController.delete);
 
 module.exports = router;
 

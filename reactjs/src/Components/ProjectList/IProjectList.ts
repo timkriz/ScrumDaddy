@@ -42,13 +42,14 @@ export interface ITask {
   name: string,
   description: string,
   timeEstimate: number,
+  timeLog: number,
+  timeRemaining: number,
   suggestedUser: string,
   assignedUser: string,
   status: string,
   projectId: string,
   sprintId: string,
   storyId: string,
-  timeLog: number
 }
 
 export interface IStory {

@@ -134,16 +134,16 @@ export default () => {
         if (userId !== null){
           if (action == "assign") {
             if(task.assignedUser == "None"){
-              putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, userId, "assigned");
+              putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.timeRemaining, task.suggestedUser, userId, "assigned");
             }
           }else if(action == "unassign") {
-            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, "None", "unassigned");
+            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.timeRemaining, task.suggestedUser, "None", "unassigned");
           }else if(action == "activate") {
-            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "active");
+            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.timeRemaining, task.suggestedUser, task.assignedUser, "active");
           }else if(action == "deactivate") {
-            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "assigned");
+            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.timeRemaining, task.suggestedUser, task.assignedUser, "assigned");
           }else if(action == "complete") {
-            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "completed");
+            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.timeRemaining, task.suggestedUser, task.assignedUser, "completed");
           }
         }
       }
