@@ -64,7 +64,7 @@ export default ({ projectId, sprintId, storyId, openSnack }: IProps) => {
 
 
   return (
-    <div style={{maxWidth: '50%'}}>
+    <div style={{maxWidth: '40%'}}>
         <div className="sprint_label" style={{marginTop: 10 }}>Notes:</div>
 
         {/* Existing notes */}

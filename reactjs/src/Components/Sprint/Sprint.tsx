@@ -105,7 +105,7 @@ export default () => {
                   {
                     stories.map((story, i) => (
                       <div key={i} className="sprint_row">
-                        <div style={{ display: "flex", flexDirection: "column"}}>
+                        <div style={{ display: "flex", flexDirection: "column", width: "100%"}}>
                           <div style={{ display: "flex"}} className="sprint_row_title">{story.name}</div>
                           <div style={{ display: "flex", marginTop: 10}}>{story.description}</div>
 
