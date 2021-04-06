@@ -96,7 +96,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
     // Add task
     else {
       try {
-        await postTask(projectId, sprintId, storyId, taskName, taskDescription, taskTimeEstimate, 0, 0, "None", "None", "unassigned");
+        await postTask(projectId, sprintId, storyId, taskName, taskDescription, taskTimeEstimate, 0, "None", "None", "unassigned");
 
         openSnack("Task created successfully!", "success", true);
         handleClose();

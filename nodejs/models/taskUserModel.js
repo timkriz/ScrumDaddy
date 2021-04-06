@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const taskUserSchema = new Schema ({
     userId: { type: String, required: true},
     timeLog: { type: Number, required: true},
+    timeRemaining: { type: Number, required: true},
     timestamp: { type: Number, required: true},
     projectId: { type: String, required: true},
     sprintId: { type: String, required: true},

@@ -37,6 +37,7 @@ exports.new = function (req, res) {
     taskUser.userId             = req.body.userId;
     taskUser.timestamp          = req.body.timestamp;
     taskUser.timeLog            = req.body.timeLog;
+    taskUser.timeRemaining      = req.body.timeRemaining;
     taskUser.projectId          = req.params.projectid;
     taskUser.sprintId           = req.params.sprintid;
     taskUser.storyId            = req.params.storyid;
@@ -69,6 +70,7 @@ exports.update = function (req, res) {
         taskUser.userId             = req.body.userId || taskUser.userId;
         taskUser.timestamp          = req.body.timestamp || taskUser.timestamp;
         taskUser.timeLog            = req.body.timeLog || taskUser.timeLog;
+        taskUser.timeRemaining      = req.body.timeRemaining || taskUser.timeRemaining;
 
         taskUser.save(function (err) {
             if (err) {

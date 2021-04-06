@@ -6,7 +6,6 @@ const taskSchema = new Schema ({
     description: { type: String, required: true},
     timeEstimate: { type: Number, required: true},
     timeLog: { type: Number, required: true},
-    timeRemaining: { type: Number, required: true},
     suggestedUser: { type: String, required: true},
     assignedUser: { type: String, required: true},
     status: { type: String, required: true},
