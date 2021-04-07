@@ -15,6 +15,7 @@ import moment from "moment";
 import {getUserId} from "../../api/TokenService";
 import {ProjectRoles} from "../../data/Roles";
 import StoryNotes from "./StoryNotes";
+import StoryDialog from "../Story/StoryDialog";
 
 interface IProjectParams {
   projectId: string;
@@ -110,9 +111,9 @@ export default () => {
                 </IconButton>
                 <Button variant="contained" color="primary" onClick={() => openStoryDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD STORY</Button>
             </div>
-            {/*
+            
             <StoryDialog projectId={projectId} sprintId={sprintId} open={storyDialogOpen} handleClose={closeStoryDialog} openSnack={openSnack} editId={editId} />
-            {*/}
+            
             <hr style={{ margin: "30px 0" }}/>
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>

@@ -32,3 +32,16 @@ export const postTaskUser = (projectId: string, sprintId: string, storyId: strin
   });
 };
 
+export const postTask = (projectId: string, sprintId: string, storyId: string,
+  ): Promise<any> => {
+return axiosAuth.post(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/tasks`, {
+    
+  });
+};
+export const putTask = (projectId: string, sprintId: string, storyId: string, taskId: string,
+  ): Promise<any> => {
+return axiosAuth.post(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/tasks/${taskId}`, {
+   
+  });
+};
+

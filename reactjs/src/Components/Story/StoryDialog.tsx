@@ -20,14 +20,13 @@ import {IStory} from "../ProjectList/IProjectList";
 interface IProps {
   projectId: string;
   sprintId: string;
-  storyId: string;
   open: boolean;
   handleClose: () => void;
   openSnack: (message: string, severity: Color, refresh?: boolean) => void;
   editId?: string;
 }
 
-export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, editId }: IProps) => {
+export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: IProps) => {
   const [ StoryTitle, setStoryTitle ] = useState<string>("");
   const [ StoryDescription, setStoryDescription ] = useState<string>("");
   const [ StoryTime, setStoryTime] = useState<number>(10);
@@ -44,23 +43,23 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
       else {
         setStoryTitle("");
         setStoryDescription("");
-        setStoryTime(0);
+        setStoryTime(10);
       }
     }
   }, [ open ]);
 
 
   const fetchStory = async () => {
-    if(editId !== undefined) {
+    /*if(editId !== undefined) {
       const gottenStory = (await getStory(projectId, sprintId, editId)).data.data as IStory;
 
       setStoryTitle(gottenStory.name);
       setStoryTime(gottenStory.timeEstimate);
-    }
+    }*/
   }
 
   const confirmAction = async () => {
-    // Edit Story
+    /* // Edit Story
     if(editId !== undefined) {
       try {
         await putStory(projectId, sprintId, editId, StoryTitle, StoryTime);
@@ -73,16 +72,17 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
     }
 
     // Add Story
-    else {
+    else {*/
     try {
-      await postStory(projectId, sprintId, StoryTitle, StoryTime);
+      console.log(projectId, sprintId)
+      await postStory(projectId, sprintId, StoryTitle, StoryDescription, StoryTime);
 
       openSnack("Story created successfully!", "success", true);
       handleClose();
     } catch (e) {
       openSnack("Story creation failed!", "error");
     }
-  }
+  
 };
 
 const addAssignRow = () => {
@@ -134,7 +134,7 @@ const handleUserSelect = (e: any, i: number) => {
         <Button onClick={handleClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={confirmAction} color="primary">
           { editId !== undefined ? "Confirm changes" : "Add" }
         </Button>
       </DialogActions>

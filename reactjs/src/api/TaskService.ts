@@ -41,4 +41,3 @@ export const postTask = (projectId: string, sprintId: string, storyId: string,
     status
   });
 };
-

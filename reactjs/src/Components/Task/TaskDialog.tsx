@@ -104,7 +104,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
 
  
   const confirmAction = async () => {
-    // Edit task
+    /* // Edit task
     if(editId !== undefined) {
       try {
         await putTask(projectId, sprintId, storyId, editId, TaskTitle, TaskDescription, TaskTime, AssignedUser, SuggestedUser, Status);
@@ -126,16 +126,15 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
       } catch (e) {
         openSnack("Task creation failed!", "error");
       }
-    }
+    }*/
   };
-
   const addAssignRow = () => {
   };
   /*
     if(projectUsers.length > 0) {
       let assignedUsersCopy: ITaskDialogAssign[] = JSON.parse(JSON.stringify(AssignedUser));
       setAssignedUser([ ...assignedUsersCopy, { userId: projectUsers[0]._id} ]);
-    }
+    }*
   };*/
 
   const deleteAssignRow = (i: number) => {
