@@ -37,20 +37,6 @@ export interface ISprint {
   projectId: string,
 }
 
-export interface ITask {
-  _id: string,
-  name: string,
-  description: string,
-  timeEstimate: number,
-  suggestedUser: string,
-  assignedUser: string,
-  status: string,
-  projectId: string,
-  sprintId: string,
-  storyId: string,
-  timeLog: number
-}
-
 export interface IStory {
   _id: string,
   name: string,
@@ -63,6 +49,32 @@ export interface IStory {
   status: string,
   projectId: string,
   sprintId: string,
+}
+
+export interface ITask {
+  _id: string,
+  name: string,
+  description: string,
+  timeEstimate: number,
+  timeLog: number,
+  suggestedUser: string,
+  assignedUser: string,
+  status: string,
+  projectId: string,
+  sprintId: string,
+  storyId: string,
+}
+
+export interface ITaskUser {
+  _id: string,
+  timestamp: number,
+  timeLog: number,
+  timeRemaining: number,
+  userId: string,
+  projectId: string,
+  sprintId: string,
+  storyId: string,
+  taskId: string,
 }
 
 export interface IPost {

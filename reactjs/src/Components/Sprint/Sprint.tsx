@@ -14,6 +14,7 @@ import "./sprint.css";
 import moment from "moment";
 import {getUserId} from "../../api/TokenService";
 import {ProjectRoles} from "../../data/Roles";
+import StoryNotes from "./StoryNotes";
 
 interface IProjectParams {
   projectId: string;
@@ -104,12 +105,31 @@ export default () => {
                   {
                     stories.map((story, i) => (
                       <div key={i} className="sprint_row">
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                          <div className="sprint_row_title">{story.name}</div>
-                          {story.description}
+                        <div style={{ display: "flex", flexDirection: "column", width: "100%"}}>
+                          <div style={{ display: "flex"}} className="sprint_row_title">{story.name}</div>
+                          <div style={{ display: "flex", marginTop: 10}}>{story.description}</div>
+
                           <div style={{ display: "flex", marginTop: 10 }}>
-                            {story.status}
+                            <div style={{ marginRight: 20 }}>
+                                <div className="sprint_label">Status:</div>
+                                <div className="sprint_value">{story.status}</div>
+                            </div>
+
+                            <div style={{ marginRight: 20 }}>
+                              <div className="sprint_label">Priority:</div>
+                              <div className="sprint_value">{story.priority}</div>
+                            </div>
+
+                            <div>
+                              <div className="sprint_label">Business Value:</div>
+                              <div className="sprint_value">{story.businessValue}</div>
+                            </div>
                           </div>
+                           {/* Adding notes input */}
+                          <StoryNotes projectId={projectId} sprintId={sprintId} storyId={story._id} openSnack={(message, severity, refresh) => {
+                            openSnack(message, severity);
+                          }}></StoryNotes>
+
                         </div>
                         <div className="sprint_row_icons">
                           <IconButton color="primary" onClick={() => void 0}>
