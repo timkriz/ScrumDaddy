@@ -41,7 +41,7 @@ exports.new = function (req, res) {
     taskUser.projectId          = req.params.projectid;
     taskUser.sprintId           = req.params.sprintid;
     taskUser.storyId            = req.params.storyid;
-    taskUser.userId             = req.params.taskid;
+    taskUser.taskId             = req.params.taskid;
 
     taskUser.save(function (err) {
         if (err) {
