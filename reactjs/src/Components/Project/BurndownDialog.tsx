@@ -4,10 +4,17 @@ import DialogContent from "@material-ui/core/DialogContent";
 import Dialog from "@material-ui/core/Dialog";
 import c3, {ChartAPI, generate} from "c3";
 import {getSprints} from "../../api/SprintService";
-import {ISprint, IStory, ITask} from "../ProjectList/IProjectList";
+import {ISprint, IStory, ITask, ITaskUser} from "../ProjectList/IProjectList";
 import moment from "moment";
 import {getStories} from "../../api/UserStoriesService";
 import {getTasks} from "../../api/TaskService";
+import {getTaskUsers, postTaskUser} from "../../api/TaskUserService";
+
+interface ITaskTimeRem {
+  taskId: string;
+  timestamp: number;
+  timeRemaining: number;
+}
 
 interface IProps {
   projectId: string;
@@ -64,8 +71,11 @@ export default ({ projectId, open, handleClose }: IProps) => {
         }
 
         let totalEstimate = 0;
+        let taskTimeRem: ITaskTimeRem[] = [];
         for(let i = 0; i < tasks.length; i++) {
-          totalEstimate += tasks[i].timeEstimate;
+          const { timeEstimate, _id } = tasks[i];
+          totalEstimate += timeEstimate;
+          taskTimeRem.push({ taskId: _id, timestamp: 0, timeRemaining: timeEstimate });
         }
 
         let idealArray: number[] = [];
@@ -77,7 +87,48 @@ export default ({ projectId, open, handleClose }: IProps) => {
 
         // Crate data array for actual chart
 
-        setActual([100, 200, 300, 300, 300, 350, 350, 400, 400, 400, 400, 400]);
+        // Get all time logs
+        let taskUsers: ITaskUser[] = [];
+        for(let i = 0; i < tasks.length; i++) {
+          const taskUser = (await getTaskUsers(projectId, tasks[i].sprintId, tasks[i].storyId, tasks[i]._id)).data.data as ITaskUser[];
+          taskUsers = [ ...taskUsers, ...taskUser ];
+        }
+
+        // Generate actual array
+        let actualArray: number[] = [];
+
+        // Iterate all the project days
+        for(let i = 0; i < daysArray.length; i++) {
+          const curDay = moment.unix(daysArray[i]).format("DD.MM.YYYY");
+
+          // Iterate all the time logs
+          for(let j = 0; j < taskUsers.length; j++) {
+            const curLogDay = moment.unix(taskUsers[j].timestamp).format("DD.MM.YYYY");
+
+            // Found log for current day, update time remaining for this task
+            if(curDay === curLogDay) {
+              for(let k = 0; k < taskTimeRem.length; k++) {
+                // Found the task
+                // If more logs are made on the same day take the last one (second condition)
+                if(taskUsers[j].taskId === taskTimeRem[k].taskId && taskUsers[j].timestamp > taskTimeRem[k].timestamp) {
+                  taskTimeRem[k].timeRemaining = taskUsers[j].timeRemaining;
+                  break;
+                }
+              }
+            }
+          }
+
+          // Calculate remining time
+          const totalRemaining = taskTimeRemSum(taskTimeRem);
+          actualArray.push(totalRemaining);
+
+          // Only have to iterate until today
+          if(moment().format("DD.MM.YYYY") === curDay) {
+            break;
+          }
+        }
+
+        setActual(actualArray);
       }
     }
     fetch();
@@ -115,9 +166,19 @@ export default ({ projectId, open, handleClose }: IProps) => {
         },
         axis : {
           x : {
+            label: {
+              text: "Project Days",
+              position: "inner-right"
+            },
             tick: {
               format: (x: any) => moment.unix(x).format("DD.MM.YYYY")
             }
+          },
+          y: {
+            label: {
+              text: "Time Remaining",
+              position: "outer-middle"
+            },
           }
         },
         point: {
@@ -132,6 +193,12 @@ export default ({ projectId, open, handleClose }: IProps) => {
   const onClose = () => {
     setChart(undefined);
     handleClose();
+  };
+
+  const taskTimeRemSum = (taskTimeRem: ITaskTimeRem[]) => {
+    let sum = 0;
+    taskTimeRem.forEach(val => sum += val.timeRemaining);
+    return sum;
   };
 
   return (
