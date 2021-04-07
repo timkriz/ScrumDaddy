@@ -5,7 +5,9 @@ const commentModel = require('../models/commentModel');
 exports.viewAll = function (req, res) {
     postModel.find({projectId: req.params.projectid}, function (err, posts) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -18,7 +20,9 @@ exports.viewAll = function (req, res) {
 exports.view = function (req, res) {
     postModel.findOne({_id: req.params.postid}, function (err, post) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -38,7 +42,9 @@ exports.new = function (req, res) {
 
     post.save(function (err) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -51,7 +57,9 @@ exports.new = function (req, res) {
 exports.update = function (req, res) {
     postModel.findOne({_id: req.params.postid}, function (err, post) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
 
@@ -61,7 +69,9 @@ exports.update = function (req, res) {
 
         post.save(function (err) {
             if (err) {
-                res.status(400).json(err);
+                res.status(400).json({
+                    message: err.toString(),
+                    data: ""});
                 return;
             }
             res.json({
@@ -75,7 +85,9 @@ exports.update = function (req, res) {
 exports.delete = function (req, res) {
     postModel.remove({_id: req.params.postid}, function (err, post) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -89,7 +101,9 @@ exports.delete = function (req, res) {
 exports.deleteMany = function (req, res) {
     postModel.deleteMany({projectId: req.params.projectid}, function (err, posts) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({

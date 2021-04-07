@@ -66,7 +66,9 @@ export default ({ projectId, open, handleClose, openSnack, editId }: IProps) => 
         openSnack("Sprint updated successfully!", "success", true);
         handleClose();
       } catch (e) {
-        openSnack("Sprint update failed!", "error");
+        let message = "Sprint update failed!";
+        if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+        openSnack(message, "error");
       }
     }
 
@@ -78,7 +80,9 @@ export default ({ projectId, open, handleClose, openSnack, editId }: IProps) => 
         openSnack("Sprint created successfully!", "success", true);
         handleClose();
       } catch (e) {
-        openSnack("Sprint creation failed!", "error");
+        let message = "Sprint creation failed!";
+        if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+        openSnack(message, "error");
       }
     }
   };

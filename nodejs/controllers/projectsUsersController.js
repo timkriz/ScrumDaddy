@@ -4,7 +4,9 @@ const projectsUsersModel = require('../models/projectsUsersModel');
 exports.viewAll = function (req, res) {
     projectsUsersModel.find({projectId: req.params.projectid}, function (err, projectsUsers) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -17,7 +19,9 @@ exports.viewAll = function (req, res) {
 exports.view = function (req, res) {
     projectsUsersModel.findOne({$and:[{userId: req.params.userid}, {projectId:req.params.projectid}]}, function (err, projectsUsers) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -49,7 +53,9 @@ exports.new = function (req, res) {
 exports.update = function (req, res) {
     projectsUsersModel.findOne({$and:[{userId: req.params.userid}, {projectId:req.params.projectid}]}, function (err, projectsUsers) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         
@@ -72,7 +78,9 @@ exports.update = function (req, res) {
 exports.delete = function (req, res) {
     projectsUsersModel.remove({$and:[{userId: req.params.userid}, {projectId:req.params.projectid}]}, function (err, projectsUsers) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -85,7 +93,9 @@ exports.delete = function (req, res) {
 exports.deleteMany = function (req, res) {
     projectsUsersModel.deleteMany({projectId: req.params.projectid}, function (err, projectsUsers) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({

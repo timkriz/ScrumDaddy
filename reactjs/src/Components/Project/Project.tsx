@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useHistory, useParams} from "react-router-dom";
 import {IProject, IProjectUser, ISprint} from "../ProjectList/IProjectList";
-import {ArrowBackRounded, ArrowForwardRounded, DeleteRounded, EditRounded} from "@material-ui/icons";
+import {ArrowBackRounded, ArrowForwardRounded, DeleteRounded, EditRounded, WhatshotRounded} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
 import {Alert} from "@material-ui/lab";
@@ -15,8 +15,10 @@ import SprintDialog from "./SprintDialog";
 import DocDialog from "./DocDialog";
 import ProjectWall from "./ProjectWall";
 import {getUserId} from "../../api/TokenService";
-import {ProjectRoles} from "../../data/Roles";
+import {ProjectRoles, projectRoleTitles} from "../../data/Roles";
 import ProductBacklog from "../ProductBacklog/ProductBacklog";
+import Typography from "@material-ui/core/Typography";
+import BurndownDialog from "./BurndownDialog";
 
 interface IProjectParams {
   projectId: string;
@@ -25,6 +27,7 @@ interface IProjectParams {
 export default () => {
   const [ project, setProject ] = useState<IProject>();
   const [ sprintDialogOpen, setSprintDialogOpen ] = useState<boolean>(false);
+  const [ burndownDialogOpen, setBurndownDialogOpen ] = useState<boolean>(false);
   const [ docDialogOpen, setDocDialogOpen ] = useState<boolean>(false);
   const [ editId, setEditId ] = useState<string>();
   const [ sprints, setSprints ] = useState<ISprint[]>([]);
@@ -91,6 +94,14 @@ export default () => {
     setEditId(undefined);
   }
 
+  const openBurndownDialog = () => {
+    setBurndownDialogOpen(true);
+  }
+
+  const closeBurndownDialog = () => {
+    setBurndownDialogOpen(false);
+  }
+
   const sprintDetailsClick = (sprintId: string) => {
     history.push(`/projects/${projectId}/sprints/${sprintId}`);
   }
@@ -117,24 +128,28 @@ export default () => {
                 <Alert variant="filled" onClose={closeSnack} severity={snackSeverity}>{snackMessage}</Alert>
             </Snackbar>
 
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <IconButton size="medium" color="primary" onClick={back}>
                     <ArrowBackRounded fontSize="large" />
                 </IconButton>
                 <div className="page_title">{project.name}</div>
-                <IconButton size="medium" color="secondary" style={{ opacity: 0, cursor: "auto" }}>
-                    <ArrowBackRounded fontSize="large" />
-                </IconButton>
+                <Typography variant="body1">{ userRole !== undefined ? "Role: "+projectRoleTitles[userRole] : "" }</Typography>
             </div>
 
-            
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Button variant="contained" color="primary" onClick={() => openSprintDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>ADD SPRINT</Button>
-                <Button variant="contained" color="primary" onClick={() => openDocDialog()} style={{ alignSelf: "flex-start", marginTop: 20 }}>SEE DOCUMENTATION</Button>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20 }}>
+                <Button variant="contained" color="primary" onClick={() => openSprintDialog()}>ADD SPRINT</Button>
+
+                <IconButton size="medium" color="primary" onClick={openBurndownDialog}>
+                    <WhatshotRounded fontSize="large" />
+                </IconButton>
+
+                <Button variant="contained" color="primary" onClick={() => openDocDialog()}>SEE DOCUMENTATION</Button>
             </div>
 
             <SprintDialog projectId={projectId} open={sprintDialogOpen} handleClose={closeSprintDialog} openSnack={openSnack} editId={editId} />
             { project && <DocDialog project={project} open={docDialogOpen} handleClose={closeDocDialog} openSnack={openSnack} /> }
+
+            { project && <BurndownDialog projectId={projectId} open={burndownDialogOpen} handleClose={closeBurndownDialog} /> }
 
             <hr style={{ margin: "30px 0" }}/>
 

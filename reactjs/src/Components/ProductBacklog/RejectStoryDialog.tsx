@@ -24,10 +24,13 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack }: 
 
   const confirmAction = async () => {
     try {
-      await rejectUserStory(projectId, sprintId, storyId, text);
+      if(text.length > 1){
+        await rejectUserStory(projectId, sprintId, storyId, text);
 
-      openSnack("This user story was marked as unrealized and was put back in the product backlog. ", "success", true);
-      handleClose();
+        openSnack("This user story was marked as unrealized and was put back in the product backlog. ", "success", true);
+        handleClose();
+      }
+      else openSnack("Please specify why this story is rejected!", "error");
     } catch (e) {
       openSnack("User story rejection failed!", "error");
     }
@@ -46,7 +49,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack }: 
           rows={5}
           value={text}
           onChange={e => setText(e.target.value)}
-          label="Story Rejection Content"
+          label="Story Rejection Reason"
           variant="outlined"
         />
       </DialogContent>

@@ -3,10 +3,12 @@ import "./login.css";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import {userLogin} from "../../api/AuthService";
-import {setToken, setUserId, setUserRole} from "../../api/TokenService";
+import {setToken, setUser, setUserId, setUserRole} from "../../api/TokenService";
 import {useHistory} from "react-router-dom";
 import {Alert, Color} from "@material-ui/lab";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
+import {getUser} from "../../api/UserService";
+import {IUser} from "../ProjectList/IProjectList";
 
 export default () => {
   const [ username, setUsername ] = useState<string>("");
@@ -18,18 +20,30 @@ export default () => {
 
   const history = useHistory();
 
-  const login = () => {
+  const login = async () => {
     userLogin(username, password)
-      .then((res) => {
+      .then(res => {
         const token = res.data.token;
         setToken(token);
         setUserId(res.data.userId);
         setUserRole(res.data.userRole);
-        history.push("/projects");
+
+        return res.data.userId;
       })
-      .catch(() => {
-        openSnack("Incorrect username or password!", "error");
-      });
+      .catch(e => {
+        let message = "Incorrect username or password!";
+        if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+        openSnack(message, "error");
+        return undefined;
+      })
+      .then(async (userId: string) => {
+        if(userId !== undefined) {
+          const user = (await getUser(userId)).data.data as IUser;
+          setUser(user);
+
+          history.push("/projects");
+        }
+      })
   }
 
   const closeSnack = () => {

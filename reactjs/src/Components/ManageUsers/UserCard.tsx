@@ -47,8 +47,10 @@ export default ({ user, title, openSnack, enableDelete, noRole }: IProps) => {
         .then(() => {
           openSnack("User updated successfully!", "success", true);
         })
-        .catch(() => {
-          openSnack("User update failed!", "error");
+        .catch((e) => {
+          let message = "User update failed!";
+          if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+          openSnack(message, "error");
         })
     }
 
@@ -58,8 +60,10 @@ export default ({ user, title, openSnack, enableDelete, noRole }: IProps) => {
         .then(() => {
           openSnack("User created successfully!", "success", true);
         })
-        .catch(() => {
-          openSnack("User creation failed!", "error");
+        .catch((e) => {
+          let message = "User creation failed!";
+          if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+          openSnack(message, "error");
         })
     }
   }
@@ -69,8 +73,10 @@ export default ({ user, title, openSnack, enableDelete, noRole }: IProps) => {
       .then(() => {
         openSnack("User deleted successfully!", "success", true);
       })
-      .catch(() => {
-        openSnack("User deleted failed!", "error");
+      .catch((e) => {
+        let message = "User deletion failed!";
+        if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+        openSnack(message, "error");
       })
   }
 

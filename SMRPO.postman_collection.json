@@ -1005,7 +1005,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Default story name\",\r\n    \"timeEstimate\": 420,\r\n    \"businessValue\": 420,\r\n    \"comment\": \"Default comment\",\r\n    \"priority\": \"Must have\",\r\n    \"tests\": \"Default tests\",\r\n    \"status\": \"Default status\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Default story name\",\r\n   \"description\": \"Default story description\",\r\n   \"timeEstimate\": 420,\r\n    \"businessValue\": 420,\r\n    \"comment\": \"Default comment\",\r\n    \"priority\": \"Must have\",\r\n    \"tests\": \"Default tests\",\r\n    \"status\": \"Default status\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1037,7 +1037,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Default story name\",\r\n    \"timeEstimate\": 420,\r\n    \"businessValue\": 420,\r\n    \"comment\": \"Default comment\",\r\n    \"priority\": \"Must have\",\r\n    \"tests\": \"Default tests\",\r\n    \"status\": \"Default status\",\r\n    \"projectId\": \"604b8ba167549b262404d3a9\",\r\n    \"sprintId\": \"604b9613fe8ee50cc043c8ee\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Default story name\",\r\n   \"description\": \"Default story description\",\r\n   \"timeEstimate\": 420,\r\n    \"businessValue\": 420,\r\n    \"comment\": \"Default comment\",\r\n    \"priority\": \"Must have\",\r\n    \"tests\": \"Default tests\",\r\n    \"status\": \"Default status\",\r\n    \"projectId\": \"604b8ba167549b262404d3a9\",\r\n    \"sprintId\": \"604b9613fe8ee50cc043c8ee\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

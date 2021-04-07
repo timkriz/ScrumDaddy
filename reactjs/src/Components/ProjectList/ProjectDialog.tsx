@@ -125,7 +125,9 @@ export default ({ open, handleClose, openSnack, editId }: IProps) => {
         openSnack("Project updated successfully!", "success", true);
         handleClose();
       } catch (e) {
-        openSnack("Project update failed!", "error");
+        let message = "Project update failed!";
+        if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+        openSnack(message, "error");
       }
     }
 
@@ -141,7 +143,9 @@ export default ({ open, handleClose, openSnack, editId }: IProps) => {
         openSnack("Project created successfully!", "success", true);
         handleClose();
       } catch (e) {
-        openSnack("Project creation failed!", "error");
+        let message = "Project creation failed!";
+        if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+        openSnack(message, "error");
       }
     }
   };

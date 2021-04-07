@@ -19,6 +19,11 @@ export const systemRoles: ISystemRole[] = [
   }
 ];
 
+export const systemRoleTitles: any = {
+  [SystemRoles.ADMIN]: systemRoles[0].title,
+  [SystemRoles.USER]: systemRoles[1].title
+}
+
 export enum ProjectRoles {
   PROD_LEAD = "PROD_LEAD",
   METH_KEEPER = "METH_KEEPER",
@@ -33,14 +38,20 @@ export interface IProjectRole {
 export const projectRoles: IProjectRole[] = [
   {
     id: ProjectRoles.PROD_LEAD,
-    title: "Product Leader"
+    title: "Product Owner"
   },
   {
     id: ProjectRoles.METH_KEEPER,
-    title: "Methodology Keeper"
+    title: "Scrum Master"
   },
   {
     id: ProjectRoles.DEV_TEAM_MEMBER,
-    title: "Development Team Member"
+    title: "Developer"
   }
 ];
+
+export const projectRoleTitles: any = {
+  [ProjectRoles.PROD_LEAD]: projectRoles[0].title,
+  [ProjectRoles.METH_KEEPER]: projectRoles[1].title,
+  [ProjectRoles.DEV_TEAM_MEMBER]: projectRoles[2].title,
+}

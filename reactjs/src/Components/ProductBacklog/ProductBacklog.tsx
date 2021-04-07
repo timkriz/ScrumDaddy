@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from "react";
 import "./productbacklog.css";
 import {Button} from "@material-ui/core";
-import {getSprints, getStories, rejectUserStory, acceptUserStory} from "../../api/UserStoriesService";
+import {getSprints, getStories, acceptUserStory, restoreUserStory} from "../../api/UserStoriesService";
+import {ITask} from "../ProjectList/IProjectList";
+import {getTasks} from "../../api/TaskService";
 import Typography from "@material-ui/core/Typography";
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import {TabPanel} from "./TabPanel"
-import { useHistory } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
-import {ArrowForwardRounded, DeleteRounded, EditRounded} from "@material-ui/icons";
+import {ArrowForwardRounded, DeleteRounded, EditRounded, ReportRounded} from "@material-ui/icons";
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
 import {ProjectRoles, SystemRoles} from "../../data/Roles";
@@ -32,6 +33,7 @@ interface ISprint {
 interface IStory {
   _id: string;
   name: string;
+  description: string;
   timeEstimate: number;
   businessValue: number;
   comment: string;
@@ -95,13 +97,13 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
       const found1 = ISprintCollection.some((el:ISprintCollection) => el._id === sprint._id);
       /*  CORRECTION - just active sprint */
 
-      /* Get stories of a sprint */
+      /* Get stories of a active sprint */
       if (!found1 && sprint.startTime < currentTime && currentTime < sprint.endTime) {
         ISprintCollection.push({ _id: sprint._id, name: sprint.name,  stories: []});
         const allStories = (await getStories(projectId, sprint._id)).data.data as IStory[];
         const found2 = ISprintCollection.find((el:ISprintCollection) => el._id === sprint._id);
 
-        /* Filter already accepted and realized stories*/
+        /* Filter already accepted and realized stories */
         if(found2){
           acceptedStories.length = 0;
           allStories.forEach( async (story) => {
@@ -116,7 +118,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
             }
           });
         }
-        setStories(allStories)
+        setStories(allStories);
       }
       /* Get stories of a product backlog */
       if (!found1) {
@@ -124,34 +126,70 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
         if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
         setStories(allStoriesInProductBacklog)
       }
+
+      /* Get accepted stories from unactive sprints */
+      if (!found1){
+        const allStories = (await getStories(projectId, sprint._id)).data.data as IStory[];
+        allStories.forEach( async (story) => {
+          if(story.status === "Accepted") {
+            const found3 = acceptedStories.some((el:IStory) => el._id === story._id);
+            if(!found3) acceptedStories.push(story);
+            setAcceptedStories(acceptedStories);
+          }
+        });
+      }
+
      });
      setSprintCollection(ISprintCollection); // Update sprint and its stories
      return ISprintCollection
   }
-
   /* "PROD_LEAD" can accept story once it is finished*/
   const handleAcceptUserStory = async (story: IStory) => {
     if(userRole === "PROD_LEAD"){
-      await acceptUserStory(projectId, story.sprintId, story._id);
+      /* CHECK IF ALL TASKS IN THIS STORY ARE COMPLETED */
+      try {
+        const gottenTasks = (await getTasks(projectId, story.sprintId, story._id)).data.data as ITask[];
+        let allCompleted = 1;
+        gottenTasks.map((task, index) => {
+          if (task.status != "completed"){
+            allCompleted = 0;
+          }
+        })
+        if(allCompleted) {
+          await acceptUserStory(projectId, story.sprintId, story._id);
+          openSnack("Story was successfully accepted!", "success", true);
+        }
+        else {
+          openSnack("All tasks in this story need to be completed first!", "error");
+        }
+      } catch (e) {
+        openSnack("Something went wrong!", "error");
+      }
     }
     const ISprintCollection = await fetchSprints();
   }
 
   /* "PROD_LEAD" can reject story and it goes back to product backlog*/
   const handleRejectUserStory = async (story: IStory) => {
-    setRejectedStorySprintId(story.sprintId)
     setRejectedStoryId(story._id)
-    openRejectDialog()
+    setRejectedStorySprintId(story.sprintId)
+    openRejectDialog();
   }
 
   /* TEMPORARY - MOVE ACCEPTED STORY BACK TO UNREALIZED STORIES*/
   const handleRestoreUserStory = async (story: IStory) => {
-    //await rejectUserStory(projectId, story.sprintId, story._id);
-
+    if(userRole === "PROD_LEAD"){
+      await restoreUserStory(projectId, story.sprintId, story._id);
+      try {
+        await restoreUserStory(projectId, story.sprintId, story._id);
+        openSnack("Story is back in progress!", "success", true);
+      } catch (e) {
+        openSnack("Something went wrong!", "error");
+      }
+    }
     const ISprintCollection = await fetchSprints();
     setAcceptedStories(acceptedStories);
   }
-
   const openRejectDialog = () => {
     setRejectDialogOpen(true);
   }
@@ -185,7 +223,11 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                     <div key={i} className="story_row">
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div className="story_row_title">{story.name}</div>
-                          <div className="story_value">Comment: {story.comment}</div>
+                          <div className="story_value" style={{ padding: 10 }}>{story.description}</div>
+                          <div className="story_label">Comment:</div>
+                          <div className="story_value">{story.comment}</div>
+                          <div className="story_label">Tests:</div>
+                          <div className="story_value">{story.tests}</div>
                           <div style={{ display: "flex", marginTop: 10 }}>
                             <div style={{ marginRight: 20 }}>
                               <div className="story_label">Status:</div>
@@ -243,6 +285,9 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                         <div key={i} className="story_row">
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div className="story_row_title">{story.name}</div>
+                          <div className="story_value" style={{ padding: 10 }}>{story.description}</div>
+                          <div className="story_label">Tests:</div>
+                          <div className="story_value">{story.tests}</div>
                           <div style={{ display: "flex", marginTop: 10 }}>
                             <div style={{ marginRight: 20 }}>
                               <div className="story_label">Sprint:</div>
@@ -266,15 +311,18 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                           </div>
                         </div>
                         {userRole ==="PROD_LEAD" &&
-                        <div className="story_row_icons">
-                          <IconButton color="primary" disabled={userRole !== "PROD_LEAD"} onClick={() => handleAcceptUserStory(story)}>
-                            <DoneRoundedIcon /> 
-                            <Typography component={'span'} display = "block" variant="caption">Accept</Typography>
-                          </IconButton>
-                          <IconButton color="primary" disabled={userRole !== "PROD_LEAD"} onClick={() => handleRejectUserStory(story)}>
-                            <CloseRoundedIcon />
-                            <Typography component={'span'} display = "block" variant="caption">Remove</Typography>
-                          </IconButton>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                          <div className="story_value">Acceptance test</div>
+                          <div className="story_row_icons">
+                            <IconButton color="primary" disabled={userRole !== "PROD_LEAD" || story.status !== "Completed"} onClick={() => handleAcceptUserStory(story)}>
+                              <DoneRoundedIcon /> 
+                              <Typography component={'span'} display = "block" variant="caption">Accept</Typography>
+                            </IconButton>
+                            <IconButton color="primary" disabled={userRole !== "PROD_LEAD"} onClick={() => handleRejectUserStory(story)}>
+                              <CloseRoundedIcon />
+                              <Typography component={'span'} display = "block" variant="caption">Reject</Typography>
+                            </IconButton>
+                          </div>
                         </div>
                         }
                         { <RejectStoryDialog projectId={projectId} sprintId={rejectedStorySprintId} storyId={rejectedStoryId} open={rejectDialogOpen} handleClose={closeRejectDialog} openSnack={openSnack} /> }
@@ -301,7 +349,14 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                   <div key={i} className="story_row">
                     <div style={{ display: "flex", flexDirection: "column" }}>
                       <div className="story_row_title">{story.name}</div>
+                      <div className="story_value" style={{ padding: 10 }}>{story.description}</div>
+                      <div className="story_label">Tests:</div>
+                      <div className="story_value">{story.tests}</div>
                       <div style={{ display: "flex", marginTop: 10 }}>
+                      <div style={{ marginRight: 20 }}>
+                              <div className="story_label">Sprint:</div>
+                              <div className="story_value">{story.name}</div>
+                            </div>
 
                         <div style={{ marginRight: 20 }}>
                           <div className="story_label">Status:</div>

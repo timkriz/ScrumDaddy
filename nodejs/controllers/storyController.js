@@ -5,7 +5,9 @@ const taskModel = require('../models/taskModel');
 exports.viewAll = function (req, res) {
     storyModel.find({sprintId: req.params.sprintid}, function (err, stories) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -18,7 +20,9 @@ exports.viewAll = function (req, res) {
 exports.view = function (req, res) {
     storyModel.findOne({_id: req.params.storyid}, function (err, story) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -31,7 +35,9 @@ exports.view = function (req, res) {
 exports.viewNotInSprint = function (req, res) {
     storyModel.find({projectId: req.params.projectid, sprintId: "/"}, function (err, stories) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -45,6 +51,7 @@ exports.new = function (req, res) {
     var story = new storyModel();
 
     story.name              = req.body.name;
+    story.description       = req.body.description;
     story.timeEstimate      = req.body.timeEstimate;
     story.businessValue     = req.body.businessValue;
     story.comment           = req.body.comment;
@@ -56,7 +63,9 @@ exports.new = function (req, res) {
 
     story.save(function (err) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -69,11 +78,14 @@ exports.new = function (req, res) {
 exports.update = function (req, res) {
     storyModel.findOne({_id: req.params.storyid}, function (err, story) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
 
         story.name              = req.body.name || story.name;
+        story.description       = req.body.description || story.description;
         story.timeEstimate      = req.body.timeEstimate || story.timeEstimate;
         story.businessValue     = req.body.businessValue || story.businessValue;
         story.comment           = req.body.comment || story.comment;
@@ -84,8 +96,10 @@ exports.update = function (req, res) {
 
         story.save(function (err) {
             if (err) {
-                res.status(400).json(err);
-                return;
+                res.status(400).json({
+                message: err.toString(),
+                data: ""});
+            return;
             }
             res.json({
                 message: "Story updated",
@@ -98,7 +112,9 @@ exports.update = function (req, res) {
 exports.delete = function (req, res) {
     storyModel.remove({_id: req.params.storyid}, function (err, story) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
@@ -112,7 +128,9 @@ exports.delete = function (req, res) {
 exports.deleteMany = function (req, res) {
     storyModel.deleteMany({sprintId: req.params.sprintid}, function (err, stories) {
         if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+                message: err.toString(),
+                data: ""});
             return;
         }
         res.json({
