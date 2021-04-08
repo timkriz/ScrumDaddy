@@ -6,4 +6,5 @@ export interface IStoryNote {
     userId: string;
     timestamp: number;
     text: string;
+    userRole: string;
 }

@@ -8,6 +8,7 @@ const storyNoteSchema = new Schema ({
     userId: { type: String, required: true},
     timestamp: { type: Number, required: true},
     text: { type: String, required: true},
+    userRole: { type: String, required: true},
 });
 
 var storyNote = module.exports = mongoose.model('storyNote', storyNoteSchema, 'storyNote');
