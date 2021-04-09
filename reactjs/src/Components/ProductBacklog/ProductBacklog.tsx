@@ -71,6 +71,8 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
   const [ ISprintCollection, setSprintCollection ] = useState<ISprintCollection[]>([]); /* Categorized stories into sprints */
   const [ productBacklog, setProductBacklog ] = useState<IStory[]>([]);  /* Special sprint for stories not assigned to sprint */
   const [ acceptedStories, setAcceptedStories ] = useState<IStory[]>([]);  /* Realized and accepted user stories*/
+  const [ sprintDict, setSprintDict ] = useState<{ [id: string] : string; }>({});  /* Realized and accepted user stories*/
+  //let sprintDict: { [id: string] : string; } = {}; 
 
   const [valueTab, setValue] = React.useState(0);
   const [ rejectDialogOpen, setRejectDialogOpen ] = useState<boolean>(false);
@@ -95,6 +97,16 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
     gottenSprints.forEach( async (sprint) => {
       const found1 = ISprintCollection.some((el:ISprintCollection) => el._id === sprint._id);
+
+      /* Get stories of a product backlog */
+      if (!found1) {
+        const allStoriesInProductBacklog = (await getStories(projectId, "/")).data.data as IStory[];
+        if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
+        setStories(allStoriesInProductBacklog);
+        sprintDict[sprint._id] = sprint.name;
+        setSprintDict(sprintDict);
+      }
+
       /*  CORRECTION - just active sprint */
 
       /* Get stories of a active sprint */
@@ -120,13 +132,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
         }
         setStories(allStories);
       }
-      /* Get stories of a product backlog */
-      if (!found1) {
-        const allStoriesInProductBacklog = (await getStories(projectId, "/")).data.data as IStory[];
-        if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
-        setStories(allStoriesInProductBacklog)
-      }
-
+    
       /* Get accepted stories from unactive sprints */
       if (!found1){
         const allStories = (await getStories(projectId, sprint._id)).data.data as IStory[];
@@ -355,7 +361,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                       <div style={{ display: "flex", marginTop: 10 }}>
                       <div style={{ marginRight: 20 }}>
                               <div className="story_label">Sprint:</div>
-                              <div className="story_value">{story.name}</div>
+                              <div className="story_value">{sprintDict[story.sprintId]}</div>
                             </div>
 
                         <div style={{ marginRight: 20 }}>
