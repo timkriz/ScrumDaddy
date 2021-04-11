@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {useHistory, useParams} from "react-router-dom";
 import "./productbacklog.css";
 import {Button} from "@material-ui/core";
 import {getSprints, getStories, acceptUserStory, restoreUserStory} from "../../api/UserStoriesService";
@@ -15,6 +16,8 @@ import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
 import {ProjectRoles, SystemRoles} from "../../data/Roles";
 import {Color} from "@material-ui/lab";
 import RejectStoryDialog from './RejectStoryDialog';
+import StoryDialog from "../Story/StoryDialog";
+import {deleteStory} from "../../api/StoryService"
 
 interface IProject {
   _id: string;
@@ -49,6 +52,15 @@ interface ISprintCollection{
   stories: IStory[];
 }
 
+interface IProjectParams {
+  projectId: string;
+}
+
+interface ISprintParams {
+  sprintId: string;
+}
+
+
 const project1: IProject[] = [
     {
       _id: "",
@@ -76,6 +88,11 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
   const [ rejectDialogOpen, setRejectDialogOpen ] = useState<boolean>(false);
   const [ rejectedStorySprintId, setRejectedStorySprintId ] = useState<string>("");
   const [ rejectedStoryId, setRejectedStoryId ] = useState<string>("");
+
+  const [ storyDialogOpen, setStoryDialogOpen ] = useState<boolean>(false);
+  const [ editId, setEditId ] = useState<string>();
+  //const { projectId } = useParams<IProjectParams>();
+  const { sprintId } = useParams<ISprintParams>();
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -197,10 +214,31 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
     fetchSprints();
     setRejectDialogOpen(false);
   }
+
+  const openStoryDialog = (storyId?: string) => {
+    storyId !== undefined && setEditId(storyId);
+    setStoryDialogOpen(true);
+  }
+
+  const closeStoryDialog = () => {
+    setStoryDialogOpen(false);
+    setEditId(undefined);
+    fetchSprints();
+  }
+
+  const deleteClickedStory = async (storyId: string) => {
+    await deleteStory(projectId, sprintId, storyId);
+    fetchSprints();
+  }
+
   return (
     <>
 
       <div className="page_subtitle" style={{ marginBottom: 20 }}>Product backlog</div>
+
+      <Button variant="contained" color="primary" onClick={() => openStoryDialog()} style={{ display: "flex", alignSelf: "center", marginBottom: 20 }}>NEW USER STORY</Button>
+      <StoryDialog projectId={projectId} sprintId={sprintId} open={storyDialogOpen} handleClose={closeStoryDialog} openSnack={openSnack} editId={editId} />
+
 
       {/* TABS */}
       <div>
@@ -208,7 +246,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
               <Tab label="Unrealized stories"  />
               <Tab label="Realized stories"  />
               </Tabs>
-          
+            
           <TabPanel value={valueTab} index={0}>
               <div>
               <div>
@@ -246,13 +284,13 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                           </div>
                         </div>
                         <div className="sprint_row_icons">
-                          <IconButton color="primary">
+                          <IconButton color="primary" onClick={() => deleteClickedStory(story._id)}>
                             <DeleteRounded />
                           </IconButton>
-                          <IconButton color="primary">
+                          <IconButton color="primary" onClick={() => void 0}>
                             <EditRounded />
                           </IconButton>
-                          <IconButton color="primary">
+                          <IconButton color="primary" onClick={() => void 0}>
                             <ArrowForwardRounded />
                           </IconButton>
                         </div>
@@ -260,9 +298,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                     ))
                 }
               </div>
-
-              <Button variant="contained" color="primary" style={{ alignSelf: "flex-start" }}>ADD USER STORY</Button>
-
+              
               <hr style={{ margin: "30px 0"}}/>
 
               <Typography variant="h6" style={{ margin: "30px 0"}}>Active user stories</Typography>

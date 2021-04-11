@@ -14,8 +14,15 @@ import {Color} from "@material-ui/lab";
 import {ClearRounded} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import {getProjectUsers} from "../../api/ProjectService";
-import {getStory, putStory, postStory} from "../../api/UserStoriesService";
+import {putStory, postStory} from "../../api/StoryService";
+import {getStory} from "../../api/UserStoriesService";
 import {IStory} from "../ProjectList/IProjectList";
+import {allPriorities, Priorities} from "./Priorities"; 
+import {allStatuses, Status} from "./Status"; 
+import { stat } from "node:fs";
+import "./story.css";
+import {rejectUserStory} from "../../api/UserStoriesService";
+
 
 interface IProps {
   projectId: string;
@@ -27,9 +34,16 @@ interface IProps {
 }
 
 export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: IProps) => {
-  const [ StoryTitle, setStoryTitle ] = useState<string>("");
-  const [ StoryDescription, setStoryDescription ] = useState<string>("");
-  const [ StoryTime, setStoryTime] = useState<number>(10);
+  const [ id, setId] = useState<string>("");
+  const [ name, setName ] = useState<string>("");
+  const [ description, setDescription ] = useState<string>("");
+  const [ timeEstimate, setTimeEstimate] = useState<number>(10);
+  const [ bussinesValue, setBussinesValue] = useState<number>(10);
+  const [ priority, setPriority] = useState<Priorities>(Priorities.MUST_HAVE);
+  const [ comment, setComment] = useState<string>("");
+  const [ tests, setTests] = useState<string>("");
+  const [ status, setStatus] = useState<Status>(Status.UNASSIGNED);
+  
 
 
   useEffect(() => {
@@ -41,21 +55,27 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
 
       // Clear the fields
       else {
-        setStoryTitle("");
-        setStoryDescription("");
-        setStoryTime(10);
+        setName("");
+        setDescription("");
+        setTimeEstimate(10);
+        setBussinesValue(10);
+        setPriority(Priorities.MUST_HAVE);
+        setComment("");
+        setTests("");
+        setStatus(Status.UNASSIGNED);
+        
       }
     }
   }, [ open ]);
 
 
   const fetchStory = async () => {
-    /*if(editId !== undefined) {
+    if(editId !== undefined) {
       const gottenStory = (await getStory(projectId, sprintId, editId)).data.data as IStory;
 
-      setStoryTitle(gottenStory.name);
-      setStoryTime(gottenStory.timeEstimate);
-    }*/
+      setName(gottenStory.name);
+      setTimeEstimate(gottenStory.timeEstimate);
+    }
   }
 
   const confirmAction = async () => {
@@ -74,13 +94,21 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
     // Add Story
     else {*/
     try {
-      console.log(projectId, sprintId)
-      await postStory(projectId, sprintId, StoryTitle, StoryDescription, StoryTime);
+      console.log(projectId, sprintId, name, description, timeEstimate, bussinesValue, priority, comment, tests, status)
+      const response = await postStory(projectId, sprintId, name, description, timeEstimate, bussinesValue, priority, comment, tests, status);
+      setId(response.data.data._id);
+      console.log(response.data.data._id);
+      console.log(id);
+      if (response.data.data._id){
+        await rejectUserStory(projectId, sprintId, response.data.data._id, comment);
+      }
 
       openSnack("Story created successfully!", "success", true);
       handleClose();
     } catch (e) {
-      openSnack("Story creation failed!", "error");
+      let message = "Story creation failed!";
+      if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+      openSnack(message, "error");
     }
   
 };
@@ -106,8 +134,8 @@ const handleUserSelect = (e: any, i: number) => {
         <TextField
           label="Story Title"
           fullWidth
-          value={StoryTitle}
-          onChange={(e) => {setStoryTitle(e.target.value)}}
+          value={name}
+          onChange={(e) => {setName(e.target.value)}}
         />
         <TextField
           style={{ marginTop: 20 }}
@@ -115,20 +143,75 @@ const handleUserSelect = (e: any, i: number) => {
           fullWidth
           multiline
           rowsMax={4}
-          value={StoryDescription}
-          onChange={(e) => {setStoryDescription(e.target.value)}}
+          value={description}
+          onChange={(e) => {setDescription(e.target.value)}}
+          variant="outlined"
+        />
+
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 32 }}>
+          <TextField
+            style={{ margin: 10, width: "20%" }}
+            InputProps={{
+              inputProps: { 
+                min: 1 ,max: 100
+              }
+            }}
+            label="Time Estimate"
+            type="number"
+            value={timeEstimate}
+            onChange={(e) => {setTimeEstimate(e.target.value as unknown as number)}}
+          />
+
+          <TextField
+            style={{margin: 10, width: "20%" }}
+            InputProps={{
+              inputProps: { 
+                  min: 1, max: 100, maxLength: 2 
+              }
+            }}
+            label="Bussines value"
+            type="number"
+            value={bussinesValue}
+            onChange={(e) => {setBussinesValue(e.target.value as unknown as number)}}
+          />  
+
+          <FormControl style={{ margin: 10, width: "30%" }}>
+            <InputLabel>Priority</InputLabel>
+            <Select
+              value={priority}
+              onChange={(e: any) => {setPriority(e.target.value)}}
+            >
+              {
+                allPriorities.map((priority, j) => (
+                  <MenuItem key={j} value={priority.type}>{priority.label}</MenuItem>
+                ))
+              }
+            </Select>
+          </FormControl>
+        </div>
+        
+
+        <TextField
+          style={{ marginTop: 20 }}
+          label="Story comment"
+          fullWidth
+          multiline
+          rowsMax={4}
+          value={comment}
+          onChange={(e) => {setComment(e.target.value)}}
           variant="outlined"
         />
         <TextField
           style={{ marginTop: 20 }}
-          label="Story Time Estimate"
-          type="number"
-          value={StoryTime}
-          onChange={(e) => {setStoryTime(e.target.value as unknown as number)}}
+          label="Story tests"
+          fullWidth
+          multiline
+          rowsMax={4}
+          value={tests}
+          onChange={(e) => {setTests(e.target.value)}}
+          variant="outlined"
         />
-
-        <Button variant="contained" color="primary" onClick={addAssignRow} style={{ margin: "20px 0",float: 'right' }}>ASSIGN USER</Button>
-
+        
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">

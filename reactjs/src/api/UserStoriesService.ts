@@ -33,19 +33,3 @@ export const restoreUserStory = (projectId: string, sprintId: string, storyId: s
     status: "Completed"
   });
 };
-
-export const postStory = (projectId: string, sprintId: string, name: string, description: string, velocity: number): Promise<any> => {
-  return axiosAuth.post(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}`, {
-    name,
-    description,
-    velocity
-  });
-};
-
-export const putStory = (projectId: string, sprintId: string, storyId: string, name: string, description: string, velocity: number): Promise<any> => {
-  return axiosAuth.put(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
-    name,
-    description,
-    velocity
-  });
-};
