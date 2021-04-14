@@ -25,6 +25,7 @@ exports.new = function (req, res) {
     note.projectId      = req.body.projectId;
     note.sprintId       = req.body.sprintId;
     note.storyId        = req.body.storyId;
+    note.userRole        = req.body.userRole;
 
     note.save(function (err) {
         if (err) {

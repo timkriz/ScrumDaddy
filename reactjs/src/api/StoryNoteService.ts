@@ -4,14 +4,15 @@ export const getNotes = (projectId: string, sprintId: string, storyId: string): 
   return axiosAuth.get(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/notes`);
 };
 
-export const postNotes = (projectId: string, sprintId: string, storyId: string, userId: string, timestamp: number, text: string): Promise<any> => {
+export const postNotes = (projectId: string, sprintId: string, storyId: string, userId: string, timestamp: number, text: string, userRole: string): Promise<any> => {
   return axiosAuth.post(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/notes`, {
     projectId,
     storyId,
     sprintId,
     userId,
     timestamp,
-    text
+    text,
+    userRole
   });
 };
 

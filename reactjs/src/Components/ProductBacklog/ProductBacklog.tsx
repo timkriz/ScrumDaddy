@@ -18,7 +18,7 @@ import {Color} from "@material-ui/lab";
 import RejectStoryDialog from './RejectStoryDialog';
 import StoryDialog from "../Story/StoryDialog";
 import StoryToSprintDialog from "../Story/StoryToSprintDialog";
-import {deleteStory} from "../../api/StoryService"
+import DeleteStoryDialog from './DeleteStoryDialog';
 
 interface IProject {
   _id: string;
@@ -84,11 +84,15 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
   const [ ISprintCollection, setSprintCollection ] = useState<ISprintCollection[]>([]); /* Categorized stories into sprints */
   const [ productBacklog, setProductBacklog ] = useState<IStory[]>([]);  /* Special sprint for stories not assigned to sprint */
   const [ acceptedStories, setAcceptedStories ] = useState<IStory[]>([]);  /* Realized and accepted user stories*/
+  const [ sprintDict, setSprintDict ] = useState<{ [id: string] : string; }>({});  /* Realized and accepted user stories*/
+  //let sprintDict: { [id: string] : string; } = {}; 
 
   const [valueTab, setValue] = React.useState(0);
   const [ rejectDialogOpen, setRejectDialogOpen ] = useState<boolean>(false);
+  const [ deleteStoryDialogOpen, setDeleteStoryDialogOpen ] = useState<boolean>(false);
   const [ rejectedStorySprintId, setRejectedStorySprintId ] = useState<string>("");
   const [ rejectedStoryId, setRejectedStoryId ] = useState<string>("");
+  const [ deletedStoryId, setDeletedStoryId ] = useState<string>("");
 
   const [ storyToSprintOpen, setStoryToSprintOpen] = useState<boolean>(false);
 
@@ -114,6 +118,16 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
     gottenSprints.forEach( async (sprint) => {
       const found1 = ISprintCollection.some((el:ISprintCollection) => el._id === sprint._id);
+
+      /* Get stories of a product backlog */
+      if (!found1) {
+        const allStoriesInProductBacklog = (await getStories(projectId, "/")).data.data as IStory[];
+        if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
+        setStories(allStoriesInProductBacklog);
+        sprintDict[sprint._id] = sprint.name;
+        setSprintDict(sprintDict);
+      }
+
       /*  CORRECTION - just active sprint */
 
       /* Get stories of a active sprint */
@@ -139,13 +153,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
         }
         setStories(allStories);
       }
-      /* Get stories of a product backlog */
-      if (!found1) {
-        const allStoriesInProductBacklog = (await getStories(projectId, "/")).data.data as IStory[];
-        if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
-        setStories(allStoriesInProductBacklog)
-      }
-
+    
       /* Get accepted stories from unactive sprints */
       if (!found1){
         const allStories = (await getStories(projectId, sprint._id)).data.data as IStory[];
@@ -228,11 +236,6 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
     fetchSprints();
   }
 
-  const deleteClickedStory = async (storyId: string) => {
-    await deleteStory(projectId, sprintId, storyId);
-    fetchSprints();
-  }
-
   // Story to sprint dialog
 
   const openStoryToSprintDialog = (storyId?: string) => {
@@ -246,6 +249,18 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
     fetchSprints();
   }
 
+  /* "PROD_LEAD" can reject story and it goes back to product backlog*/
+  const handleOpenDeleteStoryDialog = async (storyId: string) => {
+    setDeletedStoryId(storyId);
+    openDeleteStoryDialog();
+  }
+  const openDeleteStoryDialog = () => {
+    setDeleteStoryDialogOpen(true);
+  }
+  const closeDeleteStoryDialog = () => {
+    fetchSprints();
+    setDeleteStoryDialogOpen(false);
+  }
   return (
     <>
 
@@ -307,21 +322,28 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                           </div>
                         </div>
                         <div className="sprint_row_icons">
-                          <IconButton color="primary" onClick={() => deleteClickedStory(story._id)}>
+                          {userRole == "PROD_LEAD" &&
+                          <>
+                            <IconButton color="primary" onClick={() => handleOpenDeleteStoryDialog(story._id)}>
                             <DeleteRounded />
                           </IconButton>
                           <IconButton color="primary" onClick={() => void 0}>
                             <EditRounded />
                           </IconButton>
-                          <IconButton color="primary" onClick={() => void 0}>
-                            <ArrowForwardRounded />
-                          </IconButton>
+                          </>
+                          }
                         </div>
                       </div>
                     ))
                 }
               </div>
-              
+
+              {/* Delete story dialog*/}
+              { <DeleteStoryDialog projectId={projectId} storyId={deletedStoryId} open={deleteStoryDialogOpen} handleClose={closeDeleteStoryDialog} openSnack={openSnack} /> }
+
+
+              {/*<Button variant="contained" color="primary" style={{ alignSelf: "flex-start" }}>ADD USER STORY</Button>*/}
+
               <hr style={{ margin: "30px 0"}}/>
 
               <Typography variant="h6" style={{ margin: "30px 0"}}>Active user stories</Typography>
@@ -414,7 +436,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                       <div style={{ display: "flex", marginTop: 10 }}>
                       <div style={{ marginRight: 20 }}>
                               <div className="story_label">Sprint:</div>
-                              <div className="story_value">{story.name}</div>
+                              <div className="story_value">{sprintDict[story.sprintId]}</div>
                             </div>
 
                         <div style={{ marginRight: 20 }}>
