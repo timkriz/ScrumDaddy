@@ -177,7 +177,6 @@ export default () => {
 
   const openTaskDialog = (taskId?: string) => {
     taskId !== undefined && setEditId(taskId);
-
     setTaskDialogOpen(true);
   }
 
@@ -221,7 +220,7 @@ export default () => {
                     <div key={i} className="sprint_row">
                       <div style={{ display: "flex", flexDirection: "column" }}>
                         <div className="sprint_row_title">{task.name}</div>
-                        <div className="sprint_label" style={{marginTop: 5}}>Suggested user:</div>               
+                        <div className="sprint_label" style={{marginTop: 5}}>Suggested user:</div>
                         {
                           allUsers.map((user, j) => (
                             <div>

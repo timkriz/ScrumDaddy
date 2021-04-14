@@ -10,7 +10,7 @@ import {Color} from "@material-ui/lab";
 import moment, {Moment} from "moment"
 import {DatePicker} from "@material-ui/pickers";
 import {getTask, postTask, putTask} from "../../api/TaskService";
-import {getUsers} from "../../api/UserService";
+import {getUsers, getUser} from "../../api/UserService";
 import {ITask, IUser, IProjectUser, IProjectDialogAssign} from "../ProjectList/IProjectList";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -18,7 +18,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import {getProjectUsers} from "../../api/ProjectService";
 import { isNonNullExpression } from "typescript";
-import { ContactSupportOutlined } from "@material-ui/icons";
+import { ContactSupportOutlined, Forum } from "@material-ui/icons";
+import userEvent from "@testing-library/user-event";
 
 
 interface IProps {
@@ -31,6 +32,11 @@ interface IProps {
   editId?: string;
 }
 
+interface GUser{
+  name: string,
+  surname: string
+}
+
 export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, editId }: IProps) => {
   const [ taskName, setTaskName ] = useState<string>("");
   const [ taskDescription, setTaskDescription ] = useState<string>("");
@@ -40,6 +46,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
   const [ allUsers, setAllUsers ] = useState<IUser[]>([]);
   const [ taskSuggestedUser, setTaskSuggestedUser] = useState<string>("");
   const [ assignedUsers, setAssignedUsers ] = useState<IProjectDialogAssign[]>([]);
+  const [ realUsers, setRealUsers] = useState<IUser[]>([]);
 
   
 
@@ -63,6 +70,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
         setTaskDescription("");
         setTaskTimeEstimate(1);
         setTaskSuggestedUser("")
+        shiftUsers()
       }
     }
   }, [ open ]);
@@ -75,7 +83,29 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
   const fetchAllUsers = async () => {
     const users = (await getUsers()).data.data as IUser[];
     setAllUsers(users);
-  }
+  } 
+
+  const shiftUsers = async () =>{
+    let newIDs = [] as any;
+    let newUsers2: IUser[] = [];
+
+    projectUsers.forEach((user) =>{
+        const newId = user.userId;
+        newIDs.push(newId);
+
+    })
+    Promise.all(newIDs.map((id: string)  => getUser(id)))
+    .then((arrayOfData) => {
+
+      for(var i=0; i<arrayOfData.length; i++){
+        var x = JSON.parse(JSON.stringify(arrayOfData[i]));
+        newUsers2.push(x.data.data)
+      }
+      setRealUsers(newUsers2) 
+    });
+  } 
+
+
 
   const fetchTask = async () => {
     if(editId !== undefined) {
@@ -92,11 +122,15 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
     // Edit task
     if(editId !== undefined) {
 
+    /*
+    missing something
+    */
+
     }
-    // Add task
+    // Add task - adding tasks WORKS
     else {
       try {
-        await postTask(projectId, sprintId, storyId, taskName, taskDescription, taskTimeEstimate, 0, "None", "None", "unassigned");
+        await postTask(projectId, sprintId, storyId, taskName, taskDescription, taskTimeEstimate, 0, taskSuggestedUser, "None", "unassigned");
 
         openSnack("Task created successfully!", "success", true);
         handleClose();
@@ -122,7 +156,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
           onChange={(e) => {setTaskName(e.target.value)}}
         />
         <TextField
-          style={{ marginTop: 20 }}
+          style={{ marginTop: 20}}
           label="Task Description"
           fullWidth
           multiline
@@ -130,12 +164,32 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
           onChange={(e) => {setTaskDescription(e.target.value)}}
         />
         <TextField
-          style={{ marginTop: 20 }}
+          style={{ marginTop: 20, width: "40%" }}
+          InputProps={{
+            inputProps: { 
+              min: 1, max: 20
+            }
+          }}
           label="Time estimate (hours)"
           type="number"
           value={taskTimeEstimate}
           onChange={(e) => {setTaskTimeEstimate(e.target.value as unknown as number)}}
         />
+
+        <FormControl style={{ display: "flex", margin: "10px 0", justifyContent: "space-between" }}>
+          <InputLabel>Suggest user</InputLabel>
+            <Select 
+            value={taskSuggestedUser} 
+            onChange={(e: any) => {setTaskSuggestedUser(e.target.value)}}
+            >
+              {
+                realUsers.map((user, j) => (
+                  <MenuItem key={j} value={user._id}>{user.name} {user.surname}</MenuItem>
+                  
+                ))
+              }
+            </Select>
+        </FormControl>
 
       </DialogContent>
       <DialogActions>

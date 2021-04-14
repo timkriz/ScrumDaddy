@@ -141,7 +141,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
   };
 
   const handleUserSelect = (e: any, i: number) => {
-  };
+  }; 
 
 
 

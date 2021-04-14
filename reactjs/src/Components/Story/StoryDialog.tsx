@@ -94,11 +94,9 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
     // Add Story
     else {*/
     try {
-      console.log(projectId, sprintId, name, description, timeEstimate, bussinesValue, priority, comment, tests, status)
       const response = await postStory(projectId, sprintId, name, description, timeEstimate, bussinesValue, priority, comment, tests, status);
       setId(response.data.data._id);
-      console.log(response.data.data._id);
-      console.log(id);
+
       if (response.data.data._id){
         await rejectUserStory(projectId, sprintId, response.data.data._id, comment);
       }
@@ -112,17 +110,6 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
     }
   
 };
-
-const addAssignRow = () => {
-};
-
-const deleteAssignRow = (i: number) => {
-};
-
-const handleUserSelect = (e: any, i: number) => {
-};
-
-
 
   return (
     <Dialog open={open} onClose={handleClose}>
