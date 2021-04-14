@@ -15,6 +15,7 @@ import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
 import {ProjectRoles, SystemRoles} from "../../data/Roles";
 import {Color} from "@material-ui/lab";
 import RejectStoryDialog from './RejectStoryDialog';
+import DeleteStoryDialog from './DeleteStoryDialog';
 
 interface IProject {
   _id: string;
@@ -76,8 +77,10 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
   const [valueTab, setValue] = React.useState(0);
   const [ rejectDialogOpen, setRejectDialogOpen ] = useState<boolean>(false);
+  const [ deleteStoryDialogOpen, setDeleteStoryDialogOpen ] = useState<boolean>(false);
   const [ rejectedStorySprintId, setRejectedStorySprintId ] = useState<string>("");
   const [ rejectedStoryId, setRejectedStoryId ] = useState<string>("");
+  const [ deletedStoryId, setDeletedStoryId ] = useState<string>("");
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -203,6 +206,18 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
     fetchSprints();
     setRejectDialogOpen(false);
   }
+  /* "PROD_LEAD" can reject story and it goes back to product backlog*/
+  const handleOpenDeleteStoryDialog = async (storyId: string) => {
+    setDeletedStoryId(storyId);
+    openDeleteStoryDialog();
+  }
+  const openDeleteStoryDialog = () => {
+    setDeleteStoryDialogOpen(true);
+  }
+  const closeDeleteStoryDialog = () => {
+    fetchSprints();
+    setDeleteStoryDialogOpen(false);
+  }
   return (
     <>
 
@@ -252,20 +267,25 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                           </div>
                         </div>
                         <div className="sprint_row_icons">
-                          <IconButton color="primary">
+                          {userRole == "PROD_LEAD" &&
+                          <>
+                            <IconButton color="primary" onClick={() => handleOpenDeleteStoryDialog(story._id)}>
                             <DeleteRounded />
                           </IconButton>
                           <IconButton color="primary">
                             <EditRounded />
                           </IconButton>
-                          <IconButton color="primary">
-                            <ArrowForwardRounded />
-                          </IconButton>
+                          </>
+                          }
                         </div>
                       </div>
                     ))
                 }
               </div>
+
+              {/* Delete story dialog*/}
+              { <DeleteStoryDialog projectId={projectId} storyId={deletedStoryId} open={deleteStoryDialogOpen} handleClose={closeDeleteStoryDialog} openSnack={openSnack} /> }
+
 
               <Button variant="contained" color="primary" style={{ alignSelf: "flex-start" }}>ADD USER STORY</Button>
 

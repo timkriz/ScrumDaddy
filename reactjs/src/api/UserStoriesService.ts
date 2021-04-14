@@ -33,3 +33,6 @@ export const restoreUserStory = (projectId: string, sprintId: string, storyId: s
     status: "Completed"
   });
 };
+export const deleteUserStory = (projectId: string, sprintId: string, storyId: string): Promise<any> => {
+  return axiosAuth.delete(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`);
+};

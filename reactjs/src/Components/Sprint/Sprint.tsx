@@ -144,12 +144,12 @@ export default () => {
 
                         </div>
                         <div className="sprint_row_icons">
-                          <IconButton color="primary" onClick={() => void 0}>
+                          {/*<IconButton color="primary" onClick={() => void 0}>
                             <DeleteRounded />
                           </IconButton>
                           <IconButton color="primary" onClick={() => void 0}>
                             <EditRounded />
-                          </IconButton>
+                          </IconButton>*/}
                           <IconButton color="primary" onClick={() => storyDetailsClick(story._id)}>
                             <ArrowForwardRounded />
                           </IconButton>
