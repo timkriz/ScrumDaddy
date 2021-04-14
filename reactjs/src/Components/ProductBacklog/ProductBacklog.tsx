@@ -17,6 +17,7 @@ import {ProjectRoles, SystemRoles} from "../../data/Roles";
 import {Color} from "@material-ui/lab";
 import RejectStoryDialog from './RejectStoryDialog';
 import StoryDialog from "../Story/StoryDialog";
+import StoryToSprintDialog from "../Story/StoryToSprintDialog";
 import {deleteStory} from "../../api/StoryService"
 
 interface IProject {
@@ -89,11 +90,12 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
   const [ rejectedStorySprintId, setRejectedStorySprintId ] = useState<string>("");
   const [ rejectedStoryId, setRejectedStoryId ] = useState<string>("");
 
+  const [ storyToSprintOpen, setStoryToSprintOpen] = useState<boolean>(false);
+
   const [ storyDialogOpen, setStoryDialogOpen ] = useState<boolean>(false);
   const [ editId, setEditId ] = useState<string>();
   //const { projectId } = useParams<IProjectParams>();
   const { sprintId } = useParams<ISprintParams>();
-
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
@@ -231,14 +233,35 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
     fetchSprints();
   }
 
+  // Story to sprint dialog
+
+  const openStoryToSprintDialog = (storyId?: string) => {
+    storyId !== undefined && setEditId(storyId);
+    setStoryToSprintOpen(true);
+  }
+
+  const closeStoryToSprintDialog = () => {
+    setStoryToSprintOpen(false);
+    setEditId(undefined);
+    fetchSprints();
+  }
+
   return (
     <>
 
       <div className="page_subtitle" style={{ marginBottom: 20 }}>Product backlog</div>
 
-      <Button variant="contained" color="primary" onClick={() => openStoryDialog()} style={{ display: "flex", alignSelf: "center", marginBottom: 20 }}>NEW USER STORY</Button>
-      <StoryDialog projectId={projectId} sprintId={sprintId} open={storyDialogOpen} handleClose={closeStoryDialog} openSnack={openSnack} editId={editId} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20, marginBottom: 30 }}>
+                <Button variant="contained" color="primary" onClick={() => openStoryDialog()} >ADD NEW STORY</Button>
 
+
+                {/*<Button variant="contained" color="primary" onClick={() => openStoryToSprintDialog()}>ADD TO SPRINT </Button>*/}
+      </div>
+     
+      <StoryDialog projectId={projectId} sprintId={sprintId} open={storyDialogOpen} handleClose={closeStoryDialog} openSnack={openSnack} editId={editId} />
+      <StoryToSprintDialog projectId={projectId} sprintId={sprintId} open={storyToSprintOpen} handleClose={closeStoryToSprintDialog} openSnack={openSnack} editId={editId} />
+      
+      
 
       {/* TABS */}
       <div>
