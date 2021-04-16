@@ -19,16 +19,17 @@
     display: flex;
 }
 
-.sprint_label {
+.task_label {
     font-family: Roboto;
-    font-size: 18px;
+    font-size: 12px;
     font-weight: 500;
     color: #0097a7;
     margin-bottom: 4px;
 }
 
-.sprint_value {
+.task_value {
     font-family: Roboto;
+    font-size: 14px;
     font-weight: 500;
     color: rgba(0,0,0,0.67);
 }

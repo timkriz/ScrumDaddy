@@ -15,14 +15,13 @@ export const postStory = (projectId: string, sprintId: string, name: string, des
         status
         });
     };
-export const putStory = (projectId: string, sprintId: string, storyId: string, name: string, description: string, velocity: number): Promise<any> => {
-    return axiosAuth.put(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
-        name,
-        description,
-        velocity
-        });
-    };
 
     export const deleteStory = (projectId: string, sprintId: string, storyId: string): Promise<any> => {
         return axiosAuth.delete(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`);
+        };
+
+    export const putStory = (projectId: string, sprintId: string, storyId: string): Promise<any> => {
+        return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
+            /* TODO IF NEEDED */
+            });
         };

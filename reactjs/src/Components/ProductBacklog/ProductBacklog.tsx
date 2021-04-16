@@ -19,6 +19,7 @@ import RejectStoryDialog from './RejectStoryDialog';
 import StoryDialog from "../Story/StoryDialog";
 import StoryToSprintDialog from "../Story/StoryToSprintDialog";
 import DeleteStoryDialog from './DeleteStoryDialog';
+import EditStoryDialog from './EditStoryDialog';
 
 interface IProject {
   _id: string;
@@ -90,9 +91,11 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
   const [valueTab, setValue] = React.useState(0);
   const [ rejectDialogOpen, setRejectDialogOpen ] = useState<boolean>(false);
   const [ deleteStoryDialogOpen, setDeleteStoryDialogOpen ] = useState<boolean>(false);
+  const [ editStoryDialogOpen, setEditStoryDialogOpen ] = useState<boolean>(false);
   const [ rejectedStorySprintId, setRejectedStorySprintId ] = useState<string>("");
   const [ rejectedStoryId, setRejectedStoryId ] = useState<string>("");
   const [ deletedStoryId, setDeletedStoryId ] = useState<string>("");
+  const [ editStoryId, setEditStoryId ] = useState<string>("");
 
   const [ storyToSprintOpen, setStoryToSprintOpen] = useState<boolean>(false);
 
@@ -261,6 +264,20 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
     fetchSprints();
     setDeleteStoryDialogOpen(false);
   }
+
+  /* "METH_KEEPER" can change time estimate of story*/
+  const handleOpenEditStoryDialog = async (storyId: string) => {
+    setEditStoryId(storyId);
+    openEditStoryDialog();
+  }
+  const openEditStoryDialog = () => {
+    setEditStoryDialogOpen(true);
+  }
+  const closeEditStoryDialog = () => {
+    fetchSprints();
+    setEditStoryDialogOpen(false);
+  }
+
   return (
     <>
 
@@ -275,8 +292,6 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
      
       <StoryDialog projectId={projectId} sprintId={sprintId} open={storyDialogOpen} handleClose={closeStoryDialog} openSnack={openSnack} editId={editId} />
       <StoryToSprintDialog projectId={projectId} sprintId={sprintId} open={storyToSprintOpen} handleClose={closeStoryToSprintDialog} openSnack={openSnack} editId={editId} />
-      
-      
 
       {/* TABS */}
       <div>
@@ -319,6 +334,11 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                               <div className="story_label">Business Value:</div>
                               <div className="story_value">{story.businessValue}</div>
                             </div>
+
+                            <div>
+                              <div className="story_label">Time estimate:</div>
+                              <div className="story_value">{story.timeEstimate}</div>
+                            </div>
                           </div>
                         </div>
                         <div className="sprint_row_icons">
@@ -327,7 +347,11 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                             <IconButton color="primary" onClick={() => handleOpenDeleteStoryDialog(story._id)}>
                             <DeleteRounded />
                           </IconButton>
-                          <IconButton color="primary" onClick={() => void 0}>
+                          </>
+                          }
+                          {userRole == "METH_KEEPER" &&
+                          <>
+                          <IconButton color="primary" onClick={() => handleOpenEditStoryDialog(story._id)}>
                             <EditRounded />
                           </IconButton>
                           </>
@@ -341,6 +365,8 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
               {/* Delete story dialog*/}
               { <DeleteStoryDialog projectId={projectId} storyId={deletedStoryId} open={deleteStoryDialogOpen} handleClose={closeDeleteStoryDialog} openSnack={openSnack} /> }
 
+              {/* Edit story dialog*/}
+              { <EditStoryDialog projectId={projectId} storyId={editStoryId} open={editStoryDialogOpen} handleClose={closeEditStoryDialog} openSnack={openSnack} /> }
 
               {/*<Button variant="contained" color="primary" style={{ alignSelf: "flex-start" }}>ADD USER STORY</Button>*/}
 
@@ -388,6 +414,11 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                             <div>
                               <div className="story_label">Business Value:</div>
                               <div className="story_value">{story.businessValue}</div>
+                            </div>
+
+                            <div>
+                              <div className="story_label">Time estimate:</div>
+                              <div className="story_value">{story.timeEstimate}</div>
                             </div>
                           </div>
                         </div>

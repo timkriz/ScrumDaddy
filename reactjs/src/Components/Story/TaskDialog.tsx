@@ -7,8 +7,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import {Button} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import {Color} from "@material-ui/lab";
-import moment, {Moment} from "moment"
-import {DatePicker} from "@material-ui/pickers";
 import {getTask, postTask, putTask} from "../../api/TaskService";
 import {getUsers, getUser} from "../../api/UserService";
 import {ITask, IUser, IProjectUser, IProjectDialogAssign} from "../ProjectList/IProjectList";
@@ -17,10 +15,6 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import {getProjectUsers} from "../../api/ProjectService";
-import { isNonNullExpression } from "typescript";
-import { ContactSupportOutlined, Forum } from "@material-ui/icons";
-import userEvent from "@testing-library/user-event";
-
 
 interface IProps {
   projectId: string;
@@ -41,19 +35,13 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
   const [ taskName, setTaskName ] = useState<string>("");
   const [ taskDescription, setTaskDescription ] = useState<string>("");
   const [ taskTimeEstimate, setTaskTimeEstimate] = useState<number>(1);
-  const [ taskTimeLog, setTaskTimeLog] = useState<number>(0);
   const [ projectUsers, setProjectUsers ] = useState<IProjectUser[]>([]);
-  const [ allUsers, setAllUsers ] = useState<IUser[]>([]);
   const [ taskSuggestedUser, setTaskSuggestedUser] = useState<string>("");
-  const [ assignedUsers, setAssignedUsers ] = useState<IProjectDialogAssign[]>([]);
   const [ realUsers, setRealUsers] = useState<IUser[]>([]);
-
-  
 
   // Fetch all users
   useEffect(() => {
     fetchProjectUsers();
-    fetchAllUsers();
   }, []);
 
   useEffect(() => {
@@ -65,7 +53,6 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
       // Clear the fields
       else {
         fetchProjectUsers();
-        fetchAllUsers();
         setTaskName("");
         setTaskDescription("");
         setTaskTimeEstimate(1);
@@ -79,11 +66,6 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
     const users = (await getProjectUsers(projectId)).data.data as IProjectUser[];
     setProjectUsers(users);
   }
-
-  const fetchAllUsers = async () => {
-    const users = (await getUsers()).data.data as IUser[];
-    setAllUsers(users);
-  } 
 
   const shiftUsers = async () =>{
     let newIDs = [] as any;
