@@ -76,6 +76,14 @@ exports.update = function (req, res) {
         task.assignedUser       = req.body.assignedUser || task.assignedUser;
         task.status             = req.body.status || task.status;
 
+        console.log(task)
+
+        if(task.timeEstimate == 0){
+            task.status = "completed";
+        }
+
+        console.log(task)
+
         task.save(function (err) {
             if (err) {
                 res.status(400).json({

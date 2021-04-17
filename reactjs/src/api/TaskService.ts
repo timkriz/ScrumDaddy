@@ -27,6 +27,12 @@ export const putTask = (projectId: string, sprintId: string, storyId: string, ta
   });
 };
 
+export const editTimeEstimateTask = (projectId: string, sprintId: string, storyId: string, taskId: string, timeEstimate: number): Promise<any> => {
+  return axiosAuth.put(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/tasks/${taskId}`, {
+    timeEstimate
+  });
+};
+
 export const postTask = (projectId: string, sprintId: string, storyId: string,
     name: string, description: string, timeEstimate: number, timeLog: number,
     suggestedUser: string, assignedUser: string, status: string): Promise<any> => {

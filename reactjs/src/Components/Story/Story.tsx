@@ -19,6 +19,7 @@ import moment from "moment";
 import {getUserId} from "../../api/TokenService";
 import {ProjectRoles} from "../../data/Roles";
 import TaskDialog from "./TaskDialog";
+import EditTaskDialog from './EditTaskDialog';
 
 interface IProjectParams {
   projectId: string;
@@ -53,6 +54,8 @@ export default () => {
   const [ allUsers, setAllUsers ] = useState<IUser[]>([]);
   const [ timeLog, setTimeLog] = useState<number>(0);
   const [ timeEstimated, setTimeEstimated ] = useState<number>(0);
+  const [ editTaskId, setEditTaskId ] = useState<string>("");
+  const [ editTaskDialogOpen, setEditTaskDialogOpen ] = useState<boolean>(false);
 
   const [ userRole, setUserRole ] = useState<ProjectRoles>();
 
@@ -198,6 +201,19 @@ export default () => {
     setEditId(undefined);
   }
 
+  const handleOpenEditTaskDialog = async (storyId: string) => {
+    setEditTaskId(storyId);
+    openEditTaskDialog();
+  }
+
+  const openEditTaskDialog = () => {
+    setEditTaskDialogOpen(true);
+  }
+  const closeEditTaskDialog = () => {
+    fetchTasks();
+    setEditTaskDialogOpen(false);
+  }
+
   return (
     <>
       {
@@ -341,7 +357,7 @@ export default () => {
                             {
                               task.assignedUser == getUserId()? (
                                   <div>
-                                  <Button variant="contained" color="primary" onClick={() => assignUser(task, "complete")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 5}}>COMPLETE</Button>
+                                  <Button variant="contained" color="primary" onClick={() => handleOpenEditTaskDialog(task._id)} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 5}}>EDIT TIME REMAINING</Button>
                                   <Button variant="contained" color="primary" onClick={() => assignUser(task, "deactivate")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 5}}>DEACTIVATE</Button>
                                   </div>
                               ) : (
@@ -354,6 +370,7 @@ export default () => {
                     }
                   </div>
                 </div>
+                { <EditTaskDialog projectId={projectId} storyId={storyId} sprintId={sprintId} taskId={editTaskId} open={editTaskDialogOpen} handleClose={closeEditTaskDialog} openSnack={openSnack} /> }
 
             <div className="center_divider"/>
             
