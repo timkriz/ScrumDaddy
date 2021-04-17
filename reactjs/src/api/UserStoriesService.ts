@@ -36,9 +36,16 @@ export const restoreUserStory = (projectId: string, sprintId: string, storyId: s
   });
 };
 
-export const editUserStory = (projectId: string, sprintId: string, storyId: string, timeEstimate: number): Promise<any> => {
+export const editUserStory = (projectId: string, sprintId: string, storyId: string, name: string, description: string, timeEstimate: number,
+  businessValue: number, priority: string,  comment: string, tests: string): Promise<any> => {
   return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
-    timeEstimate
+    name, 
+    description, 
+    timeEstimate, 
+    businessValue, 
+    priority, 
+    comment, 
+    tests
     });
 };
 
