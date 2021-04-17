@@ -11,11 +11,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import {Color} from "@material-ui/lab";
-import {ClearRounded} from "@material-ui/icons";
-import IconButton from "@material-ui/core/IconButton";
-import {getProjectUsers} from "../../api/ProjectService";
-import {putStory, postStory} from "../../api/StoryService";
-import {getStory} from "../../api/UserStoriesService";
+import {getStory, getStories} from "../../api/UserStoriesService";
 import {IStory} from "../ProjectList/IProjectList";
 import {allPriorities, Priorities} from "./Priorities"; 
 import ISprint from "../ProductBacklog/ProductBacklog"; 
@@ -61,17 +57,8 @@ createStyles({
 
 export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: IProps) => {
   const [ id, setId] = useState<string>("");
-  const [ name, setName ] = useState<string>("");
-  const [ description, setDescription ] = useState<string>("");
-  const [ timeEstimate, setTimeEstimate] = useState<number>(10);
-  const [ bussinesValue, setBussinesValue] = useState<number>(10);
   //const [ sprint, setSprint] = useState<ISprint[]>([]);
-  const [ comment, setComment] = useState<string>("");
-  const [ tests, setTests] = useState<string>("");
-  const [ status, setStatus] = useState<Status>(Status.UNASSIGNED);
-
-
-
+  const [ productBacklog, setProductBacklog ] = useState<IStory[]>([]); 
 
   const classes = useStyles();
   const theme = useTheme();
@@ -92,10 +79,6 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
     setPersonName(value);
   };
   
-
-
- 
-
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -129,36 +112,19 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
     };
   }
 
-  
+  //####################################################################
+
   useEffect(() => {
-    if(open) {
-      // Fetch Story
-      if(editId !== undefined) {
-        fetchStory();
-      }
+    fetchProductBacklog();
 
-      // Clear the fields
-      else {
-        setName("");
-        setDescription("");
-        setTimeEstimate(10);
-        setBussinesValue(10);
-        setComment("");
-        setTests("");
-        setStatus(Status.UNASSIGNED);
-        
-      }
-    }
-  }, [ open ]);
+  },[] );
 
 
-  const fetchStory = async () => {
-    if(editId !== undefined) {
-      const gottenStory = (await getStory(projectId, sprintId, editId)).data.data as IStory;
-
-      setName(gottenStory.name);
-      setTimeEstimate(gottenStory.timeEstimate);
-    }
+  /* Get stories of a product backlog */
+  const fetchProductBacklog = async () => {
+    const allStoriesInProductBacklog = (await getStories(projectId, "/")).data.data as IStory[];
+    if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
+    console.log("PROD_BACK", productBacklog,projectId)
   }
 
 
@@ -183,10 +149,10 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
               renderValue={(selected) => (selected as string[]).join(', ')}
               MenuProps={MenuProps}
             >
-              {names.map((name) => (
-                <MenuItem key={name} value={name}>
-                  <Checkbox checked={personName.indexOf(name) > -1} />
-                  <ListItemText primary={name} />
+              {productBacklog.map((story, j) => (
+                <MenuItem key={j} value={story._id}>
+                  <Checkbox checked={personName.indexOf(story._id) > -1} />
+                  <ListItemText primary={story.name} />
                 </MenuItem>
               ))}
             </Select>
@@ -202,8 +168,8 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
         <Button onClick={handleClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={void 0} color="primary">
-          { editId !== undefined ? "Confirm changes" : "Add" }
+        <Button onClick={void 0} variant="contained" color="primary">
+          Add
         </Button>
       </DialogActions>
     </Dialog>

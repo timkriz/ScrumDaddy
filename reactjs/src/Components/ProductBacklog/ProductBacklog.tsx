@@ -126,6 +126,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
         setStories(allStoriesInProductBacklog);
         sprintDict[sprint._id] = sprint.name;
         setSprintDict(sprintDict);
+        console.log("PB prodback", productBacklog);
       }
 
       /*  CORRECTION - just active sprint */
@@ -270,7 +271,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                 <Button variant="contained" color="primary" onClick={() => openStoryDialog()} >ADD NEW STORY</Button>
 
 
-                {/*<Button variant="contained" color="primary" onClick={() => openStoryToSprintDialog()}>ADD TO SPRINT </Button>*/}
+                <Button variant="contained" color="primary" onClick={() => openStoryToSprintDialog()}>ADD TO SPRINT </Button>
       </div>
      
       <StoryDialog projectId={projectId} sprintId={sprintId} open={storyDialogOpen} handleClose={closeStoryDialog} openSnack={openSnack} editId={editId} />
@@ -280,7 +281,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
       {/* TABS */}
       <div>
-              <Tabs value={valueTab} onChange={handleChange} aria-label="simple tabs example">
+              <Tabs value={valueTab} onChange={handleChange} aria-label="simple tabs example" >
               <Tab label="Unrealized stories"  />
               <Tab label="Realized stories"  />
               </Tabs>
@@ -294,6 +295,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                     {productBacklog === undefined || productBacklog.length == 0 ? 'No stories in product backlog.' : ''}
                   </Typography>
                 </div>
+                {console.log("PB prodback", productBacklog)}
                 {
                   productBacklog.map((story, i) =>(
                     <div key={i} className="story_row">
