@@ -11,7 +11,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import {TabPanel} from "./TabPanel"
 import IconButton from "@material-ui/core/IconButton";
-import {ArrowForwardRounded, DeleteRounded, EditRounded, ReportRounded} from "@material-ui/icons";
+import {ArrowForwardRounded, DeleteRounded, EditRounded, PriorityHighSharp, ReportRounded} from "@material-ui/icons";
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
 import {ProjectRoles, SystemRoles} from "../../data/Roles";
@@ -21,6 +21,7 @@ import StoryDialog from "../Story/StoryDialog";
 import StoryToSprintDialog from "../Story/StoryToSprintDialog";
 import DeleteStoryDialog from './DeleteStoryDialog';
 import EditStoryDialog from './EditStoryDialog';
+import {allPriorities, Priorities} from "../Story/Priorities";
 
 interface IProject {
   _id: string;
@@ -97,6 +98,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
   const [ rejectedStoryId, setRejectedStoryId ] = useState<string>("");
   const [ deletedStoryId, setDeletedStoryId ] = useState<string>("");
   const [ editStoryId, setEditStoryId ] = useState<string>("");
+  const [ editedStory, setEditedStory ] = useState<IStory>();
 
   const [ storyToSprintOpen, setStoryToSprintOpen] = useState<boolean>(false);
 
@@ -267,8 +269,9 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
   }
 
   /* "METH_KEEPER" can change time estimate of story*/
-  const handleOpenEditStoryDialog = async (storyId: string) => {
+  const handleOpenEditStoryDialog = async (storyId: string, storyToEdit: IStory) => {
     setEditStoryId(storyId);
+    await setEditedStory(storyToEdit);
     openEditStoryDialog();
   }
   const openEditStoryDialog = () => {
@@ -285,10 +288,12 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
       <div className="page_subtitle" style={{ marginBottom: 20 }}>Product backlog</div>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20, marginBottom: 30 }}>
-                <Button variant="contained" color="primary" onClick={() => openStoryDialog()} >ADD NEW STORY</Button>
-
-
-                {/*<Button variant="contained" color="primary" onClick={() => openStoryToSprintDialog()}>ADD TO SPRINT </Button>*/}
+        {userRole == "METH_KEEPER" || userRole == "PROD_LEAD" &&
+          <>
+          <Button variant="contained" color="primary" onClick={() => openStoryDialog()} >ADD NEW STORY</Button>
+          </>
+        }
+        {/*<Button variant="contained" color="primary" onClick={() => openStoryToSprintDialog()}>ADD TO SPRINT </Button>*/}
       </div>
      
       <StoryDialog projectId={projectId} sprintId={sprintId} open={storyDialogOpen} handleClose={closeStoryDialog} openSnack={openSnack} editId={editId} />
@@ -328,17 +333,21 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
                             <div style={{ marginRight: 20 }}>
                               <div className="story_label">Priority:</div>
-                              <div className="story_value">{story.priority}</div>
-                            </div>
-
-                            <div>
-                              <div className="story_label">Business Value:</div>
-                              <div className="story_value">{story.businessValue}</div>
+                              {allPriorities.map((priority, j) => (
+                                story.priority==priority.type? (<div className="story_value">{priority.label}</div>) :
+                                  <></>
+                              ))
+                             }
                             </div>
 
                             <div>
                               <div className="story_label">Time estimate:</div>
                               <div className="story_value">{story.timeEstimate}</div>
+                            </div>
+
+                            <div>
+                              <div className="story_label">Business Value:</div>
+                              <div className="story_value">{story.businessValue}</div>
                             </div>
                           </div>
                         </div>
@@ -350,9 +359,9 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                           </IconButton>
                           </>
                           }
-                          {userRole == "METH_KEEPER" &&
+                          {userRole == "METH_KEEPER" || userRole == "PROD_LEAD" &&
                           <>
-                          <IconButton color="primary" onClick={() => handleOpenEditStoryDialog(story._id)}>
+                          <IconButton color="primary" onClick={() => handleOpenEditStoryDialog(story._id, story)}>
                             <EditRounded />
                           </IconButton>
                           </>
@@ -367,7 +376,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
               { <DeleteStoryDialog projectId={projectId} storyId={deletedStoryId} open={deleteStoryDialogOpen} handleClose={closeDeleteStoryDialog} openSnack={openSnack} /> }
 
               {/* Edit story dialog*/}
-              { <EditStoryDialog projectId={projectId} storyId={editStoryId} open={editStoryDialogOpen} handleClose={closeEditStoryDialog} openSnack={openSnack} /> }
+              { editedStory && editStoryDialogOpen && <EditStoryDialog projectId={projectId} storyId={editStoryId} story={editedStory} open={editStoryDialogOpen} handleClose={closeEditStoryDialog} openSnack={openSnack} userRole = {userRole} /> }
 
               {/*<Button variant="contained" color="primary" style={{ alignSelf: "flex-start" }}>ADD USER STORY</Button>*/}
 
