@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+var uniqueValidator = require('mongoose-unique-validator');
 
 const storySchema = new Schema ({
-    name: { type: String, required: true},
+    name: { type: String, unique: true, required: true, uniqueCaseInsensitive: true},
     description: { type: String, required: true},
     timeEstimate: { type: Number, required: true},
     businessValue: { type: Number, required: true},
@@ -13,6 +14,8 @@ const storySchema = new Schema ({
     projectId: { type: String, required: true},
     sprintId: { type: String, required: true},
 });
+
+storySchema.plugin(uniqueValidator);
 
 var story = module.exports = mongoose.model('story', storySchema, 'story');
 
