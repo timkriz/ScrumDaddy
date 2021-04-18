@@ -13,17 +13,27 @@ import Select from "@material-ui/core/Select";
 import {Color} from "@material-ui/lab";
 import {getStory, getStories} from "../../api/UserStoriesService";
 import {IStory} from "../ProjectList/IProjectList";
-import {allPriorities, Priorities} from "./Priorities"; 
 import ISprint from "../ProductBacklog/ProductBacklog"; 
 import {allStatuses, Status} from "./Status"; 
 import { stat } from "node:fs";
 import "./story.css";
-import {rejectUserStory} from "../../api/UserStoriesService";
+import {getSprints} from "../../api/SprintService";
 import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 
+
+
+interface ISprint {
+  _id: string;
+  name: string;
+  description: number;
+  startTime: number;
+  endTime: number;
+  velocity: number;
+  projectId: string;
+}
 
 interface IProps {
   projectId: string;
@@ -59,13 +69,15 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
   const [ id, setId] = useState<string>("");
   //const [ sprint, setSprint] = useState<ISprint[]>([]);
   const [ productBacklog, setProductBacklog ] = useState<IStory[]>([]); 
+  const [ sprints, setSprints ] = useState<ISprint[]>([]);
 
   const classes = useStyles();
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState<string[]>([]);
+  const [ selectedStories, setSelectedStories] = React.useState<string[]>([]);
+  const [ finalSprint, setFinalSprint ] = useState<ISprint[]>([]);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setPersonName(event.target.value as string[]);
+    setSelectedStories(event.target.value as string[]);
   };
 
   const handleChangeMultiple = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -76,7 +88,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
         value.push(options[i].value);
       }
     }
-    setPersonName(value);
+    setSelectedStories(value);
   };
   
   const ITEM_HEIGHT = 48;
@@ -116,6 +128,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
 
   useEffect(() => {
     fetchProductBacklog();
+    fetchSprints();
 
   },[] );
 
@@ -127,6 +140,45 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
     console.log("PROD_BACK", productBacklog,projectId)
   }
 
+  /* Get sprints of this project */
+  const fetchSprints = async () => {
+    const gottenSprints = (await getSprints(projectId)).data.data as ISprint[];
+    setSprints(gottenSprints);
+  }
+
+  /* Add stories to sprint */
+  const confirmAction = async () => {
+    try {
+
+      const newIDs = [] as any;
+      selectedStories.forEach((story) =>{
+        productBacklog.forEach((story2) =>{
+          if (story == story2.name){
+            newIDs.push(story2._id)
+          }
+        })
+        //const newId = user.userId;
+        //newIDs.push(newId);
+
+      })
+      //const response = await postStory(projectId, sprintId, name, description, timeEstimate, bussinesValue, priority, comment, tests, status);
+      //setId(response.data.data._id);
+      console.log("CHECKED_STORIES", selectedStories)
+      console.log("Selected SPRINT", finalSprint)
+      console.log("NEW", newIDs)
+      
+
+      openSnack("Added stories successfully!", "success", true);
+      handleClose();
+    } catch (e) {
+      let message = "Failed to add stories!";
+      if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+      openSnack(message, "error");
+    }
+  
+};
+
+
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -137,21 +189,21 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
         </DialogContentText>
 
         <div>
-          <FormControl className={classes.formControl}>
+          <FormControl className={classes.formControl} style={{ display: "flex"}}>
             <InputLabel id="demo-mutiple-checkbox-label">Stories</InputLabel>
             <Select
               labelId="demo-mutiple-checkbox-label"
               id="demo-mutiple-checkbox"
               multiple
-              value={personName}
+              value={selectedStories}
               onChange={handleChange}
               input={<Input />}
               renderValue={(selected) => (selected as string[]).join(', ')}
               MenuProps={MenuProps}
             >
               {productBacklog.map((story, j) => (
-                <MenuItem key={j} value={story._id}>
-                  <Checkbox checked={personName.indexOf(story._id) > -1} />
+                <MenuItem key={j} value={story.name}>
+                  <Checkbox checked={selectedStories.indexOf(story.name) > -1} />
                   <ListItemText primary={story.name} />
                 </MenuItem>
               ))}
@@ -159,16 +211,30 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
           </FormControl>
         </div>
         <div>
+          <FormControl style={{ display: "flex", margin: "10px", justifyContent: "space-between" }}>
+            <InputLabel>Sprint</InputLabel>
+              <Select 
+              value={finalSprint} 
+              onChange={(e: any) => {setFinalSprint(e.target.value)}}
+              >
+                {
+                  sprints.map((sprint, j) => (
+                    <MenuItem key={j} value={sprint._id}>{sprint.name}</MenuItem>
+                    
+                  ))
+                }
+              </Select>
+          </FormControl>
         </div>
 
 
         
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={handleClose} color="primary"style={{ marginTop: "20px"}}>
           Cancel
         </Button>
-        <Button onClick={void 0} variant="contained" color="primary">
+        <Button onClick={confirmAction} variant="contained" color="primary"style={{ marginTop: "20px"}}>
           Add
         </Button>
       </DialogActions>
