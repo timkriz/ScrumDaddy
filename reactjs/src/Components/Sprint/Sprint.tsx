@@ -16,6 +16,7 @@ import {getUserId} from "../../api/TokenService";
 import {ProjectRoles, projectRoleTitles} from "../../data/Roles";
 import StoryNotes from "./StoryNotes";
 import Typography from "@material-ui/core/Typography";
+import {allPriorities, Priorities} from "../Story/Priorities";
 
 
 interface IProjectParams {
@@ -132,7 +133,10 @@ export default () => {
 
                             <div style={{ marginRight: 20 }}>
                               <div className="sprint_label">Priority:</div>
-                              <div className="sprint_value">{story.priority}</div>
+                              {allPriorities.map((priority, j) => (
+                                story.priority==priority.type? (<div className="sprint_value">{priority.label}</div>) :
+                                  <></>
+                              ))}
                             </div>
 
                             <div>

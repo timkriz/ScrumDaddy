@@ -40,7 +40,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
   const [ timeEstimate, setTimeEstimate] = useState<number>(10);
   const [ bussinesValue, setBussinesValue] = useState<number>(10);
   const [ priority, setPriority] = useState<Priorities>(Priorities.MUST_HAVE);
-  const [ comment, setComment] = useState<string>("");
+  const [ comment, setComment] = useState<string>("NO_COMMENT");
   const [ tests, setTests] = useState<string>("");
   const [ status, setStatus] = useState<Status>(Status.UNASSIGNED);
   
@@ -60,7 +60,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
         setTimeEstimate(10);
         setBussinesValue(10);
         setPriority(Priorities.MUST_HAVE);
-        setComment("");
+        setComment("NO_COMMENT");
         setTests("");
         setStatus(Status.UNASSIGNED);
         
@@ -177,8 +177,8 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
           </FormControl>
         </div>
         
-
-        <TextField
+        {/* Story comment is relevant when product owner rejects it and is put back to product backlog */}        
+        {/*<TextField
           style={{ marginTop: 20 }}
           label="Story comment"
           fullWidth
@@ -187,7 +187,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
           value={comment}
           onChange={(e) => {setComment(e.target.value)}}
           variant="outlined"
-        />
+        />*/}
         <TextField
           style={{ marginTop: 20 }}
           label="Story tests"

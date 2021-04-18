@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, {useEffect, useState} from "react";
 import {useHistory, useParams} from "react-router-dom";
-import {IProject, ISprint, IStory, ITask, IUser} from "../ProjectList/IProjectList";
+import {IProject, ISprint, IStory, ITask, IUser, IProjectUser} from "../ProjectList/IProjectList";
 import {ArrowBackRounded, ArrowForwardRounded, DeleteRounded, EditRounded} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -13,11 +13,13 @@ import {getProject} from "../../api/ProjectService";
 import {getSprint} from "../../api/SprintService";
 import {getStory} from "../../api/UserStoriesService";
 import {getTasks, getTask, putTask, deleteTask} from "../../api/TaskService";
+import {getProjectUser} from "../../api/ProjectService";
 import "./story.css";
 import moment from "moment";
 import {getUserId} from "../../api/TokenService";
 import {ProjectRoles} from "../../data/Roles";
 import TaskDialog from "./TaskDialog";
+import EditTaskDialog from './EditTaskDialog';
 
 interface IProjectParams {
   projectId: string;
@@ -52,6 +54,10 @@ export default () => {
   const [ allUsers, setAllUsers ] = useState<IUser[]>([]);
   const [ timeLog, setTimeLog] = useState<number>(0);
   const [ timeEstimated, setTimeEstimated ] = useState<number>(0);
+  const [ editTaskId, setEditTaskId ] = useState<string>("");
+  const [ editTaskDialogOpen, setEditTaskDialogOpen ] = useState<boolean>(false);
+
+  const [ userRole, setUserRole ] = useState<ProjectRoles>();
 
   const [snackOpen, setSnackOpen] = useState<boolean>(false);
   const [snackMessage, setSnackMessage] = useState<string>("");
@@ -62,6 +68,7 @@ export default () => {
   const { sprintId } = useParams<ISprintParams>();
   const { storyId } = useParams<IStoryParams>();
 
+
   const history = useHistory();
 
   useEffect(() => {
@@ -70,6 +77,7 @@ export default () => {
     fetchStory();
     fetchTasks();
     fetchAllUsers();
+    fetchProjectUser();
   }, [ projectId, sprintId, storyId ]);
 
   const fetchProject = async () => {
@@ -159,7 +167,15 @@ export default () => {
     window.location.reload(true);
   };
 
+  const fetchProjectUser = async () => {
+    const userId = getUserId();
+    if(userId !== null) {
+      const gottenProjectUser = (await getProjectUser(projectId, userId)).data.data as IProjectUser;
+      setUserRole(gottenProjectUser.userRole);
+    }
+  }
 
+  /* SNACK */
 
   const closeSnack = () => {
     setSnackOpen(false);
@@ -185,6 +201,19 @@ export default () => {
     setEditId(undefined);
   }
 
+  const handleOpenEditTaskDialog = async (storyId: string) => {
+    setEditTaskId(storyId);
+    openEditTaskDialog();
+  }
+
+  const openEditTaskDialog = () => {
+    setEditTaskDialogOpen(true);
+  }
+  const closeEditTaskDialog = () => {
+    fetchTasks();
+    setEditTaskDialogOpen(false);
+  }
+
   return (
     <>
       {
@@ -204,9 +233,13 @@ export default () => {
                 </IconButton>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Button variant="contained" color="primary" onClick={() => openTaskDialog()} style={{ alignSelf: "flex-start", marginTop: 20}}>ADD TASK</Button>
-            </div>
+            {userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER" &&
+              <>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <Button variant="contained" color="primary" onClick={() => openTaskDialog()} style={{ alignSelf: "flex-start", marginTop: 20}}>ADD TASK</Button>
+              </div>
+              </>  
+            }
 
             <TaskDialog projectId={projectId} sprintId={sprintId} storyId={storyId} open={taskDialogOpen} handleClose={closeTaskDialog} openSnack={openSnack} editId={editId} />
 
@@ -220,20 +253,20 @@ export default () => {
                     <div key={i} className="sprint_row">
                       <div style={{ display: "flex", flexDirection: "column" }}>
                         <div className="sprint_row_title">{task.name}</div>
-                        <div className="sprint_label" style={{marginTop: 5}}>Suggested user:</div>
+                        <div className="task_label" style={{marginTop: 15}}>Suggested user:</div>
                         {
                           allUsers.map((user, j) => (
                             <div>
                                 {
                                   user._id == task.suggestedUser? (
-                                    <div style={{ display: "flex"}}>{user.name} {user.surname}</div>
+                                    <div className="task_value" style={{ display: "flex"}}>{user.name} {user.surname}</div>
                                   ) : (null)
                                 }
                             </div>
                           ))
                         }
-                        <div className="sprint_label" style={{marginTop: 5}}>Estimated time:</div>
-                        <div style={{ display: "flex"}}>{task.timeEstimate}</div>
+                        <div className="task_label" style={{marginTop: 5}}>Estimated time:</div>
+                        <div className="task_value" style={{ display: "flex"}}>{task.timeEstimate}</div>
                       </div>
                       <div className="sprint_row_icons">
                         <IconButton color="primary" onClick={() => deleteClickedTask(task._id)}>
@@ -256,20 +289,20 @@ export default () => {
                         <div key={i} className="sprint_row">
                           <div style={{ display: "flex", flexDirection: "column" }}>
                             <div className="sprint_row_title">{task.name}</div>
-                            <div className="sprint_label" style={{marginTop: 5}}>Assigned user:</div>
+                            <div className="task_label" style={{marginTop: 15}}>Assigned user:</div>
                             {
                                 allUsers.map((user, j) => (
                                   <div>
                                       {
                                         user._id == task.assignedUser? (
-                                          <div style={{ display: "flex"}}>{user.name} {user.surname}</div>
+                                          <div className="task_value" style={{ display: "flex"}}>{user.name} {user.surname}</div>
                                         ) : (null)
                                       }
                                   </div>
                                 ))
                               }
-                            <div className="sprint_label" style={{marginTop: 5}}>Estimated time:</div>
-                            <div style={{ display: "flex"}}>{task.timeEstimate}</div>
+                            <div className="task_label" style={{marginTop: 5}}>Estimated time:</div>
+                            <div className="task_value" style={{ display: "flex"}}>{task.timeEstimate}</div>
                           </div>
                           <div className="sprint_row_icons">
                             <IconButton color="primary" onClick={() => deleteClickedTask(task._id)}>
@@ -302,20 +335,20 @@ export default () => {
                         <div key={i} className="sprint_row">
                           <div style={{ display: "flex", flexDirection: "column" }}>
                             <div className="sprint_row_title">{task.name}</div>
-                            <div className="sprint_label" style={{marginTop: 5}}>Assigned user:</div>
+                            <div className="task_label" style={{marginTop: 15}}>Assigned user:</div>
                             {
                                 allUsers.map((user, j) => (
                                   <div>
                                       {
                                         user._id == task.assignedUser? (
-                                          <div style={{ display: "flex"}}>{user.name} {user.surname}</div>
+                                          <div className="task_value" style={{ display: "flex"}}>{user.name} {user.surname}</div>
                                         ) : (null)
                                       }
                                   </div>
                                 ))
                               }
-                            <div className="sprint_label" style={{marginTop: 5}}>Estimated time:</div>
-                            <div style={{ display: "flex"}}>{task.timeEstimate}</div>
+                            <div className="task_label" style={{marginTop: 5}}>Estimated time:</div>
+                            <div className="task_value" style={{ display: "flex"}}>{task.timeEstimate}</div>
                           </div>
                           <div className="sprint_row_icons">
                             <IconButton color="primary" onClick={() => deleteClickedTask(task._id)}>
@@ -324,7 +357,7 @@ export default () => {
                             {
                               task.assignedUser == getUserId()? (
                                   <div>
-                                  <Button variant="contained" color="primary" onClick={() => assignUser(task, "complete")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 5}}>COMPLETE</Button>
+                                  <Button variant="contained" color="primary" onClick={() => handleOpenEditTaskDialog(task._id)} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 5}}>EDIT TIME REMAINING</Button>
                                   <Button variant="contained" color="primary" onClick={() => assignUser(task, "deactivate")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 5}}>DEACTIVATE</Button>
                                   </div>
                               ) : (
@@ -337,6 +370,7 @@ export default () => {
                     }
                   </div>
                 </div>
+                { <EditTaskDialog projectId={projectId} storyId={storyId} sprintId={sprintId} taskId={editTaskId} open={editTaskDialogOpen} handleClose={closeEditTaskDialog} openSnack={openSnack} /> }
 
             <div className="center_divider"/>
             
@@ -348,20 +382,20 @@ export default () => {
                         <div key={i} className="sprint_row">
                           <div style={{ display: "flex", flexDirection: "column" }}>
                             <div className="sprint_row_title">{task.name}</div>
-                            <div className="sprint_label" style={{marginTop: 5}}>Assigned user:</div>
+                            <div className="task_label" style={{marginTop: 15}}>Assigned user:</div>
                               {
                                 allUsers.map((user, j) => (
                                   <div>
                                       {
                                         user._id == task.assignedUser? (
-                                          <div style={{ display: "flex"}}>{user.name} {user.surname}</div>
+                                          <div className="task_value" style={{display: "flex"}}>{user.name} {user.surname}</div>
                                         ) : (null)
                                       }
                                   </div>
                                 ))
                               }
-                            <div className="sprint_label" style={{marginTop: 5}}>Estimated time:</div>
-                            <div style={{ display: "flex"}}>{task.timeEstimate}</div>
+                            <div className="task_label" style={{marginTop: 5}}>Estimated time:</div>
+                            <div className="task_value" style={{ display: "flex"}}>{task.timeEstimate}</div>
                           </div>
                           <div className="sprint_row_icons">
                             <IconButton color="primary" onClick={() => deleteClickedTask(task._id)}>
@@ -384,10 +418,10 @@ export default () => {
                 <div className="sprint_row">
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     <div className="sprint_row_title">Tasks summary:</div>
-                    <div className="sprint_label" style={{marginTop: 5}}>Total estimated time:</div>
-                    <div style={{ display: "flex"}}>{timeEstimated}</div>
-                    <div className="sprint_label" style={{marginTop: 5}}>Total logged time:</div>
-                    <div style={{ display: "flex"}}>{timeLog}</div>
+                    <div className="task_label" style={{marginTop: 5}}>Total estimated time:</div>
+                    <div className="task_value" style={{ display: "flex"}}>{timeEstimated}</div>
+                    <div className="task_label" style={{marginTop: 5}}>Total logged time:</div>
+                    <div className="task_value" style={{ display: "flex"}}>{timeLog}</div>
                   </div>
                 </div>
             </div>

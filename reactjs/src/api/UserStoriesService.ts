@@ -22,17 +22,33 @@ export const acceptUserStory = (projectId: string, sprintId: string, storyId: st
     status: "Accepted"
   });
 };
+
 export const rejectUserStory = (projectId: string, sprintId: string, storyId: string, newcomment: string): Promise<any> => {
   return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
     comment: newcomment,
     sprintId: "/"
   });
 };
+
 export const restoreUserStory = (projectId: string, sprintId: string, storyId: string): Promise<any> => {
   return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
     status: "Completed"
   });
 };
+
+export const editUserStory = (projectId: string, sprintId: string, storyId: string, name: string, description: string, timeEstimate: number,
+  businessValue: number, priority: string,  comment: string, tests: string): Promise<any> => {
+  return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
+    name, 
+    description, 
+    timeEstimate, 
+    businessValue, 
+    priority, 
+    comment, 
+    tests
+    });
+};
+
 export const deleteUserStory = (projectId: string, sprintId: string, storyId: string): Promise<any> => {
   return axiosAuth.delete(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`);
 };

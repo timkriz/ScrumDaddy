@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 import React, {useEffect, useState} from "react";
 import {useHistory, useParams} from "react-router-dom";
 import "./productbacklog.css";
@@ -10,7 +11,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import {TabPanel} from "./TabPanel"
 import IconButton from "@material-ui/core/IconButton";
-import {ArrowForwardRounded, DeleteRounded, EditRounded, ReportRounded} from "@material-ui/icons";
+import {ArrowForwardRounded, DeleteRounded, EditRounded, PriorityHighSharp, ReportRounded} from "@material-ui/icons";
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
 import {ProjectRoles, SystemRoles} from "../../data/Roles";
@@ -19,6 +20,8 @@ import RejectStoryDialog from './RejectStoryDialog';
 import StoryDialog from "../Story/StoryDialog";
 import StoryToSprintDialog from "../Story/StoryToSprintDialog";
 import DeleteStoryDialog from './DeleteStoryDialog';
+import EditStoryDialog from './EditStoryDialog';
+import {allPriorities, Priorities} from "../Story/Priorities";
 
 interface IProject {
   _id: string;
@@ -90,9 +93,12 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
   const [valueTab, setValue] = React.useState(0);
   const [ rejectDialogOpen, setRejectDialogOpen ] = useState<boolean>(false);
   const [ deleteStoryDialogOpen, setDeleteStoryDialogOpen ] = useState<boolean>(false);
+  const [ editStoryDialogOpen, setEditStoryDialogOpen ] = useState<boolean>(false);
   const [ rejectedStorySprintId, setRejectedStorySprintId ] = useState<string>("");
   const [ rejectedStoryId, setRejectedStoryId ] = useState<string>("");
   const [ deletedStoryId, setDeletedStoryId ] = useState<string>("");
+  const [ editStoryId, setEditStoryId ] = useState<string>("");
+  const [ editedStory, setEditedStory ] = useState<IStory>();
 
   const [ storyToSprintOpen, setStoryToSprintOpen] = useState<boolean>(false);
 
@@ -262,22 +268,37 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
     fetchSprints();
     setDeleteStoryDialogOpen(false);
   }
+
+  /* "METH_KEEPER" can change time estimate of story*/
+  const handleOpenEditStoryDialog = async (storyId: string, storyToEdit: IStory) => {
+    setEditStoryId(storyId);
+    await setEditedStory(storyToEdit);
+    openEditStoryDialog();
+  }
+  const openEditStoryDialog = () => {
+    setEditStoryDialogOpen(true);
+  }
+  const closeEditStoryDialog = () => {
+    fetchSprints();
+    setEditStoryDialogOpen(false);
+  }
+
   return (
     <>
 
       <div className="page_subtitle" style={{ marginBottom: 20 }}>Product backlog</div>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20, marginBottom: 30 }}>
-                <Button variant="contained" color="primary" onClick={() => openStoryDialog()} >ADD NEW STORY</Button>
-
-
-                <Button variant="contained" color="primary" onClick={() => openStoryToSprintDialog()}>ADD TO SPRINT </Button>
+        {(userRole == "PROD_LEAD" || userRole == "METH_KEEPER") &&
+          <>
+          <Button variant="contained" color="primary" onClick={() => openStoryDialog()} >ADD NEW STORY</Button>
+          </>
+        }
+        <Button variant="contained" color="primary" onClick={() => openStoryToSprintDialog()}>ADD TO SPRINT </Button>
       </div>
      
       <StoryDialog projectId={projectId} sprintId={sprintId} open={storyDialogOpen} handleClose={closeStoryDialog} openSnack={openSnack} editId={editId} />
       <StoryToSprintDialog projectId={projectId} sprintId={sprintId} open={storyToSprintOpen} handleClose={closeStoryToSprintDialog} openSnack={openSnack} editId={editId} />
-      
-      
 
       {/* TABS */}
       <div>
@@ -314,7 +335,15 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
                             <div style={{ marginRight: 20 }}>
                               <div className="story_label">Priority:</div>
-                              <div className="story_value">{story.priority}</div>
+                              {allPriorities.map((priority, j) => (
+                                story.priority==priority.type? (<div className="story_value">{priority.label}</div>) :
+                                  <></>
+                              ))}
+                            </div>
+
+                            <div>
+                              <div className="story_label">Time estimate:</div>
+                              <div className="story_value">{story.timeEstimate}</div>
                             </div>
 
                             <div>
@@ -324,12 +353,12 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                           </div>
                         </div>
                         <div className="sprint_row_icons">
-                          {userRole == "PROD_LEAD" &&
+                          {(userRole == "PROD_LEAD" || userRole == "METH_KEEPER")  &&
                           <>
                             <IconButton color="primary" onClick={() => handleOpenDeleteStoryDialog(story._id)}>
                             <DeleteRounded />
                           </IconButton>
-                          <IconButton color="primary" onClick={() => void 0}>
+                          <IconButton color="primary" onClick={() => handleOpenEditStoryDialog(story._id, story)}>
                             <EditRounded />
                           </IconButton>
                           </>
@@ -343,6 +372,8 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
               {/* Delete story dialog*/}
               { <DeleteStoryDialog projectId={projectId} storyId={deletedStoryId} open={deleteStoryDialogOpen} handleClose={closeDeleteStoryDialog} openSnack={openSnack} /> }
 
+              {/* Edit story dialog*/}
+              { editedStory && editStoryDialogOpen && <EditStoryDialog projectId={projectId} storyId={editStoryId} story={editedStory} open={editStoryDialogOpen} handleClose={closeEditStoryDialog} openSnack={openSnack} userRole = {userRole} /> }
 
               {/*<Button variant="contained" color="primary" style={{ alignSelf: "flex-start" }}>ADD USER STORY</Button>*/}
 
@@ -384,12 +415,20 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
                             <div style={{ marginRight: 20 }}>
                               <div className="story_label">Priority:</div>
-                              <div className="story_value">{story.priority}</div>
+                              {allPriorities.map((priority, j) => (
+                                story.priority==priority.type? (<div className="story_value">{priority.label}</div>) :
+                                  <></>
+                              ))}
                             </div>
 
                             <div>
                               <div className="story_label">Business Value:</div>
                               <div className="story_value">{story.businessValue}</div>
+                            </div>
+
+                            <div>
+                              <div className="story_label">Time estimate:</div>
+                              <div className="story_value">{story.timeEstimate}</div>
                             </div>
                           </div>
                         </div>
@@ -448,7 +487,10 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
                         <div style={{ marginRight: 20 }}>
                           <div className="story_label">Priority:</div>
-                          <div className="story_value">{story.priority}</div>
+                          {allPriorities.map((priority, j) => (
+                                story.priority==priority.type? (<div className="story_value">{priority.label}</div>) :
+                                  <></>
+                          ))}
                         </div>
 
                         <div>
@@ -460,7 +502,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                     <div className="story_row_icons">
                       <IconButton color="primary" onClick={() => handleRestoreUserStory(story)}>
                         <CloseRoundedIcon />
-                        <Typography component={'span'} display = "block" variant="caption">Restore story</Typography>
+                        <Typography component={'span'} display = "block" variant="caption">Restore</Typography>
                       </IconButton>
                     </div>
                   </div>
