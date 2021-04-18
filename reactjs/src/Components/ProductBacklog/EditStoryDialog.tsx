@@ -31,7 +31,7 @@ export default ({ projectId, storyId, story, open, handleClose, openSnack, userR
   const [ description, setDescription ] = useState<string>(story.description);
   const [ timeEstimate, setTimeEstimate] = useState<number>(story.timeEstimate);
   const [ businessValue, setBusinessValue] = useState<number>(story.businessValue);
-  const [ priority, setPriority] = useState<Priorities>(Priorities.MUST_HAVE);
+  const [ priority, setPriority] = useState<Priorities>(story.priority as Priorities);
   const [ comment, setComment] = useState<string>(story.comment);
   const [ tests, setTests] = useState<string>(story.tests);
 

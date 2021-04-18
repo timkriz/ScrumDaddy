@@ -288,7 +288,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
       <div className="page_subtitle" style={{ marginBottom: 20 }}>Product backlog</div>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20, marginBottom: 30 }}>
-        {userRole == "METH_KEEPER" || userRole == "PROD_LEAD" &&
+        {(userRole == "PROD_LEAD" || userRole == "METH_KEEPER") &&
           <>
           <Button variant="contained" color="primary" onClick={() => openStoryDialog()} >ADD NEW STORY</Button>
           </>
@@ -336,8 +336,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                               {allPriorities.map((priority, j) => (
                                 story.priority==priority.type? (<div className="story_value">{priority.label}</div>) :
                                   <></>
-                              ))
-                             }
+                              ))}
                             </div>
 
                             <div>
@@ -352,15 +351,11 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                           </div>
                         </div>
                         <div className="sprint_row_icons">
-                          {userRole == "PROD_LEAD" &&
+                          {(userRole == "PROD_LEAD" || userRole == "METH_KEEPER")  &&
                           <>
                             <IconButton color="primary" onClick={() => handleOpenDeleteStoryDialog(story._id)}>
                             <DeleteRounded />
                           </IconButton>
-                          </>
-                          }
-                          {userRole == "METH_KEEPER" || userRole == "PROD_LEAD" &&
-                          <>
                           <IconButton color="primary" onClick={() => handleOpenEditStoryDialog(story._id, story)}>
                             <EditRounded />
                           </IconButton>
@@ -418,7 +413,10 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
                             <div style={{ marginRight: 20 }}>
                               <div className="story_label">Priority:</div>
-                              <div className="story_value">{story.priority}</div>
+                              {allPriorities.map((priority, j) => (
+                                story.priority==priority.type? (<div className="story_value">{priority.label}</div>) :
+                                  <></>
+                              ))}
                             </div>
 
                             <div>
@@ -487,7 +485,10 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
                         <div style={{ marginRight: 20 }}>
                           <div className="story_label">Priority:</div>
-                          <div className="story_value">{story.priority}</div>
+                          {allPriorities.map((priority, j) => (
+                                story.priority==priority.type? (<div className="story_value">{priority.label}</div>) :
+                                  <></>
+                          ))}
                         </div>
 
                         <div>
@@ -499,7 +500,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                     <div className="story_row_icons">
                       <IconButton color="primary" onClick={() => handleRestoreUserStory(story)}>
                         <CloseRoundedIcon />
-                        <Typography component={'span'} display = "block" variant="caption">Restore story</Typography>
+                        <Typography component={'span'} display = "block" variant="caption">Restore</Typography>
                       </IconButton>
                     </div>
                   </div>
