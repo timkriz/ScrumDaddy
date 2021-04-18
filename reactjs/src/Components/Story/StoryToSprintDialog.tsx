@@ -12,6 +12,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import {Color} from "@material-ui/lab";
 import {getStory, getStories} from "../../api/UserStoriesService";
+import {putStory} from "../../api/StoryService";
 import {IStory} from "../ProjectList/IProjectList";
 import ISprint from "../ProductBacklog/ProductBacklog"; 
 import {allStatuses, Status} from "./Status"; 
@@ -66,7 +67,6 @@ createStyles({
 
 
 export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: IProps) => {
-  const [ id, setId] = useState<string>("");
   //const [ sprint, setSprint] = useState<ISprint[]>([]);
   const [ productBacklog, setProductBacklog ] = useState<IStory[]>([]); 
   const [ sprints, setSprints ] = useState<ISprint[]>([]);
@@ -74,7 +74,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
   const classes = useStyles();
   const theme = useTheme();
   const [ selectedStories, setSelectedStories] = React.useState<string[]>([]);
-  const [ finalSprint, setFinalSprint ] = useState<ISprint[]>([]);
+  const [ finalSprint, setFinalSprint ] = useState<string>("");
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setSelectedStories(event.target.value as string[]);
@@ -102,27 +102,6 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
     },
   };
 
-  const names = [
-    'Oliver Hansen',
-    'Van Henry',
-    'April Tucker',
-    'Ralph Hubbard',
-    'Omar Alexander',
-    'Carlos Abbott',
-    'Miriam Wagner',
-    'Bradley Wilkerson',
-    'Virginia Andrews',
-    'Kelly Snyder',
-  ];
-
-  function getStyles(name: string, personName: string[], theme: Theme) {
-    return {
-      fontWeight:
-        personName.indexOf(name) === -1
-          ? theme.typography.fontWeightRegular
-          : theme.typography.fontWeightMedium,
-    };
-  }
 
   //####################################################################
 
@@ -130,14 +109,13 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
     fetchProductBacklog();
     fetchSprints();
 
-  },[] );
+  },[open] );
 
 
   /* Get stories of a product backlog */
   const fetchProductBacklog = async () => {
     const allStoriesInProductBacklog = (await getStories(projectId, "/")).data.data as IStory[];
     if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
-    console.log("PROD_BACK", productBacklog,projectId)
   }
 
   /* Get sprints of this project */
@@ -146,35 +124,64 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
     setSprints(gottenSprints);
   }
 
+  const addStoryToSprint = async (id:string) =>{
+    try{
+      const response = await putStory(projectId, " ", id, finalSprint);
+    }
+    catch(e){
+      let message = "Failed to add stories!";
+      if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+      openSnack(message, "error");
+    }
+    
+  }
+
   /* Add stories to sprint */
   const confirmAction = async () => {
     try {
 
       const newIDs = [] as any;
-      selectedStories.forEach((story) =>{
-        productBacklog.forEach((story2) =>{
-          if (story == story2.name){
-            newIDs.push(story2._id)
+      const newIDs2 = [] as any;
+      if (selectedStories.length > 0){
+        selectedStories.forEach((story) =>{
+          if(productBacklog.length > 0){
+            productBacklog.forEach((story2) =>{
+              if (story == story2.name){
+                newIDs.push(story2._id)
+              }
+
+            })
+          }else{
+            openSnack("There is no stories in Product Backlog", "error");
           }
         })
-        //const newId = user.userId;
-        //newIDs.push(newId);
 
-      })
-      //const response = await postStory(projectId, sprintId, name, description, timeEstimate, bussinesValue, priority, comment, tests, status);
-      //setId(response.data.data._id);
-      console.log("CHECKED_STORIES", selectedStories)
-      console.log("Selected SPRINT", finalSprint)
-      console.log("NEW", newIDs)
+        if(finalSprint != ""){
+          for(var i=0; i<newIDs.length; i++){
+            var x = JSON.parse(JSON.stringify(newIDs[i]));
+            newIDs2.push(x)
+            addStoryToSprint(x)
+          }
+
+          openSnack("Added stories successfully!", "success", true);
+          handleClose();
+
+        }else{
+          openSnack("Please, select sprint!", "error");
+        }
+
+      }else{
+        openSnack("Please, select stories!", "error");
+      }
+
       
-
-      openSnack("Added stories successfully!", "success", true);
-      handleClose();
     } catch (e) {
       let message = "Failed to add stories!";
       if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
       openSnack(message, "error");
     }
+
+   
   
 };
 

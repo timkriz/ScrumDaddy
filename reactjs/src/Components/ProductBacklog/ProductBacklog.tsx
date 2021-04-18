@@ -132,7 +132,6 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
         setStories(allStoriesInProductBacklog);
         sprintDict[sprint._id] = sprint.name;
         setSprintDict(sprintDict);
-        console.log("PB prodback", productBacklog);
       }
 
       /*  CORRECTION - just active sprint */
@@ -316,7 +315,6 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                     {productBacklog === undefined || productBacklog.length == 0 ? 'No stories in product backlog.' : ''}
                   </Typography>
                 </div>
-                {console.log("PB prodback", productBacklog)}
                 {
                   productBacklog.map((story, i) =>(
                     <div key={i} className="story_row">
