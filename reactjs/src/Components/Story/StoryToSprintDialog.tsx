@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
-import TextField from "@material-ui/core/TextField";
+import moment, {Moment} from "moment"
 import DialogActions from "@material-ui/core/DialogActions";
 import {Button} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
@@ -15,8 +15,6 @@ import {getStory, getStories} from "../../api/UserStoriesService";
 import {putStory} from "../../api/StoryService";
 import {IStory} from "../ProjectList/IProjectList";
 import ISprint from "../ProductBacklog/ProductBacklog"; 
-import {allStatuses, Status} from "./Status"; 
-import { stat } from "node:fs";
 import "./story.css";
 import {getSprints} from "../../api/SprintService";
 import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
@@ -75,6 +73,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
   const theme = useTheme();
   const [ selectedStories, setSelectedStories] = React.useState<string[]>([]);
   const [ finalSprint, setFinalSprint ] = useState<string>("");
+  const [ todayDate, setTodayDate ] = useState<Moment>(moment());
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setSelectedStories(event.target.value as string[]);
@@ -103,8 +102,6 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
   };
 
 
-  //####################################################################
-
   useEffect(() => {
     fetchProductBacklog();
     fetchSprints();
@@ -121,9 +118,17 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
   /* Get sprints of this project */
   const fetchSprints = async () => {
     const gottenSprints = (await getSprints(projectId)).data.data as ISprint[];
-    setSprints(gottenSprints);
+    const filteredSprints: ISprint[] = [];
+    gottenSprints.forEach((sprint)=>{
+      const sprintEnd = (moment.unix(sprint.endTime));
+      if( sprintEnd > todayDate){
+        filteredSprints.push(sprint);
+      }
+    })
+    setSprints(filteredSprints);
   }
 
+  /* Add stories to sprint */
   const addStoryToSprint = async (id:string) =>{
     try{
       const response = await putStory(projectId, " ", id, finalSprint);
@@ -136,7 +141,6 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
     
   }
 
-  /* Add stories to sprint */
   const confirmAction = async () => {
     try {
 
