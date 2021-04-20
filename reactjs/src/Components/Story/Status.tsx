@@ -1,6 +1,8 @@
 export enum Status{
     UNASSIGNED = "UNASSIGNED",
-    COMPLETED = "COMPLETED" 
+    COMPLETED = "COMPLETED",
+    ACCEPTED = "ACCEPTED",
+    ACTIVE = "ACTIVE"
   }
 
 export interface IStatusObject{
@@ -17,6 +19,14 @@ export const allStatuses: IStatusObject[] = [
     {
         type: Status.COMPLETED,
         label: "Completed"
+    },
+    {
+        type: Status.ACCEPTED,
+        label: "Accepted"
+    },
+    {
+        type: Status.ACTIVE,
+        label: "Active"
     }
 ]
 

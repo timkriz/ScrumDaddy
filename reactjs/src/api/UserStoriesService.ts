@@ -19,20 +19,21 @@ export const getStory = (projectId: string, sprintId: string, storyId: string): 
 
 export const acceptUserStory = (projectId: string, sprintId: string, storyId: string): Promise<any> => {
   return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
-    status: "Accepted"
+    status: "ACCEPTED"
   });
 };
 
 export const rejectUserStory = (projectId: string, sprintId: string, storyId: string, newcomment: string): Promise<any> => {
   return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
     comment: newcomment,
-    sprintId: "/"
+    sprintId: "/",
+    status: "UNASSIGNED"
   });
 };
 
 export const restoreUserStory = (projectId: string, sprintId: string, storyId: string): Promise<any> => {
   return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
-    status: "Completed"
+    status: "COMPLETED"
   });
 };
 
