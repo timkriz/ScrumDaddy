@@ -20,7 +20,6 @@ import {getUserId} from "../../api/TokenService";
 import {ProjectRoles} from "../../data/Roles";
 
 import TaskDialog from "./TaskDialog";
-import EditTaskDialog from './EditTaskDialog';
 import { time } from "node:console";
 import DeleteTaskDialog from "./DeleteTaskDialog";
 import EditTaskTimeDialog from './EditTaskTimeDialog';
