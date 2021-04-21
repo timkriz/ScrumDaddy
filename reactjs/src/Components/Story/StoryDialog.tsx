@@ -79,34 +79,27 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
   }
 
   const confirmAction = async () => {
-    /* // Edit Story
-    if(editId !== undefined) {
-      try {
-        await putStory(projectId, sprintId, editId, StoryTitle, StoryTime);
-
-        openSnack("Story updated successfully!", "success", true);
-        handleClose();
-      } catch (e) {
-        openSnack("Story update failed!", "error");
-      }
-    }
-
-    // Add Story
-    else {*/
     try {
-      const response = await postStory(projectId, sprintId, name, description, timeEstimate, bussinesValue, priority, comment, tests, status);
-      setId(response.data.data._id);
+      if (name && description && timeEstimate && bussinesValue && priority && tests){
+        if(timeEstimate <= 20 && timeEstimate > 0 && bussinesValue <= 20 && bussinesValue > 0){
+          const response = await postStory(projectId, sprintId, name, description, timeEstimate, bussinesValue, priority, comment, tests, status);
+          setId(response.data.data._id);
 
-      if (response.data.data._id){
-        await rejectUserStory(projectId, sprintId, response.data.data._id, comment);
+          if (response.data.data._id){
+            await rejectUserStory(projectId, sprintId, response.data.data._id, comment);
+          }
+          openSnack("Story created successfully!", "success", true);
+          handleClose();
+        }else{
+          openSnack("Time estimate and Bussines value should be in range of 1 to 20!", "error", true);
+        }
+      }else{
+        openSnack("Please fill or set all the fields!", "error", true);
       }
-
-      openSnack("Story created successfully!", "success", true);
-      handleClose();
+      
     } catch (e) {
-      let message = "Story creation failed!";
-      if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
-      openSnack(message, "error");
+      let message = "Story creation failed or story with this name already exists!";
+      if(e && e.response && e.response.data && e.response.data.message) openSnack(message, "error");
     }
   
 };
@@ -140,7 +133,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
             style={{ margin: 10, width: "20%" }}
             InputProps={{
               inputProps: { 
-                min: 1 ,max: 100
+                min: 1 ,max: 20, maxLength: 2 
               }
             }}
             label="Time Estimate"
@@ -153,7 +146,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
             style={{margin: 10, width: "20%" }}
             InputProps={{
               inputProps: { 
-                  min: 1, max: 100, maxLength: 2 
+                  min: 1, max: 20, maxLength: 2 
               }
             }}
             label="Bussines value"

@@ -112,14 +112,24 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
     // Add task - adding tasks WORKS
     else {
       try {
-        await postTask(projectId, sprintId, storyId, taskName, taskDescription, taskTimeEstimate, 0, taskSuggestedUser, "None", "unassigned");
+        if(taskName && taskDescription && taskTimeEstimate && taskSuggestedUser){
+          if (taskTimeEstimate <= 20 && taskTimeEstimate > 0){
+            await postTask(projectId, sprintId, storyId, taskName, taskDescription, taskTimeEstimate, 0, taskSuggestedUser, "None", "unassigned");
+            openSnack("Task created successfully!", "success", true);
+            handleClose();
+          }else{
+            openSnack("Time estimation should be in range of 1 to 20 hours!", "error", true);
+          }
+          
+        }else{
+          openSnack("Please fill or set all the fields!", "error", true);
+        }
+        
 
-        openSnack("Task created successfully!", "success", true);
-        handleClose();
+        
       } catch (e) {
         let message = "Task creation failed!";
-        if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
-        openSnack(message, "error");
+        if(e && e.response && e.response.data && e.response.data.message) openSnack(message, "error");
       }
     }
   };
@@ -185,35 +195,3 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
     </Dialog>
   )
 }
-
-/*
-<div style={{ display: "flex", margin: "10px 0", justifyContent: "space-between" }}>
-<div>
-    <FormControl style={{ marginRight: "20px" }}>
-    <InputLabel>User</InputLabel>
-    <Select
-        value=""
-        onChange={(e) => {suggestedUser(e)}}
-    >
-        {
-        projectUsers.map((user, j) => (
-          <div>
-          {
-            allUsers.map((user_all, i) => (
-              <div>
-                {
-                  user.userId == user_all._id? (
-                    <MenuItem key={j} value={user_all._id}>{user_all.name} {user_all.surname}</MenuItem>
-                  ) : (null)
-                }
-              </div>
-            ))
-          }
-          </div>
-        ))
-        }
-    </Select>
-    </FormControl>
-</div>
-</div>
-*/

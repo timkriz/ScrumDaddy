@@ -15,11 +15,12 @@ import {getStory} from "../../api/UserStoriesService";
 import {getTasks, getTask, putTask, deleteTask} from "../../api/TaskService";
 import {getProjectUser} from "../../api/ProjectService";
 import "./story.css";
-import moment from "moment";
+import moment, {Moment} from "moment";
 import {getUserId} from "../../api/TokenService";
 import {ProjectRoles} from "../../data/Roles";
 import TaskDialog from "./TaskDialog";
 import EditTaskDialog from './EditTaskDialog';
+import { time } from "node:console";
 
 interface IProjectParams {
   projectId: string;
@@ -63,6 +64,9 @@ export default () => {
   const [snackMessage, setSnackMessage] = useState<string>("");
   const [snackSeverity, setSnackSeverity] = useState<Color>("success");
 
+  const [ startLogTime, setStartLogTime ] = useState<Moment>(moment());
+  const [ endLogTime, setEndLogTime ] = useState<Moment>(moment());
+  const [ finalTime, setFinalTime ] =  useState<any>();
 
   const { projectId } = useParams<IProjectParams>();
   const { sprintId } = useParams<ISprintParams>();
@@ -154,8 +158,26 @@ export default () => {
             putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, "None", "unassigned");
           }else if(action == "activate") {
             putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "active");
+            
+            /* start Time logging */
+            var now = moment(new Date());
+            setStartLogTime(now);
+            console.log(startLogTime);
+            
           }else if(action == "deactivate") {
             putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "assigned");
+            
+            /* end time logging */
+            var end = moment(new Date()); 
+            setEndLogTime(end)
+            var duration = moment.duration(startLogTime.diff(endLogTime));
+            setFinalTime(duration);
+
+            console.log("TIME", duration)
+            var days = duration.asDays();
+            console.log("DNI", days)
+
+
           }else if(action == "complete") {
             putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "completed");
           }
