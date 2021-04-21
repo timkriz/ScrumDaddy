@@ -34,9 +34,13 @@ interface GUser{
 export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, editId }: IProps) => {
   const [ taskName, setTaskName ] = useState<string>("");
   const [ taskDescription, setTaskDescription ] = useState<string>("");
+  const [ taskStatus, setTaskStatus ] = useState<string>("");
   const [ taskTimeEstimate, setTaskTimeEstimate] = useState<number>(1);
+  const [ taskTimeLog, setTaskTimeLog ] = useState<number>(0); 
   const [ projectUsers, setProjectUsers ] = useState<IProjectUser[]>([]);
   const [ taskSuggestedUser, setTaskSuggestedUser] = useState<string>("");
+  const [ taskAssignedUser, setTaskAssignedUser] = useState<string>(""); 
+  
   const [ realUsers, setRealUsers] = useState<IUser[]>([]);
 
   // Fetch all users
@@ -96,18 +100,25 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
       setTaskName(gottenTask.name);
       setTaskDescription(gottenTask.description);
       setTaskTimeEstimate(gottenTask.timeEstimate);
+      setTaskTimeLog(gottenTask.timeLog);
       setTaskSuggestedUser(gottenTask.suggestedUser);
+      setTaskAssignedUser(gottenTask.assignedUser);
+      setTaskStatus(gottenTask.status);
     }
   }
 
   const confirmAction = async () => {
     // Edit task
     if(editId !== undefined) {
-
-    /*
-    missing something
-    */
-
+      try {
+        await putTask(projectId, sprintId, storyId, editId, taskName, taskDescription, taskTimeEstimate, taskTimeLog, taskSuggestedUser, taskAssignedUser, taskStatus);
+        openSnack("Task updated successfully!", "success", true);
+        handleClose();
+      } catch (e) {
+        let message = "Task update failed!";
+        if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+        openSnack(message, "error");
+      }
     }
     // Add task - adding tasks WORKS
     else {
@@ -168,20 +179,24 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
           onChange={(e) => {setTaskTimeEstimate(e.target.value as unknown as number)}}
         />
 
-        <FormControl style={{ display: "flex", margin: "10px 0", justifyContent: "space-between" }}>
-          <InputLabel>Suggest user</InputLabel>
-            <Select 
-            value={taskSuggestedUser} 
-            onChange={(e: any) => {setTaskSuggestedUser(e.target.value)}}
-            >
-              {
-                realUsers.map((user, j) => (
-                  <MenuItem key={j} value={user._id}>{user.name} {user.surname}</MenuItem>
-                  
-                ))
-              }
-            </Select>
-        </FormControl>
+        {editId === undefined &&
+          <>
+            <FormControl style={{ display: "flex", margin: "10px 0", justifyContent: "space-between" }}>
+              <InputLabel>Suggest user</InputLabel>
+                <Select 
+                value={taskSuggestedUser} 
+                onChange={(e: any) => {setTaskSuggestedUser(e.target.value)}}
+                >
+                  {
+                    realUsers.map((user, j) => (
+                      <MenuItem key={j} value={user._id}>{user.name} {user.surname}</MenuItem>
+                      
+                    ))
+                  }
+                </Select>
+            </FormControl>
+          </>
+        }
 
       </DialogContent>
       <DialogActions>

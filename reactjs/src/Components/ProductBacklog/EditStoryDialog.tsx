@@ -37,12 +37,17 @@ export default ({ projectId, storyId, story, open, handleClose, openSnack, userR
 
   const confirmAction = async () => {
     try {
-      await editUserStory(projectId, " " /*sprintid*/, storyId, name, description, timeEstimate, businessValue, priority, comment, tests);
-      //setTimeEstimate(10);
-      openSnack("Story updated.", "success", true);
-      handleClose();
+      if(comment.length > 1 && name.length > 1 && description.length > 1 && tests.length > 1){
+        await editUserStory(projectId, " " /*sprintid*/, storyId, name, description, timeEstimate, businessValue, priority, comment, tests);
+        //setTimeEstimate(10);
+        openSnack("Story updated.", "success", true);
+        handleClose();
+      }
+      else openSnack("One or more fields is missing.", "error");
     } catch (e) {
-      openSnack("Something went wrong...", "error");
+      let message = "Editing story failed!";
+      if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+      openSnack(message, "error");
     }
   };
 

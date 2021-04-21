@@ -21,6 +21,8 @@ import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/sty
 import Input from '@material-ui/core/Input';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
+import {getTasks} from "../../api/TaskService";
+import {ITask} from "../ProjectList/IProjectList";
 
 
 
@@ -131,7 +133,17 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
   /* Add stories to sprint */
   const addStoryToSprint = async (id:string) =>{
     try{
-      const response = await putStory(projectId, " ", id, finalSprint);
+      /* Chech if task was completed */
+      let status = "ACTIVE";
+      const gottenTasks = (await getTasks(projectId, " ", id)).data.data as ITask[];
+        let allCompleted = 1;
+        gottenTasks.map((task, index) => {
+          if (task.status != "completed"){
+            allCompleted = 0;
+          }
+        })
+        if(allCompleted) {status = "COMPLETED";}
+      const response = await putStory(projectId, " ", id, finalSprint, status);
     }
     catch(e){
       let message = "Failed to add stories!";

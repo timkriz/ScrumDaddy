@@ -38,7 +38,7 @@ export default ({ projectId, sprintId, storyId, taskId, open, handleClose, openS
   return (
     <Dialog open={open} onClose={handleClose} fullWidth>
       
-      <DialogTitle style={{ textAlign: "center" }}>Edit task</DialogTitle>
+      <DialogTitle style={{ textAlign: "center" }}>Estimated remaining time</DialogTitle>
 
       <TextField
         style={{ marginLeft: "40%", width: "20%" }}
@@ -47,7 +47,7 @@ export default ({ projectId, sprintId, storyId, taskId, open, handleClose, openS
             min: 1 ,max: 100
           }
         }}
-        label="Time Estimate"
+        label="Time remaining"
         type="number"
         value={timeEstimate}
         onChange={(e) => {setTimeEstimate(e.target.value as unknown as number)}}
