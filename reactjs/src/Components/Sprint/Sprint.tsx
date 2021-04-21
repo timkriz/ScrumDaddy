@@ -17,6 +17,7 @@ import {ProjectRoles, projectRoleTitles} from "../../data/Roles";
 import StoryNotes from "./StoryNotes";
 import Typography from "@material-ui/core/Typography";
 import {allPriorities, Priorities} from "../Story/Priorities";
+import {allStatuses, Status} from "../Story/Status";
 
 
 interface IProjectParams {
@@ -128,7 +129,10 @@ export default () => {
                           <div style={{ display: "flex", marginTop: 10 }}>
                             <div style={{ marginRight: 20 }}>
                                 <div className="sprint_label">Status:</div>
-                                <div className="sprint_value">{story.status}</div>
+                                {allStatuses.map((status, j) => (
+                                story.status==status.type? (<div className="sprint_value">{status.label}</div>) :
+                                  <></>
+                                ))}
                             </div>
 
                             <div style={{ marginRight: 20 }}>
@@ -138,8 +142,13 @@ export default () => {
                                   <></>
                               ))}
                             </div>
+                            
+                            <div style={{ marginRight: 20 }}>
+                              <div className="sprint_label">Time estimate:</div>
+                              <div className="sprint_value">{story.timeEstimate}</div>
+                            </div>
 
-                            <div>
+                            <div style={{ marginRight: 20 }}>
                               <div className="sprint_label">Business Value:</div>
                               <div className="sprint_value">{story.businessValue}</div>
                             </div>

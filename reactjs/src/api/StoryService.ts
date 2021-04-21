@@ -20,9 +20,10 @@ export const postStory = (projectId: string, sprintId: string, name: string, des
         return axiosAuth.delete(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`);
         };
 
-    export const putStory = (projectId: string, sprintId: string, storyId: string, newSprint: string): Promise<any> => {
+    export const putStory = (projectId: string, sprintId: string, storyId: string, newSprint: string, newStatus:string): Promise<any> => {
         return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
             /* TODO IF NEEDED */
-            sprintId: newSprint
+            sprintId: newSprint,
+            status: newStatus
             });
         };

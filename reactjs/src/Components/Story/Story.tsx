@@ -299,7 +299,7 @@ export default () => {
 
                       <div className="story_row_icons">
                         {/* DELETE TASK ICON VISIBLE ONLY TO METHODOLOGY KEEPER AND DEV_TEAM */}
-                        {userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER" &&
+                        {(userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER") &&
                           <div style={{ display: "flex", flexDirection: "column" }}>
                             <IconButton color="primary" onClick={() => openTaskDialog(task._id)}> {/* EDIT */}
                               <EditRounded />
@@ -347,7 +347,7 @@ export default () => {
 
                           <div className="story_row_icons">
                             {/* DELETE TASK ICON VISIBLE ONLY TO METHODOLOGY KEEPER AND DEV_TEAM */}
-                            {userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER" &&
+                            {(userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER") &&
                               <div style={{ display: "flex", flexDirection: "column" }}>
                                 <IconButton color="primary" onClick={() => openTaskDialog(task._id)}> {/* EDIT */}
                                   <EditRounded />
@@ -408,7 +408,7 @@ export default () => {
 
                             <div className="story_row_icons">
                               {/* DELETE TASK ICON VISIBLE ONLY TO METHODOLOGY KEEPER AND DEV_TEAM */}
-                              {userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER" &&
+                              {(userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER") &&
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                   <IconButton color="primary" onClick={() => openTaskDialog(task._id)}> {/* EDIT */}
                                     <EditRounded />
@@ -465,7 +465,7 @@ export default () => {
                           </div>
                           <div className="story_row_icons">
                             {/* DELETE TASK ICON VISIBLE ONLY TO METHODOLOGY KEEPER AND DEV_TEAM */}
-                            {userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER" &&
+                            {(userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER") &&
                               <div style={{ display: "flex", flexDirection: "column" }}>
                                 <IconButton color="primary" onClick={() => openTaskDialog(task._id)}> {/* EDIT */}
                                   <EditRounded />

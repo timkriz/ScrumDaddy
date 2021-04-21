@@ -165,7 +165,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
       if (!found1){
         const allStories = (await getStories(projectId, sprint._id)).data.data as IStory[];
         allStories.forEach( async (story) => {
-          if(story.status === "Accepted") {
+          if(story.status === "ACCEPTED") {
             const found3 = acceptedStories.some((el:IStory) => el._id === story._id);
             if(!found3) acceptedStories.push(story);
             setAcceptedStories(acceptedStories);
@@ -407,14 +407,18 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div className="story_row_title">{story.name}</div>
                           <div className="story_value" style={{ padding: 10 }}>{story.description}</div>
-                          <div className="story_label">Tests:</div>
-                          <div className="story_value">{story.tests}</div>
                           <div style={{ display: "flex", marginTop: 10 }}>
                             <div style={{ marginRight: 20 }}>
-                              <div className="story_label">Sprint:</div>
-                              <div className="story_value">{sprint.name}</div>
+                                <div className="story_label">Sprint:</div>
+                                <div className="story_value">{sprint.name}</div>
                             </div>
-
+                            <div style={{ marginRight: 20 }}>
+                              <div className="story_label">Tests:</div>
+                              <div className="story_value">{story.tests}</div>
+                            </div>
+                          </div>
+                          <div style={{ display: "flex", marginTop: 10 }}>
+                          
                             <div style={{ marginRight: 20 }}>
                               <div className="story_label">Status:</div>
                               {allStatuses.map((status, j) => (
@@ -430,16 +434,16 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                                   <></>
                               ))}
                             </div>
-
-                            <div>
-                              <div className="story_label">Business Value:</div>
-                              <div className="story_value">{story.businessValue}</div>
-                            </div>
-
+                            
                             <div>
                               <div className="story_label">Time estimate:</div>
                               <div className="story_value">{story.timeEstimate}</div>
                             </div>
+                            <div>
+                              <div className="story_label">Business Value:</div>
+                              <div className="story_value">{story.businessValue}</div>
+                            </div>
+                  
                           </div>
                         </div>
                         {userRole ==="PROD_LEAD" &&
@@ -450,7 +454,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                               <DoneRoundedIcon /> 
                               <Typography component={'span'} display = "block" variant="caption">Accept</Typography>
                             </IconButton>
-                            <IconButton color="primary" disabled={userRole !== "PROD_LEAD"} onClick={() => handleRejectUserStory(story)}>
+                            <IconButton color="primary" disabled={userRole !== "PROD_LEAD" } onClick={() => handleRejectUserStory(story)}>
                               <CloseRoundedIcon />
                               <Typography component={'span'} display = "block" variant="caption">Reject</Typography>
                             </IconButton>
@@ -507,9 +511,13 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                         </div>
 
                         <div>
-                          <div className="story_label">Business Value:</div>
-                          <div className="story_value">{story.businessValue}</div>
-                        </div>
+                            <div className="story_label">Time estimate:</div>
+                            <div className="story_value">{story.timeEstimate}</div>
+                          </div>
+                          <div>
+                            <div className="story_label">Business Value:</div>
+                            <div className="story_value">{story.businessValue}</div>
+                          </div>
                       </div>
                     </div>
                     <div className="story_row_icons">
