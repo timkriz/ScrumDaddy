@@ -79,16 +79,16 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
 
   const fetchProjectUsers = async () => {
     const users = (await getProjectUsers(projectId)).data.data as IUser[];
-    let projectUsers: ITaskDialogAssign[] = [];
+    let projectUsers: ITaskDialogAssign[] = []; 
+    const newUser: ITaskDialogAssign = { userId: "", name: "None", surname: "None"};
+    projectUsers.push(newUser);
     users.forEach(user => {
       const newUser: ITaskDialogAssign = { userId: user._id, name:user.name, surname:user.surname};
       projectUsers.push(newUser);
     });
     setProjectUsers(projectUsers);
-    console.log("P_users", users)
-    console.log("P2_sas",projectUsers)
-
   }
+  
   /*
   const fetchProjectUsers = async () => {
     const gottenProjectUsers = (await getProjectUsers(projectId)).data.data as ITaskUser[];

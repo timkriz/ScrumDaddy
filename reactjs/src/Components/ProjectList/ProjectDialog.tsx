@@ -134,14 +134,27 @@ export default ({ open, handleClose, openSnack, editId }: IProps) => {
     // Add project
     else {
       try {
-        const newProject = (await postProject(projectTitle, projectDescription)).data.data as IProject;
+        var prod_lead = false;
+        var scrum_master = false;
+        var developer = false;
 
         for(let i = 0; i < assignedUsers.length; i++) {
-          await postProjectUser(newProject._id, assignedUsers[i].userId, assignedUsers[i].roleId);
+          if (assignedUsers[i].roleId === "PROD_LEAD") prod_lead = true;
+          if (assignedUsers[i].roleId === "METH_KEEPER") scrum_master = true;
+          if (assignedUsers[i].roleId === "DEV_TEAM_MEMBER") developer = true;
         }
 
-        openSnack("Project created successfully!", "success", true);
-        handleClose();
+        if (prod_lead && scrum_master && developer) {
+          const newProject = (await postProject(projectTitle, projectDescription)).data.data as IProject;
+          for(let i = 0; i < assignedUsers.length; i++) {
+            await postProjectUser(newProject._id, assignedUsers[i].userId, assignedUsers[i].roleId);
+          }
+          openSnack("Project created successfully!", "success", true);
+          handleClose();
+        }else{
+          openSnack("Project must have Product Leader, Scrum Master and Developer!", "error");
+          handleClose();
+        }
       } catch (e) {
         let message = "Project creation failed!";
         if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;

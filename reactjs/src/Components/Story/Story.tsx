@@ -18,11 +18,11 @@ import "./story.css";
 import moment, {Moment} from "moment";
 import {getUserId} from "../../api/TokenService";
 import {ProjectRoles} from "../../data/Roles";
-
 import TaskDialog from "./TaskDialog";
 import { time } from "node:console";
 import DeleteTaskDialog from "./DeleteTaskDialog";
 import EditTaskTimeDialog from './EditTaskTimeDialog';
+import { truncateSync } from "node:fs";
 
 interface IProjectParams {
   projectId: string;
@@ -65,6 +65,8 @@ export default () => {
   const [ taskDialogOpen, setTaskDialogOpen ] = useState<boolean>(false);
   const [ deleteTaskDialogOpen, setDeleteTaskDialogOpen ] = useState<boolean>(false);
   const [ editTaskTimeDialogOpen, setEditTaskTimeDialogOpen ] = useState<boolean>(false);
+
+  const [ active, setActive] = useState<boolean>(false);
 
   const [snackOpen, setSnackOpen] = useState<boolean>(false);
   const [snackMessage, setSnackMessage] = useState<string>("");
@@ -132,6 +134,15 @@ export default () => {
       sumTimeEstimated = sumTimeEstimated + task.timeEstimate;
     })
     setTimeEstimated(sumTimeEstimated);
+
+    const userId = getUserId();
+    var err = false;
+    gottenTasksActive.map((task, i) => {
+      if (task.assignedUser === userId){
+        err = true;
+      }
+    })
+    if (err) setActive(true);
   }
 
   const back = () => {
@@ -173,6 +184,8 @@ export default () => {
 
           }else if(action == "complete") {
             putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "completed");
+          }else if(action == "return") {
+            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, 1, task.timeLog, task.suggestedUser, task.assignedUser, "assigned");
           }
         }
       }
@@ -273,13 +286,13 @@ export default () => {
                 <IconButton size="medium" color="primary" onClick={() => back()}>
                     <ArrowBackRounded fontSize="large" />
                 </IconButton>
-                <div className="page_title">Story: {story.name}</div>
+                <div className="page_title">{story.name}</div>
                 <IconButton size="medium" color="secondary" style={{ opacity: 0, cursor: "auto" }}>
                     <ArrowBackRounded fontSize="large" />
                 </IconButton>
             </div>
 
-            {userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER" &&
+            { (userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER") &&
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <Button variant="contained" color="primary" onClick={() => openTaskDialog()} style={{ alignSelf: "flex-start", marginTop: 20}}>ADD TASK</Button>
               </div>
@@ -304,19 +317,7 @@ export default () => {
                     <div key={i} className="story_row">
                       <div style={{ display: "flex", flexDirection: "column" }}>
                         <div className="story_row_title">{task.name}</div>
-                        <div className="task_label" style={{marginTop: 15}}>Suggested user:</div>
-                        {
-                          allUsers.map((user, j) => (
-                            <div>
-                                {
-                                  user._id == task.suggestedUser? (
-                                    <div className="task_value" style={{ display: "flex"}}>{user.name} {user.surname}</div>
-                                  ) : (null)
-                                }
-                            </div>
-                          ))
-                        }
-                        <div className="task_label" style={{marginTop: 5}}>Remaining time:</div>
+                        <div className="task_label" style={{marginTop: 15}}>Remaining time:</div>
                         <div className="task_value" style={{ display: "flex"}}>{task.timeEstimate} hours</div>
                       </div>
 
@@ -386,7 +387,12 @@ export default () => {
                               task.assignedUser == getUserId()? (  
                                 <>         
                                   <Button variant="contained" color="primary" onClick={() => assignUser(task, "unassign")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 10}}>DECLINE TASK</Button>
-                                  <Button variant="contained" color="primary" onClick={() => assignUser(task, "activate")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 10}}>ACTIVATE</Button>
+                                  { active? (
+                                      <Button variant="contained" color="default" onClick={() => void 0} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 10}}>ACTIVATE</Button>
+                                    ) : (
+                                      <Button variant="contained" color="primary" onClick={() => assignUser(task, "activate")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 10}}>ACTIVATE</Button>
+                                    )
+                                  }                  
                                 </>
                               ) : (
                                   <Button variant="contained" color="default" onClick={() => void 0} style={{alignSelf: "flex-start", marginTop: 25, marginLeft: 10}}>ASSIGNED</Button>
@@ -499,6 +505,9 @@ export default () => {
                               </div>
                             }
                             <Button variant="contained" color="default" onClick={() => void 0} style={{alignSelf: "flex-start", marginTop: 25, marginLeft: 10}}>COMPLETED</Button>
+                            { (userRole === "PROD_LEAD") &&
+                              <Button variant="contained" color="primary" onClick={() => assignUser(task, "return")} style={{alignSelf: "flex-start", marginTop: 25, marginLeft: 10}}>RETURN</Button>
+                            }
                           </div>
                         </div>
                       ))

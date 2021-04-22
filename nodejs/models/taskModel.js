@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+var uniqueValidator = require('mongoose-unique-validator');
 
 const taskSchema = new Schema ({
-    name: { type: String, required: true},
+    name: { type: String, unique: true, required: true, uniqueCaseInsensitive: true},
     description: { type: String, required: true},
-    timeEstimate: { type: Number, required: true},
+    timeEstimate: { type: Number, required: true, min: 0, max: 20},
     timeLog: { type: Number, required: true},
     suggestedUser: { type: String, required: true},
     assignedUser: { type: String, required: true},
@@ -13,6 +14,8 @@ const taskSchema = new Schema ({
     sprintId: { type: String, required: true},
     storyId: { type: String, required: true},
 });
+
+taskSchema.plugin(uniqueValidator);
 
 var task = module.exports = mongoose.model('task', taskSchema, 'task');
 

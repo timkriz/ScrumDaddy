@@ -75,19 +75,29 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
     let newIDs = [] as any;
     let newUsers2: IUser[] = [];
 
+    const noneUser: IUser = {
+      _id: "None",
+      username: "None",
+      name: "None",
+      surname: "",
+      email: "None",
+      role: "None"    
+    };
+    newUsers2.push(noneUser);
+
     projectUsers.forEach((user) =>{
         const newId = user.userId;
         newIDs.push(newId);
-
     })
+
     Promise.all(newIDs.map((id: string)  => getUser(id)))
     .then((arrayOfData) => {
 
       for(var i=0; i<arrayOfData.length; i++){
         var x = JSON.parse(JSON.stringify(arrayOfData[i]));
-        newUsers2.push(x.data.data)
-      }
-      setRealUsers(newUsers2) 
+        newUsers2.push(x.data.data);
+      }     
+      setRealUsers(newUsers2);
     });
   } 
 
@@ -108,6 +118,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
   }
 
   const confirmAction = async () => {
+
     // Edit task
     if(editId !== undefined) {
       try {
@@ -120,12 +131,17 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
         openSnack(message, "error");
       }
     }
+
     // Add task - adding tasks WORKS
     else {
       try {
         if(taskName && taskDescription && taskTimeEstimate && taskSuggestedUser){
-          if (taskTimeEstimate <= 20 && taskTimeEstimate > 0){
-            await postTask(projectId, sprintId, storyId, taskName, taskDescription, taskTimeEstimate, 0, taskSuggestedUser, "None", "unassigned");
+          if (taskTimeEstimate <= 20 && taskTimeEstimate >= 0){
+            if (taskSuggestedUser === "None"){
+              await postTask(projectId, sprintId, storyId, taskName, taskDescription, taskTimeEstimate, 0, taskSuggestedUser, "None", "unassigned");
+            }else{
+              await postTask(projectId, sprintId, storyId, taskName, taskDescription, taskTimeEstimate, 0, taskSuggestedUser, taskSuggestedUser, "assigned");
+            } 
             openSnack("Task created successfully!", "success", true);
             handleClose();
           }else{
@@ -135,9 +151,6 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
         }else{
           openSnack("Please fill or set all the fields!", "error", true);
         }
-        
-
-        
       } catch (e) {
         let message = "Task creation failed!";
         if(e && e.response && e.response.data && e.response.data.message) openSnack(message, "error");
@@ -189,8 +202,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
                 >
                   {
                     realUsers.map((user, j) => (
-                      <MenuItem key={j} value={user._id}>{user.name} {user.surname}</MenuItem>
-                      
+                      <MenuItem key={j} value={user._id}>{user.name} {user.surname}</MenuItem>             
                     ))
                   }
                 </Select>

@@ -24,8 +24,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import {getTasks} from "../../api/TaskService";
 import {ITask} from "../ProjectList/IProjectList";
 
-
-
 interface ISprint {
   _id: string;
   name: string;
@@ -103,13 +101,11 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
     },
   };
 
-
   useEffect(() => {
     fetchProductBacklog();
     fetchSprints();
 
   },[open] );
-
 
   /* Get stories of a product backlog */
   const fetchProductBacklog = async () => {
@@ -163,24 +159,39 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
           if(productBacklog.length > 0){
             productBacklog.forEach((story2) =>{
               if (story == story2.name){
-                newIDs.push(story2._id)
+                newIDs.push(story2._id);
               }
-
             })
           }else{
             openSnack("There is no stories in Product Backlog", "error");
           }
         })
 
-        if(finalSprint != ""){
+        var err = false;
+
+        if(finalSprint !== ""){
           for(var i=0; i<newIDs.length; i++){
-            var x = JSON.parse(JSON.stringify(newIDs[i]));
-            newIDs2.push(x)
-            addStoryToSprint(x)
+            var story_id = JSON.parse(JSON.stringify(newIDs[i]));
+            
+            let story = (await getStory(projectId, sprintId, story_id)).data.data as IStory;
+            
+            if (story.timeEstimate > 0){
+              newIDs2.push(story_id);
+            }else{
+              err = true;
+            }
           }
 
-          openSnack("Added stories successfully!", "success", true);
-          handleClose();
+          if (err){
+            openSnack("Some stories are missing time estimate value!", "error");
+            handleClose();
+          }else{
+            for(var i=0; i<newIDs.length; i++){
+              addStoryToSprint(story_id);
+            }
+            openSnack("Stories added to sprint successfully!", "success", true);
+            handleClose();
+          }
 
         }else{
           openSnack("Please, select sprint!", "error");
@@ -196,20 +207,12 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
       if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
       openSnack(message, "error");
     }
-
-   
-  
-};
-
-
+  };
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Select stories for sprint</DialogTitle>
+      <DialogTitle>Select stories to add to sprint</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          Select stories to add to sprint.
-        </DialogContentText>
 
         <div>
           <FormControl className={classes.formControl} style={{ display: "flex"}}>
@@ -242,15 +245,12 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
               >
                 {
                   sprints.map((sprint, j) => (
-                    <MenuItem key={j} value={sprint._id}>{sprint.name}</MenuItem>
-                    
+                    <MenuItem key={j} value={sprint._id}>{sprint.name}</MenuItem>              
                   ))
                 }
               </Select>
           </FormControl>
         </div>
-
-
         
       </DialogContent>
       <DialogActions>

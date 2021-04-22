@@ -10,7 +10,7 @@ import {Color} from "@material-ui/lab/Alert";
 import {getProject, getProjectUser} from "../../api/ProjectService";
 import {deleteSprint, getSprints} from "../../api/SprintService";
 import "./project.css";
-import moment from "moment";
+import moment, {Moment} from "moment"
 import SprintDialog from "./SprintDialog";
 import DocDialog from "./DocDialog";
 import ProjectWall from "./ProjectWall";
@@ -137,7 +137,18 @@ export default () => {
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20 }}>
-                <Button variant="contained" color="primary" onClick={() => openSprintDialog()}>ADD SPRINT</Button>
+
+              { (userRole === "METH_KEEPER") &&
+                <>
+                  <Button variant="contained" color="primary" onClick={() => openSprintDialog()}>ADD SPRINT</Button>
+                </>
+              }
+              { /* COSMETIC FIX */}
+              { (userRole !== "METH_KEEPER") &&
+                <>
+                  <Button variant="contained" color="default" onClick={() => void 0}>ADD SPRINT</Button>
+                </>
+              }
 
                 <IconButton size="medium" color="primary" onClick={openBurndownDialog}>
                     <WhatshotRounded fontSize="large" />
@@ -179,12 +190,20 @@ export default () => {
                           </div>
                         </div>
                         <div className="sprint_row_icons">
-                          <IconButton color="primary" onClick={() => deleteClickedSprint(sprint._id)}>
-                            <DeleteRounded />
-                          </IconButton>
-                          <IconButton color="primary" onClick={() => openSprintDialog(sprint._id)}>
-                            <EditRounded />
-                          </IconButton>
+                          { (userRole === "METH_KEEPER") &&
+                            <>
+                              { (sprint.startTime >= Math.round(Date.now()/1000)) &&
+                              <>
+                                <IconButton color="primary" onClick={() => deleteClickedSprint(sprint._id)}>
+                                  <DeleteRounded />
+                                </IconButton>
+                                <IconButton color="primary" onClick={() => openSprintDialog(sprint._id)}>
+                                  <EditRounded />
+                                </IconButton>
+                              </>
+                              }
+                            </>
+                          }
                           <IconButton color="primary" onClick={() => sprintDetailsClick(sprint._id)}>
                             <ArrowForwardRounded />
                           </IconButton>

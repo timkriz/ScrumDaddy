@@ -1,3 +1,4 @@
+import { StringLiteral } from 'typescript';
 import axiosAuth, {BACKEND_URL} from './axios';
 
 export const postStory = (projectId: string, sprintId: string, name: string, description: string, timeEstimate: number,
@@ -22,7 +23,6 @@ export const postStory = (projectId: string, sprintId: string, name: string, des
 
     export const putStory = (projectId: string, sprintId: string, storyId: string, newSprint: string, newStatus:string): Promise<any> => {
         return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
-            /* TODO IF NEEDED */
             sprintId: newSprint,
             status: newStatus
             });

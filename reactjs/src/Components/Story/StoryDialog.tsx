@@ -37,7 +37,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
   const [ id, setId] = useState<string>("");
   const [ name, setName ] = useState<string>("");
   const [ description, setDescription ] = useState<string>("");
-  const [ timeEstimate, setTimeEstimate] = useState<number>(10);
+  const [ timeEstimate, setTimeEstimate] = useState<number>(0);
   const [ bussinesValue, setBussinesValue] = useState<number>(10);
   const [ priority, setPriority] = useState<Priorities>(Priorities.MUST_HAVE);
   const [ comment, setComment] = useState<string>("NO_COMMENT");
@@ -57,7 +57,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
       else {
         setName("");
         setDescription("");
-        setTimeEstimate(10);
+        setTimeEstimate(0);
         setBussinesValue(10);
         setPriority(Priorities.MUST_HAVE);
         setComment("NO_COMMENT");
@@ -81,7 +81,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
   const confirmAction = async () => {
     try {
       if (name && description && timeEstimate && bussinesValue && priority && tests){
-        if(timeEstimate <= 20 && timeEstimate > 0 && bussinesValue <= 20 && bussinesValue > 0){
+        if(timeEstimate <= 20 && timeEstimate >= 0 && bussinesValue <= 20 && bussinesValue > 0){
           const response = await postStory(projectId, sprintId, name, description, timeEstimate, bussinesValue, priority, comment, tests, status);
           setId(response.data.data._id);
 
@@ -133,7 +133,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
             style={{ margin: 10, width: "20%" }}
             InputProps={{
               inputProps: { 
-                min: 1 ,max: 20, maxLength: 2 
+                min: 0 ,max: 20, maxLength: 2 
               }
             }}
             label="Time Estimate"

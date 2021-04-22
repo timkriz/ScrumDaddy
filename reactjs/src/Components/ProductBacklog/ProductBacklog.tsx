@@ -289,12 +289,34 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
       <div className="page_subtitle" style={{ marginBottom: 20 }}>Product backlog</div>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20, marginBottom: 30 }}>
-        {(userRole == "PROD_LEAD" || userRole == "METH_KEEPER") &&
+
+        { /* ADD NEW STORY */}
+        { (userRole === "PROD_LEAD" || userRole === "METH_KEEPER") &&
           <>
-          <Button variant="contained" color="primary" onClick={() => openStoryDialog()} >ADD NEW STORY</Button>
+            <Button variant="contained" color="primary" onClick={() => openStoryDialog()} >ADD NEW STORY</Button>
           </>
         }
-        <Button variant="contained" color="primary" onClick={() => openStoryToSprintDialog()}>ADD TO SPRINT </Button>
+        { /* COSMETIC FIX */}
+        { (userRole === "DEV_TEAM_MEMBER") &&
+          <>
+            <Button variant="contained" color="default" onClick={() => void 0}>ADD NEW STORY</Button>
+          </>
+        }
+
+        { /* ADD TO SPRINT*/}
+        { (userRole === "METH_KEEPER") &&
+          <>
+            <Button variant="contained" color="primary" onClick={() => openStoryToSprintDialog()}>ADD TO SPRINT </Button>
+          </>
+        }
+        { /* COSMETIC FIX */}
+        { (userRole !== "METH_KEEPER") &&
+          <>
+            <Button variant="contained" color="default" onClick={() => void 0}>ADD TO SPRINT </Button>
+          </>
+        }
+
+        
       </div>
      
       <StoryDialog projectId={projectId} sprintId={sprintId} open={storyDialogOpen} handleClose={closeStoryDialog} openSnack={openSnack} editId={editId} />
@@ -321,7 +343,9 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                     <div key={i} className="story_row">
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div className="story_row_title">{story.name}</div>
-                          <div className="story_value" style={{ padding: 10 }}>{story.description}</div>
+                          <div className="story_label" style={{ display: "flex", marginTop: 10 }}>Description:</div>
+                          <div className="story_value">{story.description}</div>
+
                           {/*Only show comment of product owner if it has been updated*/}
                           {story.comment != "NO_COMMENT" &&
                             <>
@@ -329,7 +353,8 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                             <div className="story_value">{story.comment}</div>
                             </>
                           }
-                          <div className="story_label">Tests:</div>
+
+                          <div className="story_label" style={{ display: "flex", marginTop: 10 }}>Tests:</div>
                           <div className="story_value">{story.tests}</div>
                           <div style={{ display: "flex", marginTop: 10 }}>
                             <div style={{ marginRight: 20 }}>
