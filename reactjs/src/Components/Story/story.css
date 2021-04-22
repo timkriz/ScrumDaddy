@@ -15,6 +15,20 @@
     font-weight: 500;
 }
 
+.story_label_big {
+    font-size: 25px;
+    font-family: Roboto;
+    color: #0097a7;
+    font-weight: 500;
+}
+
+.story_value_big {
+    font-family: Roboto;
+    font-size: 25px;
+    font-weight: 500;
+    color: rgba(0,0,0,0.67);
+}
+
 .story_row_icons {
     display: flex;
 }

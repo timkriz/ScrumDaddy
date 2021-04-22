@@ -197,7 +197,7 @@ router.route('/projects/:projectid/sprints/:sprintid/stories/:storyid/tasks/:tas
 module.exports = router;
 
 function authenticate(req, res, next){
-    return next(); //TODO
+    //return next(); //TODO
     passport.authenticate('jwt', {session: false}, function (err, user, info){
         if(user){
             req.user = user;

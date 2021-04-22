@@ -224,14 +224,22 @@ export default () => {
   }
 
   /* "METHODOLOGY_KEEPER" and "DEV_TEAM_MEMEBER" can add new task*/
+  /* "METHODOLOGY_KEEPER" and "DEV_TEAM_MEMEBER" can edit task*/
   const openTaskDialog = (taskId?: string) => {
     taskId !== undefined && setEditId(taskId);
     setTaskDialogOpen(true);
   }
 
   const closeTaskDialog = () => {
+    fetchProject();
+    fetchSprint();
+    fetchStory();
+    fetchTasks();
+    fetchAllUsers();
+    fetchProjectUser();
     setTaskDialogOpen(false);
     setEditId(undefined);
+    window.location.reload(true);
   }
 
   /* "METHODOLOGY_KEEPER" and "DEV_TEAM_MEMEBER" can delete task*/
@@ -250,9 +258,10 @@ export default () => {
     fetchAllUsers();
     fetchProjectUser();
     setDeleteTaskDialogOpen(false);
+    window.location.reload(true);
   }
 
-  /* Everyone can edit task time reamining*/
+  /* everyone can edit timeremaining task*/
   const handleOpenEditTaskTimeDialog = async (taskId: string) => {
     setEditTaskTimeId(taskId);
     openEditTaskTimeDialog();
@@ -268,10 +277,8 @@ export default () => {
     fetchAllUsers();
     fetchProjectUser();
     setEditTaskTimeDialogOpen(false);
+    window.location.reload(true);
   }
-
-  /* "METHODOLOGY_KEEPER" and "DEV_TEAM_MEMEBER" can edit task*/
-  /* TODO */
 
   return (
     <>
@@ -292,12 +299,6 @@ export default () => {
                 </IconButton>
             </div>
 
-            { (userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER") &&
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <Button variant="contained" color="primary" onClick={() => openTaskDialog()} style={{ alignSelf: "flex-start", marginTop: 20}}>ADD TASK</Button>
-              </div>
-            }
-
             {/* Add new task and edit task dialog*/}
             { <TaskDialog projectId={projectId} sprintId={sprintId} storyId={storyId} open={taskDialogOpen} handleClose={closeTaskDialog} openSnack={openSnack} editId={editId} /> }
 
@@ -307,7 +308,31 @@ export default () => {
             {/* Edit task time dialog TODO*/}
             { <EditTaskTimeDialog projectId={projectId} storyId={storyId} sprintId={sprintId} taskId={editTaskTimeId} open={editTaskTimeDialogOpen} handleClose={closeEditTaskTimeDialog} openSnack={openSnack} /> }
 
-            <hr style={{ margin: "30px 0" }}/>
+
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20 }}>
+
+              { (userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER") &&
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <Button variant="contained" color="primary" onClick={() => openTaskDialog()} style={{ alignSelf: "flex-start", marginTop: 20}}>ADD TASK</Button>
+                </div>
+              }
+              { (userRole === "PROD_LEAD") &&
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <Button variant="contained" color="default" onClick={() => void 0} style={{ alignSelf: "flex-start", marginTop: 20}}>ADD TASK</Button>
+                </div>
+              }
+              
+              <div className="story_row">
+                <div style={{ display: "flex", flexDirection: "row"}}>
+                  <div className="story_label_big" style={{marginTop: 5}}>Total remaining time:</div>
+                  <div className="story_value_big" style={{marginLeft: 15, marginTop: 5}}>{timeEstimated} hours</div>
+                </div>
+              </div>
+
+            </div>
+
+            <hr style={{ margin: "5px 0" }}/>
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
@@ -317,6 +342,10 @@ export default () => {
                     <div key={i} className="story_row">
                       <div style={{ display: "flex", flexDirection: "column" }}>
                         <div className="story_row_title">{task.name}</div>
+
+                        <div className="task_label" style={{marginTop: 15}}>Description:</div>
+                        <div className="task_value" style={{display: "flex"}}>{task.description}</div>
+
                         <div className="task_label" style={{marginTop: 15}}>Remaining time:</div>
                         <div className="task_value" style={{ display: "flex"}}>{task.timeEstimate} hours</div>
                       </div>
@@ -353,6 +382,10 @@ export default () => {
                         <div key={i} className="story_row">
                           <div style={{ display: "flex", flexDirection: "column" }}>
                             <div className="story_row_title">{task.name}</div>
+
+                            <div className="task_label" style={{marginTop: 15}}>Description:</div>
+                            <div className="task_value" style={{display: "flex"}}>{task.description}</div>
+
                             <div className="task_label" style={{marginTop: 15}}>Assigned user:</div>
                             {
                                 allUsers.map((user, j) => (
@@ -365,7 +398,7 @@ export default () => {
                                   </div>
                                 ))
                               }
-                            <div className="task_label" style={{marginTop: 5}}>Remaining time:</div>
+                            <div className="task_label" style={{marginTop: 15}}>Remaining time:</div>
                             <div className="task_value" style={{ display: "flex"}}>{task.timeEstimate} hours</div>
                           </div>
 
@@ -417,6 +450,10 @@ export default () => {
                         <div key={i} className="story_row">
                           <div style={{ display: "flex", flexDirection: "column" }}>
                             <div className="story_row_title">{task.name}</div>
+
+                            <div className="task_label" style={{marginTop: 15}}>Description:</div>
+                            <div className="task_value" style={{display: "flex"}}>{task.description}</div>
+
                             <div className="task_label" style={{marginTop: 15}}>Assigned user:</div>
                             {
                                 allUsers.map((user, j) => (
@@ -429,7 +466,7 @@ export default () => {
                                   </div>
                                 ))
                               }
-                            <div className="task_label" style={{marginTop: 5}}>Remaining time:</div>
+                            <div className="task_label" style={{marginTop: 15}}>Remaining time:</div>
                             <div className="task_value" style={{ display: "flex"}}>{task.timeEstimate} hours</div>
                           </div>
 
@@ -478,7 +515,12 @@ export default () => {
                       tasks_completed.map((task, i) => (
                         <div key={i} className="story_row">
                           <div style={{ display: "flex", flexDirection: "column" }}>
+
                             <div className="story_row_title">{task.name}</div>
+                            
+                            <div className="task_label" style={{marginTop: 15}}>Description:</div>
+                            <div className="task_value" style={{display: "flex"}}>{task.description}</div>
+
                             <div className="task_label" style={{marginTop: 15}}>Assigned user:</div>
                               {
                                 allUsers.map((user, j) => (
@@ -516,21 +558,6 @@ export default () => {
                 </div>
             
             </div>
-          <hr style={{ margin: "30px 0" }}/>
-
-
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-                <div className="story_row">
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div className="story_row_title">Tasks summary:</div>
-                    <div className="task_label" style={{marginTop: 5}}>Total remaining time:</div>
-                    <div className="task_value" style={{ display: "flex"}}>{timeEstimated} hours</div>
-                  </div>
-                </div>
-            </div>
-          </div>
-
         </>
       }
     </>

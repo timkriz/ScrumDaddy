@@ -10,7 +10,7 @@ import {Color} from "@material-ui/lab/Alert";
 import {getProject, getProjectUser} from "../../api/ProjectService";
 import {deleteSprint, getSprints} from "../../api/SprintService";
 import "./project.css";
-import moment, {Moment} from "moment"
+import moment from "moment"
 import SprintDialog from "./SprintDialog";
 import DocDialog from "./DocDialog";
 import ProjectWall from "./ProjectWall";

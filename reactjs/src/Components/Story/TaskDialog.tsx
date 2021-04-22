@@ -35,7 +35,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
   const [ taskName, setTaskName ] = useState<string>("");
   const [ taskDescription, setTaskDescription ] = useState<string>("");
   const [ taskStatus, setTaskStatus ] = useState<string>("");
-  const [ taskTimeEstimate, setTaskTimeEstimate] = useState<number>(1);
+  const [ taskTimeEstimate, setTaskTimeEstimate] = useState<number>(0);
   const [ taskTimeLog, setTaskTimeLog ] = useState<number>(0); 
   const [ projectUsers, setProjectUsers ] = useState<IProjectUser[]>([]);
   const [ taskSuggestedUser, setTaskSuggestedUser] = useState<string>("");
@@ -53,15 +53,16 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
       // Fetch task and fill out the fieldss
       if(editId !== undefined) {
         fetchTask();
+        fetchProjectUsers();
+        shiftUsers();
       }
-      // Clear the fields
       else {
         fetchProjectUsers();
         setTaskName("");
         setTaskDescription("");
-        setTaskTimeEstimate(1);
-        setTaskSuggestedUser("")
-        shiftUsers()
+        setTaskTimeEstimate(0);
+        setTaskSuggestedUser("");
+        shiftUsers();
       }
     }
   }, [ open ]);
@@ -122,7 +123,11 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
     // Edit task
     if(editId !== undefined) {
       try {
-        await putTask(projectId, sprintId, storyId, editId, taskName, taskDescription, taskTimeEstimate, taskTimeLog, taskSuggestedUser, taskAssignedUser, taskStatus);
+        if (taskSuggestedUser === "None"){
+          await putTask(projectId, sprintId, storyId, editId, taskName, taskDescription, taskTimeEstimate, taskTimeLog, taskSuggestedUser, "None", "unassigned");
+        }else{
+          await putTask(projectId, sprintId, storyId, editId, taskName, taskDescription, taskTimeEstimate, taskTimeLog, taskSuggestedUser, taskSuggestedUser, "assigned");
+        } 
         openSnack("Task updated successfully!", "success", true);
         handleClose();
       } catch (e) {
@@ -135,7 +140,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
     // Add task - adding tasks WORKS
     else {
       try {
-        if(taskName && taskDescription && taskTimeEstimate && taskSuggestedUser){
+        if(taskName && taskDescription && taskSuggestedUser){
           if (taskTimeEstimate <= 20 && taskTimeEstimate >= 0){
             if (taskSuggestedUser === "None"){
               await postTask(projectId, sprintId, storyId, taskName, taskDescription, taskTimeEstimate, 0, taskSuggestedUser, "None", "unassigned");
@@ -192,23 +197,21 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
           onChange={(e) => {setTaskTimeEstimate(e.target.value as unknown as number)}}
         />
 
-        {editId === undefined &&
-          <>
-            <FormControl style={{ display: "flex", margin: "10px 0", justifyContent: "space-between" }}>
-              <InputLabel>Suggest user</InputLabel>
-                <Select 
-                value={taskSuggestedUser} 
-                onChange={(e: any) => {setTaskSuggestedUser(e.target.value)}}
-                >
-                  {
-                    realUsers.map((user, j) => (
-                      <MenuItem key={j} value={user._id}>{user.name} {user.surname}</MenuItem>             
-                    ))
-                  }
-                </Select>
-            </FormControl>
-          </>
-        }
+        <>
+          <FormControl style={{ display: "flex", margin: "10px 0", justifyContent: "space-between" }}>
+            <InputLabel>Suggest user</InputLabel>
+              <Select 
+              value={taskSuggestedUser} 
+              onChange={(e: any) => {setTaskSuggestedUser(e.target.value)}}
+              >
+              {
+                realUsers.map((user, j) => (
+                  <MenuItem key={j} value={user._id}>{user.name} {user.surname}</MenuItem>             
+                ))
+              }
+              </Select>
+          </FormControl>
+        </>
 
       </DialogContent>
       <DialogActions>
