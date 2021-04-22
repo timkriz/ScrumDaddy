@@ -80,7 +80,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
 
   const confirmAction = async () => {
     try {
-      if (name && description && timeEstimate && bussinesValue && priority && tests){
+      if (name && description && bussinesValue && priority && tests){
         if(timeEstimate <= 20 && timeEstimate >= 0 && bussinesValue <= 20 && bussinesValue > 0){
           const response = await postStory(projectId, sprintId, name, description, timeEstimate, bussinesValue, priority, comment, tests, status);
           setId(response.data.data._id);
