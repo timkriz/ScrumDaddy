@@ -38,10 +38,13 @@ export default ({ projectId, storyId, story, open, handleClose, openSnack, userR
   const confirmAction = async () => {
     try {
       if(comment.length > 1 && name.length > 1 && description.length > 1 && tests.length > 1){
-        await editUserStory(projectId, " " /*sprintid*/, storyId, name, description, timeEstimate, businessValue, priority, comment, tests);
-        //setTimeEstimate(10);
-        openSnack("Story updated.", "success", true);
-        handleClose();
+        /* Check if numeric values are logical */
+        if(timeEstimate > 0 && businessValue > 0){
+          await editUserStory(projectId, " " /*sprintid*/, storyId, name, description, timeEstimate, businessValue, priority, comment, tests);
+          openSnack("Story updated.", "success", true);
+          handleClose();
+        }
+        else openSnack("One or more incorrect values.", "error");
       }
       else openSnack("One or more fields is missing.", "error");
     } catch (e) {
@@ -118,7 +121,7 @@ export default ({ projectId, storyId, story, open, handleClose, openSnack, userR
           </FormControl>
         </div>
         {/* Comment of product owner */}
-        {userRole == "PROD_LEAD" &&
+        {(userRole == "PROD_LEAD" && story.comment != "NO_COMMENT") &&
         <TextField
           style={{ marginTop: 20 }}
           label="Story comment"
