@@ -489,7 +489,7 @@ export default () => {
                               {
                                 task.assignedUser == getUserId()? (
                                   <>
-                                    <Button variant="contained" color="primary" onClick={() => handleOpenEditTaskTimeDialog(task._id)} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 10}}>EDIT TIME</Button>
+                                    <Button variant="contained" color="primary" onClick={() => handleOpenEditTaskTimeDialog(task._id)} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 10}}>LOG TIME</Button>
                                     <Button variant="contained" color="primary" onClick={() => assignUser(task, "deactivate")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 10}}>DEACTIVATE</Button>
                                   </>
                                 ) : (

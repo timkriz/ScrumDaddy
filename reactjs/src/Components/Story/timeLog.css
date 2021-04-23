@@ -1,0 +1,14 @@
+.time_log_row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+}
+
+.time_log_left {
+    display: flex;
+    align-items: flex-end;
+}
+
+.time_log_left h6 {
+    margin-right: 30px !important;
+}
