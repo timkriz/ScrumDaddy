@@ -283,6 +283,55 @@ export default () => {
                 openSnack(message, "success");
               }else{
                 /* Different start and end date of activity on task */
+                /*var start = moment(lastLog.timestamp*1000);
+                var duration = end.diff(start); 
+                let hours = parseInt(moment.utc(duration).format("HH"));
+                let minutes = parseInt(moment.utc(duration).format("mm"));
+                var overTime = minutes%60;
+
+                if (hours > parseInt(moment(end).startOf('day').fromNow())){
+
+                  var timeToday = parseInt(moment(end).startOf('day').fromNow())
+
+                  //post TaskUser for today because time log started yesterday
+                  await postTaskUser(
+                    projectId,
+                    sprintId,
+                    storyId,
+                    task._id,
+                    task.assignedUser,
+                    0, // timestamp
+                    timeToday,
+                    task.timeEstimate,
+                  )
+
+                  var before = lastLog.timeLog;
+                  var newTime = before + hours - timeToday;
+                  var remaining = lastLog.timeRemaining - hours - timeToday;
+                  if (remaining < 0) remaining = 0;
+
+                  //log time for the last day activity was started
+                  await putTaskUser(
+                    lastLog.projectId,
+                    lastLog.sprintId,
+                    lastLog.storyId,
+                    lastLog.taskId,
+                    lastLog._id,
+                    lastLog.userId,
+                    lastLog.timestamp,
+                    newTime,
+                    remaining
+                      );
+                
+                  let message = "Task was active during more days so hours have been logged for start and end day!"
+                  //hours > 1 ? "Logged " + hours + " hours" : "No time was logged, session too short!"";
+                  openSnack(message, "info");
+                  message = "Please check and log time manually if necessary!"
+                  openSnack(message, "warning");
+                  
+
+                }*/
+
               }
             }else{
               let message = "Error when logging time!";
@@ -300,7 +349,7 @@ export default () => {
     } catch (e) {
       console.log("ERROR: ACCEPT/DECLINE TASK")
     }
-    //window.location.reload(true);
+    window.location.reload(true);
   };
 
   const fetchProjectUser = async () => {
