@@ -119,7 +119,8 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
     const filteredSprints: ISprint[] = [];
     gottenSprints.forEach((sprint)=>{
       const sprintEnd = (moment.unix(sprint.endTime));
-      if( sprintEnd > todayDate){
+      const sprintStart = (moment.unix(sprint.startTime));
+      if(sprintEnd > todayDate && sprintStart <= todayDate) {
         filteredSprints.push(sprint);
       }
     })
