@@ -130,6 +130,7 @@ export default ({ projectId, sprintId, storyId, taskId, open, handleClose, openS
         let taskUsersCopy = JSON.parse(JSON.stringify(taskUsers)) as ITaskUser[];
         let extTaskUsers: IExtTaskUser[] = [];
         taskUsersCopy.forEach(taskUser => extTaskUsers.push({ ...taskUser, modified: HttpMethods.NONE }));
+        extTaskUsers = extTaskUsers.sort((a, b) => a.timestamp - b.timestamp);
         setExtendedTaskUsers(extTaskUsers);
       }
     }
