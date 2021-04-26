@@ -202,6 +202,7 @@ export default () => {
                 task._id,
                 task.assignedUser,
                 timestamp,
+                timestamp,
                 0,
                 task.timeEstimate,
               )
@@ -219,7 +220,8 @@ export default () => {
                   taskUsersLogged[idx].taskId,
                   taskUsersLogged[idx]._id,
                   taskUsersLogged[idx].userId,
-                  now.unix(),
+                  taskUsersLogged[idx].timestamp,
+                  now.unix(),                
                   timeLog,
                   taskUsersLogged[idx].timeRemaining
                 );
@@ -275,6 +277,7 @@ export default () => {
                 lastLog._id,
                 lastLog.userId,
                 lastLog.timestamp,
+                -1,
                 newTime,
                 remaining
                   );

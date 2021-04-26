@@ -185,7 +185,7 @@ export default () => {
 
                             <div>
                               <div className="sprint_label">Sprint Velocity:</div>
-                              <div className="sprint_value">{sprint.velocity}</div>
+                              <div className="sprint_value">{sprint.velocity} Points</div>
                             </div>
                           </div>
                         </div>

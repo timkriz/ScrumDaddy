@@ -375,7 +375,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
                             <div>
                               <div className="story_label">Time estimate:</div>
-                              <div className="story_value">{story.timeEstimate}</div>
+                              <div className="story_value">{story.timeEstimate} Points</div>
                             </div>
 
                             <div>
@@ -462,7 +462,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                             
                             <div>
                               <div className="story_label">Time estimate:</div>
-                              <div className="story_value">{story.timeEstimate}</div>
+                              <div className="story_value">{story.timeEstimate} Points</div>
                             </div>
                             <div>
                               <div className="story_label">Business Value:</div>
@@ -537,7 +537,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
 
                         <div>
                             <div className="story_label">Time estimate:</div>
-                            <div className="story_value">{story.timeEstimate}</div>
+                            <div className="story_value">{story.timeEstimate} Points</div>
                           </div>
                           <div>
                             <div className="story_label">Business Value:</div>

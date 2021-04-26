@@ -145,7 +145,7 @@ export default () => {
                             
                             <div style={{ marginRight: 20 }}>
                               <div className="sprint_label">Time estimate:</div>
-                              <div className="sprint_value">{story.timeEstimate}</div>
+                              <div className="sprint_value">{story.timeEstimate} Points</div>
                             </div>
 
                             <div style={{ marginRight: 20 }}>

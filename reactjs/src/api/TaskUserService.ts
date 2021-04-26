@@ -13,20 +13,22 @@ export const deleteTaskUser = (projectId: string, sprintId: string, storyId: str
 };
 
 export const putTaskUser = (projectId: string, sprintId: string, storyId: string, taskId: string, taskUserId: string,
-    userId: string, timestamp: number, timeLog: number, timeRemaining: number): Promise<any> => {
+    userId: string, timestamp: number, activatedTimestamp: number, timeLog: number, timeRemaining: number): Promise<any> => {
   return axiosAuth.put(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/tasks/${taskId}/taskUsers/${taskUserId}`, {
     userId,
     timestamp,
+    activatedTimestamp,
     timeLog,
     timeRemaining
   });
 };
 
 export const postTaskUser = (projectId: string, sprintId: string, storyId: string, taskId: string,
-    userId: string, timestamp: number, timeLog: number, timeRemaining: number): Promise<any> => {
+    userId: string, timestamp: number, activatedTimestamp: number, timeLog: number, timeRemaining: number): Promise<any> => {
   return axiosAuth.post(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}/tasks/${taskId}/taskUsers`, {
     userId,
     timestamp,
+    activatedTimestamp,
     timeLog,
     timeRemaining
   });

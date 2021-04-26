@@ -111,6 +111,7 @@ export default ({ projectId, sprintId, storyId, taskId, open, handleClose, openS
                 taskId: taskId,
                 userId: userId,
                 timestamp: curDay.unix(),
+                activatedTimestamp: -1,
                 timeLog: 0,
                 timeRemaining: curTimeRem,
                 modified: HttpMethods.POST
@@ -170,6 +171,7 @@ export default ({ projectId, sprintId, storyId, taskId, open, handleClose, openS
           extTaskUserCopy.taskId,
           extTaskUserCopy.userId,
           extTaskUserCopy.timestamp,
+          extTaskUserCopy.activatedTimestamp,
           extTaskUserCopy.timeLog,
           extTaskUserCopy.timeRemaining
         )).data.data as ITaskUser;
@@ -191,6 +193,7 @@ export default ({ projectId, sprintId, storyId, taskId, open, handleClose, openS
           extTaskUserCopy._id,
           extTaskUserCopy.userId,
           extTaskUserCopy.timestamp,
+          extTaskUserCopy.activatedTimestamp,
           extTaskUserCopy.timeLog,
           extTaskUserCopy.timeRemaining
         )).data.data as ITaskUser;

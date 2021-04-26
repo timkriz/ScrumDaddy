@@ -68,6 +68,7 @@ export interface ITask {
 export interface ITaskUser {
   _id: string,
   timestamp: number,
+  activatedTimestamp: number,
   timeLog: number,
   timeRemaining: number,
   userId: string,
