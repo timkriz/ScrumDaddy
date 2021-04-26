@@ -6,6 +6,7 @@ const taskUserSchema = new Schema ({
     timeLog: { type: Number, required: true},
     timeRemaining: { type: Number, required: true},
     timestamp: { type: Number, required: true},
+    activatedTimestamp: { type: Number, required: true},
     projectId: { type: String, required: true},
     sprintId: { type: String, required: true},
     storyId: { type: String, required: true},
