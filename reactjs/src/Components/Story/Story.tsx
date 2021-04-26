@@ -322,7 +322,7 @@ export default () => {
                 lastLog._id,
                 lastLog.userId,
                 lastLog.timestamp,
-                -1,
+                lastLog.timestamp,
                 newTime,
                 remaining
                   );
