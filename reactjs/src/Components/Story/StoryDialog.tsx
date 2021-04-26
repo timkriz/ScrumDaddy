@@ -81,7 +81,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
   const confirmAction = async () => {
     try {
       if (name && description && bussinesValue && priority && tests){
-        if(timeEstimate <= 20 && timeEstimate >= 0 && bussinesValue <= 20 && bussinesValue > 0){
+        if(timeEstimate <= 20 && timeEstimate >= 0 && bussinesValue <= 10 && bussinesValue > 0){
           const response = await postStory(projectId, sprintId, name, description, timeEstimate, bussinesValue, priority, comment, tests, status);
           setId(response.data.data._id);
 
@@ -146,7 +146,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
             style={{margin: 10, width: "20%" }}
             InputProps={{
               inputProps: { 
-                  min: 1, max: 20, maxLength: 2 
+                  min: 1, max: 10, maxLength: 1 
               }
             }}
             label="Bussines value"

@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import React, {useEffect, useState} from "react";
 import {useHistory, useParams} from "react-router-dom";
-import {IProject, ISprint, IStory, ITask, IUser, IProjectUser} from "../ProjectList/IProjectList";
+import {IProject, ISprint, IStory, ITask,ITaskUser, IUser, IProjectUser} from "../ProjectList/IProjectList";
 import {ArrowBackRounded, ArrowForwardRounded, DeleteRounded, EditRounded} from "@material-ui/icons";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -13,6 +13,7 @@ import {getProject} from "../../api/ProjectService";
 import {getSprint} from "../../api/SprintService";
 import {getStory} from "../../api/UserStoriesService";
 import {getTasks, getTask, putTask, deleteTask} from "../../api/TaskService";
+import {deleteTaskUser, getTaskUsers, postTaskUser, putTaskUser} from "../../api/TaskUserService";
 import {getProjectUser} from "../../api/ProjectService";
 import "./story.css";
 import moment, {Moment} from "moment";
@@ -34,6 +35,10 @@ interface ISprintParams {
 
 interface IStoryParams {
   storyId: string;
+}
+
+interface ITaskParams {
+  taskId: string;
 }
 
 export enum TaskStatuses {
@@ -75,10 +80,13 @@ export default () => {
   const [ startLogTime, setStartLogTime ] = useState<Moment>(moment());
   const [ endLogTime, setEndLogTime ] = useState<Moment>(moment());
   const [ finalTime, setFinalTime ] =  useState<any>();
+  const [ task, setTask ] = useState<ITask>();
+  const [ taskUsers, setTaskUsers ] = useState<ITaskUser[]>();
 
   const { projectId } = useParams<IProjectParams>();
   const { sprintId } = useParams<ISprintParams>();
   const { storyId } = useParams<IStoryParams>();
+  const { taskId } = useParams<ITaskParams>();
 
   const history = useHistory();
 
@@ -149,50 +157,150 @@ export default () => {
     history.push(`/projects/${projectId}/sprints/${sprintId}`);
   }
 
-  const assignUser = (task: ITask, action: string) => {   
+  const assignUser = async (task: ITask, action: string) => {   
     try {
       const userId = getUserId();
       if (task !== undefined){
         if (userId !== null){
           if (action == "assign") {
             if(task.assignedUser == "None"){
-              putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, userId, "assigned");
+              await putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, userId, "assigned");
             }
           }else if(action == "unassign") {
-            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, "None", "unassigned");
+            await putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, "None", "unassigned");
           }else if(action == "activate") {
-            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "active");
-            
-            /* start Time logging */
+
+            /* ACTIVATE - start time logging */
             var now = moment(new Date());
             setStartLogTime(now);
-            console.log(startLogTime);
+
+            let taskUsersLogged = (await getTaskUsers(projectId, sprintId, storyId, task._id)).data.data as ITaskUser[];
+            taskUsersLogged = taskUsersLogged.sort((a, b) => a.timestamp - b.timeRemaining);
             
+            var logToday = false;
+            var idx = -1;
+
+            try{
+              for (var i = 0; i < taskUsersLogged.length; i++){
+                console.log(taskUsersLogged[i].timestamp,  taskUsersLogged.length)
+                var dateThen = moment(new Date(taskUsersLogged[i].timestamp*1000)).format("MMM Do YY");
+                if(dateThen === (now.format("MMM Do YY"))){
+                  logToday = true;
+                  idx = i;
+                  break;
+                }
+              }
+
+              /* if there is NO log for today yet, create new task user log */
+              if(logToday == false){
+                var timestamp = now.unix();
+
+                await postTaskUser(
+                projectId,
+                sprintId,
+                storyId,
+                task._id,
+                task.assignedUser,
+                timestamp,
+                0,
+                task.timeEstimate,
+              )
+
+              /* if there is log for today, put new timestamp in it*/
+              }else{
+                var alreadyLogged = taskUsersLogged[idx].timeLog;
+                var b = taskUsersLogged[idx].timestamp;
+                var timeLog = 0;
+                
+                await putTaskUser(
+                  taskUsersLogged[idx].projectId,
+                  taskUsersLogged[idx].sprintId,
+                  taskUsersLogged[idx].storyId,
+                  taskUsersLogged[idx].taskId,
+                  taskUsersLogged[idx]._id,
+                  taskUsersLogged[idx].userId,
+                  now.unix(),
+                  timeLog,
+                  taskUsersLogged[idx].timeRemaining
+                );
+              }
+            }catch (e){
+                let message = "Task acceptance failed!";
+                if(e && e.response && e.response.data && e.response.data.message) message = e.response.data.message;
+                openSnack(message, "error");
+            }
+            
+            await putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "active");           
+            
+
           }else if(action == "deactivate") {
-            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "assigned");
             
-            /* end time logging */
+            /* DEACTIVATE - end and save time logging */
             var end = moment(new Date()); 
             setEndLogTime(end)
-            var duration = moment.duration(startLogTime.diff(endLogTime));
-            setFinalTime(duration);
 
-            console.log("TIME", duration)
-            var days = duration.asDays();
-            console.log("DNI", days)
+            let taskUsersLogged = (await getTaskUsers(projectId, sprintId, storyId, task._id)).data.data as ITaskUser[];
+            taskUsersLogged = taskUsersLogged.sort((a, b) => a.timestamp - b.timestamp);
+            console.log("END USERS LOGGED", taskUsersLogged, taskUsersLogged.length)
+            let lastLog = taskUsersLogged[taskUsersLogged.length-1];
 
+            /* check if last log of time started in the same day */
+           
+            var dateThen = moment(new Date(lastLog.timestamp*1000)).format("MMM Do YY");
+
+          if(taskUsersLogged.length > 0){
+            if(dateThen === (end.format("MMM Do YY"))){
+              /* log time for activity started in the same day */
+              var start = moment(lastLog.timestamp*1000);
+              var duration = end.diff(start); 
+              let hours = parseInt(moment.utc(duration).format("HH"));
+              let minutes = parseInt(moment.utc(duration).format("mm"));
+              var overTime = minutes%60;
+
+              if (overTime > 20){
+                hours+=1;
+              }
+
+              var before = lastLog.timeLog;
+              var newTime = before + hours;
+              var remaining = lastLog.timeRemaining - hours;
+              if (remaining < 0) remaining = 0;
+              
+              /* log time */
+              await putTaskUser(
+                lastLog.projectId,
+                lastLog.sprintId,
+                lastLog.storyId,
+                lastLog.taskId,
+                lastLog._id,
+                lastLog.userId,
+                lastLog.timestamp,
+                newTime,
+                remaining
+                  );
+                
+                let message = hours > 1 ? "Logged " + hours + " hours" : "No time was logged, session too short!";
+                openSnack(message, "success");
+              }else{
+                /* Different start and end date of activity on task */
+              }
+            }else{
+              let message = "Error when logging time!";
+              openSnack(message, "error");
+            }
+            await putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "assigned");
 
           }else if(action == "complete") {
-            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "completed");
+            await putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "completed");
           }else if(action == "return") {
-            putTask(projectId, sprintId, storyId, task._id, task.name, task.description, 1, task.timeLog, task.suggestedUser, task.assignedUser, "assigned");
+            await putTask(projectId, sprintId, storyId, task._id, task.name, task.description, 1, task.timeLog, task.suggestedUser, task.assignedUser, "assigned");
           }
         }
       }
     } catch (e) {
       console.log("ERROR: ACCEPT/DECLINE TASK")
     }
-    window.location.reload(true);
+    //window.location.reload(true);
   };
 
   const fetchProjectUser = async () => {
