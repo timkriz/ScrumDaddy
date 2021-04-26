@@ -72,7 +72,7 @@ exports.update = function (req, res) {
         taskUser.timestamp          = req.body.timestamp || taskUser.timestamp;
         taskUser.activatedTimestamp = req.body.activatedTimestamp || taskUser.activatedTimestamp;
         taskUser.timeLog            = req.body.timeLog || taskUser.timeLog;
-        taskUser.timeRemaining      = req.body.timeRemaining || taskUser.timeRemaining;
+        taskUser.timeRemaining      = req.body.timeRemaining !== undefined ? req.body.timeRemaining : taskUser.timeRemaining;
 
         taskUser.save(function (err) {
             if (err) {

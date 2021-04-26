@@ -25,6 +25,11 @@ import DeleteTaskDialog from "./DeleteTaskDialog";
 import EditTaskTimeDialog from './EditTaskTimeDialog';
 import { truncateSync } from "node:fs";
 
+interface ITaskTimeRem {
+  task: ITask;
+  timeRemaining: number;
+}
+
 interface IProjectParams {
   projectId: string;
 }
@@ -62,6 +67,8 @@ export default () => {
   const [ tasks_assigned, setTasksAssigned ] = useState<ITask[]>([]);
   const [ tasks_active, setTasksActive] = useState<ITask[]>([]);
   const [ tasks_completed, setTasksCompleted ] = useState<ITask[]>([]);
+
+  const [ taskTimesRemaining, setTaskTimesRemaining ] = useState<ITaskTimeRem[]>([]);
 
   const [ deleteTaskId, setDeleteTaskId ] = useState<string>("");
   const [ editTaskId, setEditTaskId ] = useState<string>("");
@@ -122,6 +129,7 @@ export default () => {
     const gottenTasksAssigned = [] as ITask[];
     const gottenTasksActive = [] as ITask[];
     const gottenTasksCompleted = [] as ITask[];
+    await calculateRemainingTimes(gottenTasks);
     gottenTasks.map((task, index) => {
       if (task.status == "unassigned"){
         gottenTasksUnassigned.push(task)
@@ -152,6 +160,43 @@ export default () => {
     })
     if (err) setActive(true);
   }
+
+  const calculateRemainingTimes = async (tasks: ITask[]) => {
+    const userId = getUserId();
+    if(userId !== null) {
+      let taskTimesRem: ITaskTimeRem[] = [];
+      for(let i = 0; i < tasks.length; i++) {
+        const task = tasks[i];
+        const taskId = task._id;
+        let taskUsers = (await getTaskUsers(projectId, sprintId, storyId, taskId)).data.data as ITaskUser[];
+        if(taskUsers.length > 0) {
+          taskUsers = taskUsers.sort((a, b) => b.timestamp - a.timestamp);
+          const timeRem = taskUsers[0].timeRemaining;
+          taskTimesRem.push({ task: task, timeRemaining: timeRem });
+        }
+
+        else {
+          taskTimesRem.push({ task: task, timeRemaining: task.timeEstimate });
+        }
+      }
+      setTaskTimesRemaining(taskTimesRem);
+    }
+  }
+
+  // Set status as completed if time remaining is 0
+  useEffect(() => {
+    for(let i = 0; i < taskTimesRemaining.length; i++) {
+      const tr = taskTimesRemaining[i];
+      // Check if it is not completed then mark it as completed
+      if(tr.timeRemaining === 0) {
+        const taskStatus = tr.task.status;
+        if(taskStatus !== "completed") {
+          assignUser(tr.task, "complete");
+          break;
+        }
+      }
+    }
+  }, [taskTimesRemaining]);
 
   const back = () => {
     history.push(`/projects/${projectId}/sprints/${sprintId}`);
@@ -291,7 +336,7 @@ export default () => {
                 lastLog._id,
                 lastLog.userId,
                 lastLog.timestamp,
-                -1,
+                lastLog.timestamp,
                 newTime,
                 remaining
                   );
@@ -458,6 +503,17 @@ export default () => {
     window.location.reload(true);
   }
 
+  const getTimeRemainingByTaskId = (taskId: string) => {
+    const taskTimeRem = taskTimesRemaining.find(taskTr => taskTr.task._id === taskId);
+    if(taskTimeRem !== undefined) {
+      return taskTimeRem.timeRemaining;
+    }
+
+    else {
+      return 10;
+    }
+  }
+
   return (
     <>
       {
@@ -525,7 +581,7 @@ export default () => {
                         <div className="task_value" style={{display: "flex"}}>{task.description}</div>
 
                         <div className="task_label" style={{marginTop: 15}}>Remaining time:</div>
-                        <div className="task_value" style={{ display: "flex"}}>{task.timeEstimate} hours</div>
+                        <div className="task_value" style={{ display: "flex"}}>{getTimeRemainingByTaskId(task._id)} hours</div>
                       </div>
 
                       <div className="story_row_icons">
@@ -577,7 +633,7 @@ export default () => {
                                 ))
                               }
                             <div className="task_label" style={{marginTop: 15}}>Remaining time:</div>
-                            <div className="task_value" style={{ display: "flex"}}>{task.timeEstimate} hours</div>
+                            <div className="task_value" style={{ display: "flex"}}>{getTimeRemainingByTaskId(task._id)} hours</div>
                           </div>
 
                           <div className="story_row_icons">
@@ -645,7 +701,7 @@ export default () => {
                                 ))
                               }
                             <div className="task_label" style={{marginTop: 15}}>Remaining time:</div>
-                            <div className="task_value" style={{ display: "flex"}}>{task.timeEstimate} hours</div>
+                            <div className="task_value" style={{ display: "flex"}}>{getTimeRemainingByTaskId(task._id)} hours</div>
                           </div>
 
                           <div style={{ display: "flex", flexDirection: "column" }}>
