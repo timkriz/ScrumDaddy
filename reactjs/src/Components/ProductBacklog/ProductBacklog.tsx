@@ -112,8 +112,15 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
   };
 
   useEffect(() => {
+    fetchBacklogStories();
     fetchSprints();
   }, []);
+
+  /* Fetch all sprints */
+  const fetchBacklogStories = async () => {
+    const allStoriesInProductBacklog = (await getStories(projectId, "/")).data.data as IStory[];
+    setProductBacklog(allStoriesInProductBacklog);
+  }
 
   /* Fetch all sprints */
   const fetchSprints = async () => {
@@ -126,11 +133,12 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
     gottenSprints.forEach( async (sprint) => {
       const found1 = ISprintCollection.some((el:ISprintCollection) => el._id === sprint._id);
 
-      /* Get stories of a product backlog */
+      /* Get stories of a product backlog */ /*But why? Just fetch sprints here and do stories elsewhere?*/
       if (!found1) {
-        const allStoriesInProductBacklog = (await getStories(projectId, "/")).data.data as IStory[];
-        if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
-        setStories(allStoriesInProductBacklog);
+        // I don't know why is this here? I am not gonna delete this just in case! - VeliPeli
+        //const allStoriesInProductBacklog = (await getStories(projectId, "/")).data.data as IStory[];
+        //if(allStoriesInProductBacklog) setProductBacklog(allStoriesInProductBacklog);
+        //setStories(allStoriesInProductBacklog);
         sprintDict[sprint._id] = sprint.name;
         setSprintDict(sprintDict);
       }
