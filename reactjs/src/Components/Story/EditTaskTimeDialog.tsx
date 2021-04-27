@@ -111,7 +111,7 @@ export default ({ projectId, sprintId, storyId, taskId, open, handleClose, openS
                 taskId: taskId,
                 userId: userId,
                 timestamp: curDay.unix(),
-                activatedTimestamp: curDay.unix(),
+                activatedTimestamp: -1,
                 timeLog: 0,
                 timeRemaining: curTimeRem,
                 modified: HttpMethods.POST
