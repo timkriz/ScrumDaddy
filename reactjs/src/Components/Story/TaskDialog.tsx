@@ -62,6 +62,7 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
         setTaskDescription("");
         setTaskTimeEstimate(0);
         setTaskSuggestedUser("");
+        setTaskStatus("");
         shiftUsers();
       }
     }
@@ -87,8 +88,10 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
     newUsers2.push(noneUser);
 
     projectUsers.forEach((user) =>{
+      if (user.userRole !== "PROD_LEAD"){
         const newId = user.userId;
         newIDs.push(newId);
+      }
     })
 
     Promise.all(newIDs.map((id: string)  => getUser(id)))
@@ -197,21 +200,23 @@ export default ({ projectId, sprintId, storyId, open, handleClose, openSnack, ed
           onChange={(e) => {setTaskTimeEstimate(e.target.value as unknown as number)}}
         />
 
-        <>
-          <FormControl style={{ display: "flex", margin: "10px 0", justifyContent: "space-between" }}>
-            <InputLabel>Suggest user</InputLabel>
-              <Select 
-              value={taskSuggestedUser} 
-              onChange={(e: any) => {setTaskSuggestedUser(e.target.value)}}
-              >
-              {
-                realUsers.map((user, j) => (
-                  <MenuItem key={j} value={user._id}>{user.name} {user.surname}</MenuItem>             
-                ))
-              }
-              </Select>
-          </FormControl>
-        </>
+        { (taskStatus === "unassigned" || taskStatus === "") &&
+          <>
+            <FormControl style={{ display: "flex", margin: "10px 0", justifyContent: "space-between" }}>
+              <InputLabel>Suggest user</InputLabel>
+                <Select 
+                value={taskSuggestedUser} 
+                onChange={(e: any) => {setTaskSuggestedUser(e.target.value)}}
+                >
+                {
+                  realUsers.map((user, j) => (
+                    <MenuItem key={j} value={user._id}>{user.name} {user.surname}</MenuItem>             
+                  ))
+                }
+                </Select>
+            </FormControl>
+          </>
+        }
 
       </DialogContent>
       <DialogActions>

@@ -138,11 +138,6 @@ export default () => {
     setTasksAssigned(gottenTasksAssigned);
     setTasksActive(gottenTasksActive);
     setTasksCompleted(gottenTasksCompleted);
-    let sumTimeEstimated = 0
-    gottenTasks.map((task, index) => {
-      sumTimeEstimated = sumTimeEstimated + task.timeEstimate;
-    })
-    setTimeEstimated(sumTimeEstimated);
 
     const userId = getUserId();
     var err = false;
@@ -173,6 +168,11 @@ export default () => {
         }
       }
       setTaskTimesRemaining(taskTimesRem);
+      let sumTimeEstimated = 0
+      taskTimesRem.map((task, index) => {
+        sumTimeEstimated = sumTimeEstimated + task.timeRemaining;
+      })
+      setTimeEstimated(sumTimeEstimated);
     }
   }
 
@@ -357,7 +357,14 @@ export default () => {
           }else if(action == "complete") {
             await putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "completed");
           }else if(action == "return") {
-            await putTask(projectId, sprintId, storyId, task._id, task.name, task.description, 1, task.timeLog, task.suggestedUser, task.assignedUser, "assigned");
+            const userId = getUserId();
+            if (userId !== null){
+              let taskUsersLogged = (await getTaskUsers(projectId, sprintId, storyId, task._id)).data.data as ITaskUser[];
+              taskUsersLogged = taskUsersLogged.sort((a, b) => a.timestamp - b.timestamp);
+              let lastLog = taskUsersLogged[taskUsersLogged.length-1];
+              await putTaskUser(projectId, sprintId, storyId, task._id, lastLog._id, userId, lastLog.timestamp, lastLog.activatedTimestamp, lastLog.timeLog, 1);
+              await putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "assigned");
+            }
           }
         }
       }
@@ -547,7 +554,9 @@ export default () => {
                         }
                       </div>
                       <div>
-                        <Button variant="contained" color="primary" onClick={() => assignUser(task, "assign")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 5}}>ACCEPT TASK</Button>
+                        {(userRole !== "PROD_LEAD") &&
+                          <Button variant="contained" color="primary" onClick={() => assignUser(task, "assign")} style={{alignSelf: "flex-start", marginTop: 5, marginLeft: 5}}>ACCEPT TASK</Button>
+                        }
                       </div>
 
                     </div>
@@ -730,7 +739,7 @@ export default () => {
                               </div>
                             }
                             <Button variant="contained" color="default" onClick={() => void 0} style={{alignSelf: "flex-start", marginTop: 25, marginLeft: 10}}>COMPLETED</Button>
-                            { (userRole === "PROD_LEAD") &&
+                            { (getUserId() == task.assignedUser) &&
                               <Button variant="contained" color="primary" onClick={() => assignUser(task, "return")} style={{alignSelf: "flex-start", marginTop: 25, marginLeft: 10}}>RETURN</Button>
                             }
                           </div>
