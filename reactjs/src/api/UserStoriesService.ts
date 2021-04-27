@@ -31,9 +31,9 @@ export const rejectUserStory = (projectId: string, sprintId: string, storyId: st
   });
 };
 
-export const restoreUserStory = (projectId: string, sprintId: string, storyId: string): Promise<any> => {
+export const setUserStoryStatus = (projectId: string, sprintId: string, storyId: string, newStatus:string): Promise<any> => {
   return axiosAuth.patch(`${BACKEND_URL}/projects/${projectId}/sprints/${sprintId}/stories/${storyId}`, {
-    status: "COMPLETED"
+    status: newStatus
   });
 };
 

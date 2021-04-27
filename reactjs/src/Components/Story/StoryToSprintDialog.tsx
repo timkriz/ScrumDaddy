@@ -140,6 +140,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
           }
         })
         if(allCompleted) {status = "COMPLETED";}
+        if(gottenTasks.length ==0) {status = "ACTIVE";}
       const response = await putStory(projectId, " ", id, finalSprint, status);
     }
     catch(e){

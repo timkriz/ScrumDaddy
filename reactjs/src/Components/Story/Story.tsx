@@ -24,6 +24,7 @@ import { time } from "node:console";
 import DeleteTaskDialog from "./DeleteTaskDialog";
 import EditTaskTimeDialog from './EditTaskTimeDialog';
 import { truncateSync } from "node:fs";
+import {setUserStoryStatus} from "../../api/UserStoriesService";
 
 interface ITaskTimeRem {
   task: ITask;
@@ -147,6 +148,17 @@ export default () => {
       }
     })
     if (err) setActive(true);
+    console.log("aaa: ", tasks_active.length)
+     /* Mark also story as active and not completed, if all tasks are not completed */
+    if(story){
+      if(gottenTasksActive.length != 0 || gottenTasksAssigned.length != 0 || gottenTasksUnassigned.length != 0){
+        await setUserStoryStatus(projectId, sprintId, storyId, "ACTIVE"); // story status to ACTIVE
+      }
+      /* Mark story as completed, if all tasks are completed, and it hasnt been accepted yet */
+      if(gottenTasksActive.length == 0 && gottenTasksAssigned.length == 0 && gottenTasksUnassigned.length == 0 && story.status != "ACCEPTED"){
+        await setUserStoryStatus(projectId, sprintId, storyId, "COMPLETED"); // story status to COMPLETED
+      }
+    }
   }
 
   const calculateRemainingTimes = async (tasks: ITask[]) => {
@@ -356,6 +368,10 @@ export default () => {
 
           }else if(action == "complete") {
             await putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "completed");
+            /* Mark also story as completed, if all tasks are completed */
+            if(tasks_active.length == 0 && tasks_assigned.length == 0 && tasks_unassigned.length == 0){
+              await setUserStoryStatus(projectId, sprintId, storyId, "COMPLETED"); // story status to COMPLETED
+            }
           }else if(action == "return") {
             const userId = getUserId();
             if (userId !== null){
@@ -364,6 +380,9 @@ export default () => {
               let lastLog = taskUsersLogged[taskUsersLogged.length-1];
               await putTaskUser(projectId, sprintId, storyId, task._id, lastLog._id, userId, lastLog.timestamp, lastLog.activatedTimestamp, lastLog.timeLog, 1);
               await putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "assigned");
+              // set story status to ACTIVE
+              await setUserStoryStatus(projectId, sprintId, storyId, "ACTIVE"); // story status to COMPLETED
+              
             }
           }
         }
@@ -728,7 +747,7 @@ export default () => {
                           </div>
                           <div className="story_row_icons">
                             {/* DELETE TASK ICON VISIBLE ONLY TO METHODOLOGY KEEPER AND DEV_TEAM */}
-                            {(userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER") &&
+                            {((userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER") && (story.status != "ACCEPTED")) &&
                               <div style={{ display: "flex", flexDirection: "column" }}>
                                 <IconButton color="primary" onClick={() => openTaskDialog(task._id)}> {/* EDIT */}
                                   <EditRounded />
@@ -739,7 +758,7 @@ export default () => {
                               </div>
                             }
                             <Button variant="contained" color="default" onClick={() => void 0} style={{alignSelf: "flex-start", marginTop: 25, marginLeft: 10}}>COMPLETED</Button>
-                            { (getUserId() == task.assignedUser) &&
+                            { (getUserId() == task.assignedUser && story.status != "ACCEPTED") &&
                               <Button variant="contained" color="primary" onClick={() => assignUser(task, "return")} style={{alignSelf: "flex-start", marginTop: 25, marginLeft: 10}}>RETURN</Button>
                             }
                           </div>

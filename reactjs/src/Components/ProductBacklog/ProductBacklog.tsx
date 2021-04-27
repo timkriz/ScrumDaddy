@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {useHistory, useParams} from "react-router-dom";
 import "./productbacklog.css";
 import {Button} from "@material-ui/core";
-import {getSprints, getStories, acceptUserStory, restoreUserStory} from "../../api/UserStoriesService";
+import {getSprints, getStories, acceptUserStory, setUserStoryStatus} from "../../api/UserStoriesService";
 import {ITask} from "../ProjectList/IProjectList";
 import {getTasks} from "../../api/TaskService";
 import Typography from "@material-ui/core/Typography";
@@ -213,10 +213,9 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
   /* TEMPORARY - MOVE ACCEPTED STORY BACK TO UNREALIZED STORIES*/
   const handleRestoreUserStory = async (story: IStory) => {
     if(userRole === "PROD_LEAD"){
-      await restoreUserStory(projectId, story.sprintId, story._id);
       try {
-        await restoreUserStory(projectId, story.sprintId, story._id);
-        openSnack("Story is back in progress!", "success", true);
+        //await setUserStoryStatus(projectId, story.sprintId, story._id, "ACTIVE");
+        openSnack("Cant mark story as active!", "error");
       } catch (e) {
         openSnack("Something went wrong!", "error");
       }
@@ -545,12 +544,12 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                           </div>
                       </div>
                     </div>
-                    <div className="story_row_icons">
+                    {/*<div className="story_row_icons">
                       <IconButton color="primary" onClick={() => handleRestoreUserStory(story)}>
                         <CloseRoundedIcon />
                         <Typography component={'span'} display = "block" variant="caption">Restore</Typography>
                       </IconButton>
-                    </div>
+                    </div>*/}
                   </div>
                   ))
               }
