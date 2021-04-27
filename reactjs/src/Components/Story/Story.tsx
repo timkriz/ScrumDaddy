@@ -521,17 +521,21 @@ export default () => {
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20 }}>
 
-              { (userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER") &&
+              { ((userRole === "DEV_TEAM_MEMBER" || userRole === "METH_KEEPER") && story.status != "ACCEPTED" ) &&
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <Button variant="contained" color="primary" onClick={() => openTaskDialog()} style={{ alignSelf: "flex-start", marginTop: 20}}>ADD TASK</Button>
                 </div>
               }
-              { (userRole === "PROD_LEAD") &&
+              { ((userRole === "PROD_LEAD") && story.status != "ACCEPTED" ) &&
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <Button variant="contained" color="default" onClick={() => void 0} style={{ alignSelf: "flex-start", marginTop: 20}}>ADD TASK</Button>
                 </div>
               }
-              
+              { (story.status == "ACCEPTED" ) &&
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <p className="task_value" >This story was accepted.</p>
+                </div>
+              }
               <div className="story_row">
                 <div style={{ display: "flex", flexDirection: "row"}}>
                   <div className="story_label_big" style={{marginTop: 5}}>Total remaining time:</div>
