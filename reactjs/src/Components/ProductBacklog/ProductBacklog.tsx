@@ -282,6 +282,16 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
     setEditStoryDialogOpen(false);
   }
 
+  function flatMap(array: string[], fn:any) {
+    let result:any = [];
+    for (var i = 0; i < array.length; i++) {
+      let mapping = fn(array[i]);
+      if(i==array.length-1) mapping.pop();
+      result = result.concat(mapping);
+    }
+    return result;
+  }
+
   return (
     <>
 
@@ -354,7 +364,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                           }
 
                           <div className="story_label" style={{ display: "flex", marginTop: 10 }}>Tests:</div>
-                          <div className="story_value">{story.tests}</div>
+                          <div className="story_value" style = {{ whiteSpace: "pre-line"}}>{flatMap(story.tests.split('#'), function (part:any) {return [part, <span style={{color: "#0097E8"}}>#</span>];})}</div>
                           <div style={{ display: "flex", marginTop: 10 }}>
                             <div style={{ marginRight: 20 }}>
                               <div className="story_label">Status:</div>
@@ -438,7 +448,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                             </div>
                             <div style={{ marginRight: 20 }}>
                               <div className="story_label">Tests:</div>
-                              <div className="story_value">{story.tests}</div>
+                                <div className="story_value" style = {{ whiteSpace: "pre-line"}}>{flatMap(story.tests.split('#'), function (part:any) {return [part, <span style={{color: "#0097E8"}}>#</span>];})}</div>
                             </div>
                           </div>
                           <div style={{ display: "flex", marginTop: 10 }}>
@@ -511,7 +521,7 @@ export default ({ projectId, userRole, openSnack }: IProps) => {
                       <div className="story_row_title">{story.name}</div>
                       <div className="story_value" style={{ padding: 10 }}>{story.description}</div>
                       <div className="story_label">Tests:</div>
-                      <div className="story_value">{story.tests}</div>
+                      <div className="story_value" style = {{ whiteSpace: "pre-line"}}>{flatMap(story.tests.split('#'), function (part:any) {return [part, <span style={{color: "#0097E8"}}>#</span>];})}</div>
                       <div style={{ display: "flex", marginTop: 10 }}>
                       <div style={{ marginRight: 20 }}>
                               <div className="story_label">Sprint:</div>

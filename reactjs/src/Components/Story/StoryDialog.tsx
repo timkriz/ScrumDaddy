@@ -183,7 +183,7 @@ export default ({ projectId, sprintId, open, handleClose, openSnack, editId }: I
         />*/}
         <TextField
           style={{ marginTop: 20 }}
-          label="Story tests"
+          label="# Story tests"
           fullWidth
           multiline
           rowsMax={4}
