@@ -84,16 +84,9 @@ export default () => {
   const [snackMessage, setSnackMessage] = useState<string>("");
   const [snackSeverity, setSnackSeverity] = useState<Color>("success");
 
-  const [ startLogTime, setStartLogTime ] = useState<Moment>(moment());
-  const [ endLogTime, setEndLogTime ] = useState<Moment>(moment());
-  const [ finalTime, setFinalTime ] =  useState<any>();
-  const [ task, setTask ] = useState<ITask>();
-  const [ taskUsers, setTaskUsers ] = useState<ITaskUser[]>();
-
   const { projectId } = useParams<IProjectParams>();
   const { sprintId } = useParams<ISprintParams>();
   const { storyId } = useParams<IStoryParams>();
-  const { taskId } = useParams<ITaskParams>();
 
   const history = useHistory();
 
@@ -221,20 +214,15 @@ export default () => {
 
             /* ACTIVATE - start time logging */
             var now = moment(new Date());
-            setStartLogTime(now);
 
             let taskUsersLogged = (await getTaskUsers(projectId, sprintId, storyId, task._id)).data.data as ITaskUser[];
-            console.log("TASK_USERS", taskUsersLogged)
             var logToday = false;
             var idx = -1;
 
             try{
               for (var i = 0; i < taskUsersLogged.length; i++){
-                console.log(taskUsersLogged[i].activatedTimestamp,  taskUsersLogged.length)
                 var dateThen = moment(new Date(taskUsersLogged[i].timestamp*1000)).format("MMM Do YY");
-                console.log("DATE", dateThen, now)
                 if(dateThen === (now.format("MMM Do YY"))){
-                  console.log("SAME DAY")
                   logToday = true;
                   idx = i;
                   break;
@@ -247,7 +235,6 @@ export default () => {
               /* if there is NO log for today yet, create new taskUser log */
               if(logToday == false){
                 var timestamp = now.unix();
-                console.log("SAME DAY-NO LOG")
                 await postTaskUser(
                 projectId,
                 sprintId,
@@ -263,7 +250,6 @@ export default () => {
               // if there is log for today, put new timestamp in it
               }else{
                 var timeLog = 0;
-                console.log("SAME DAY - WITH LOG")
                 
                 await putTaskUser(
                   taskUsersLogged[idx].projectId,
@@ -291,117 +277,80 @@ export default () => {
             
             /* DEACTIVATE - end and save time logging */
             var end = moment(new Date()); 
-            setEndLogTime(end)
 
             let taskUsersLogged = (await getTaskUsers(projectId, sprintId, storyId, task._id)).data.data as ITaskUser[];
             taskUsersLogged = taskUsersLogged.sort((a, b) => a.timestamp - b.timestamp);
-            console.log("END USERS LOGGED", taskUsersLogged, taskUsersLogged.length)
-            let lastLog = taskUsersLogged[taskUsersLogged.length-1];
+            
+            /* check if there is any logs already */
+            if(taskUsersLogged.length > 0){
+              let lastLog = taskUsersLogged[taskUsersLogged.length-1]
+              var validTimestamp = false;
 
-            /* check if last log of time started in the same day */
-           
-            var dateThen = moment(new Date(lastLog.activatedTimestamp*1000)).format("MMM Do YY");
-
-          if(taskUsersLogged.length > 0){
-            if(dateThen === (end.format("MMM Do YY"))){
-              /* log time for activity started in the same day */
-              var start = moment(lastLog.activatedTimestamp*1000);
-              console.log("START", start);
-              var duration = end.diff(start); 
-              console.log("DURATION",duration, end, start.format("MMM Do YY"))
-              let days = parseInt(moment.utc(duration).format("Day"));
-              let hours = parseInt(moment.utc(duration).format("mm"));
-              let minutes = parseInt(moment.utc(duration).format("ss"));
-              var overTime = minutes%60;
-
-              console.log("URE - minute", hours, minutes)
-
-              if (overTime > 20){
-                hours+=1;
+              /* check for valid timestamp */
+              for (var i = taskUsersLogged.length-1; i >= 0; i--) {
+                  if (taskUsersLogged[i].activatedTimestamp > -1){
+                    lastLog = taskUsersLogged[i];
+                    validTimestamp = true;
+                    break;
+                  } 
+                  
               }
 
-              var before = lastLog.timeLog;
-              var allhours = 24*(days-1) + hours;
-              var newTime = before + allhours;
-              console.log("TIME", days, hours, minutes, newTime);
-              var remaining = lastLog.timeRemaining - hours;
-              if (remaining < 0) remaining = 0;
-              
-              /* log time */
-              await putTaskUser(
-                lastLog.projectId,
-                lastLog.sprintId,
-                lastLog.storyId,
-                lastLog.taskId,
-                lastLog._id,
-                lastLog.userId,
-                lastLog.timestamp,
-                lastLog.timestamp,
-                newTime,
-                remaining
-                  );
+              /* if valid timestamp log time */
+              if (validTimestamp){
+                var dateThen = moment(new Date(lastLog.activatedTimestamp*1000)).format("MMM Do YY");
+
+                /* get log time and parse it */
+                var start = moment(lastLog.activatedTimestamp*1000);
+                var duration = end.diff(start); 
+                let days = parseInt(moment.utc(duration).format("Day"));
+                let hours = parseInt(moment.utc(duration).format("HH"));
+                let minutes = parseInt(moment.utc(duration).format("mm"));
+                var overTime = minutes%60;                
+
+                if (overTime > 20){
+                  hours+=1;
+                }
                 
-                let message = hours >= 1 ? "Logged " + hours + " hours" : "No time was logged, session too short!";
+                /*calculate the time from last log */
+                var before = lastLog.timeLog;
+                var allhours = 24*(days-1) + hours;
+                var newTime = before + allhours;
+                var remaining = lastLog.timeRemaining - allhours;
+                if (remaining < 0) remaining = 0;
+                
+                /* log time */
+                await putTaskUser(
+                  lastLog.projectId,
+                  lastLog.sprintId,
+                  lastLog.storyId,
+                  lastLog.taskId,
+                  lastLog._id,
+                  lastLog.userId,
+                  lastLog.timestamp,
+                  lastLog.timestamp,
+                  newTime,
+                  remaining
+                    );
+                  
+                
+                let message = hours >= 1 ? "Logged " + allhours + " hour/s" : "No time was logged, session too short!";
                 openSnack(message, "success");
-            }else{
-                
+                await timeout(2000); 
+              }else{
+                /* if no valid timestamp is found */  
                 let message = "No time was logged, please add time logs manually!";
                 openSnack(message, "warning");
                 await timeout(2000); 
-                /* deleted user task */
-                /*var start = moment(lastLog.activatedTimestamp*1000);
-                var duration = end.diff(start); 
-                let hours = parseInt(moment.utc(duration).format("HH"));
-                let minutes = parseInt(moment.utc(duration).format("mm"));
-                var overTime = minutes%60;
-
-                if (hours > parseInt(moment(end).startOf('day').fromNow())){
-
-                  var timeToday = parseInt(moment(end).startOf('day').fromNow())
-
-                  //post TaskUser for today because time log started yesterday
-                  await postTaskUser(
-                    projectId,
-                    sprintId,
-                    storyId,
-                    task._id,
-                    task.assignedUser,
-                    0, // timestamp
-                    timeToday,
-                    task.timeEstimate,
-                  )
-
-                  var before = lastLog.timeLog;
-                  var newTime = before + hours - timeToday;
-                  var remaining = lastLog.timeRemaining - hours - timeToday;
-                  if (remaining < 0) remaining = 0;
-
-                  //log time for the last day activity was started
-                  await putTaskUser(
-                    lastLog.projectId,
-                    lastLog.sprintId,
-                    lastLog.storyId,
-                    lastLog.taskId,
-                    lastLog._id,
-                    lastLog.userId,
-                    lastLog.timestamp,
-                    newTime,
-                    remaining
-                      );
-                
-                  let message = "Task was active during more days so hours have been logged for start and end day!"
-                  //hours > 1 ? "Logged " + hours + " hours" : "No time was logged, session too short!"";
-                  openSnack(message, "info");
-                  message = "Please check and log time manually if necessary!"
-                  openSnack(message, "warning");
-                  
-
-                }*/
-
               }
+              
+
             }else{
-              let message = "Error when logging time!";
-              openSnack(message, "error");
+              /* if there is no TaskUsers logs, or user deleted them all before clicking deactivate */                
+              let message = "No time was logged, please add time logs manually!";
+              openSnack(message, "warning");
+              await timeout(2000); 
+               
             }
             await putTask(projectId, sprintId, storyId, task._id, task.name, task.description, task.timeEstimate, task.timeLog, task.suggestedUser, task.assignedUser, "assigned");
 
