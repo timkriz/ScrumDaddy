@@ -10,6 +10,11 @@ The main objective was to collaborate on a software development project using ad
 
 There was approx. 30 user stories to realize including login/registration, editing user profiles, editing projects, sprints, stories and tasks, programming Burn-down diagram...
 
+<div align="center">
+<img src="https://github.com/timkriz/ScrumDaddy/blob/main/login_picture.PNG" width="310">
+<img src="https://github.com/timkriz/ScrumDaddy/blob/main/project_picture.PNG" width="300">
+</div>
+
 ## Installation
 
 Nodejs: 
