@@ -1,8 +1,25 @@
 # ScrumDaddy
-Self-descriptive
 
-## User stories documentation
+ScrumDaddy is a student project created as part of the course "Advanced Software Development Methods", Faculty of Computer and Information Science, University of Ljubljana, 2021. 
 
-* #25 - Potrjevanje zgodb (Must have) - Produktni vodja, ima na "Product backlog" razdelku na strani projekta pod aktivnimi zgodbami na voljo gumb "Accept". Ob kliku na ta gumb se preveri če so vse naloge na tej zgodbi zaključene in na to opozori uporabnika. Če je potrditev zgodbe končana se kartica prestavi v zavihek "Realized stories".
-* #26 - Zavračanje zgodb (Must have) - Produktni vodja projekta, ima na "Product backlog" razdelku na strani projekta pod aktivnimi zgodbami na voljo gumb "Reject". Ob kliku na ta gumb se odpre modalno okno, v katerega se vpiše razlog za zavrnitev zgodbe. Ob potrditvi, se zgodba prestavi nazaj v Product backlog med nedodeljene zgodbe, viden pa je tudi komentar produktnega vodje.
-* #27 - Seznam zahtev (Must have) - Vsi člani projekta si lahko na podstrani projekta ogledajo seznam uporabniških zgodb tega projekta. 2 zavihka ločujeta: nerealizirane zgodbe (zavihek "Unrealized stories") in realizirane zgodbe (zavihek "Realized stories"). Pod zavihkom "unrealized stories" so na vrhu seznama zgodbe v product backlogu, ki še niso dodeljene sprintu, v razdelku "Active user stories" pa so zgodbe, so trenutno aktivne.
+The main objective was to collaborate on a software development project using advanced methods such as Kanban, to develop an online platform that would support working with agile Scrum method. Technologies used include:
+
+
+<i>FRONTEND:</i> React Typescript <br>
+<i>BACKEND:</i> Node.js, MongoDB
+
+There was approx. 30 user stories to realize including login/registration, editing user profiles, editing projects, sprints, stories and tasks, programming Burn-down diagram...
+
+## Installation
+
+Nodejs: 
+```
+npm install
+nodemon
+```
+
+React:
+```
+npm install
+npm start
+```
